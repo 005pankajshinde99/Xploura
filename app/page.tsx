@@ -156,7 +156,10 @@ export default function Home() {
           ))}
           <li><a href="/ai-agent">X AI Agent</a></li>
         </ul>
-    
+        <div className="nav-right" style={{display:'flex', gap:8}}>
+  <a href="/auth" className="nb" style={{fontSize:11, padding:'8px 14px'}}>Sign in</a>
+  <a href="/auth?tab=signup" className="nb fill" style={{fontSize:11, padding:'8px 14px'}}>Get Started</a>
+</div>
       </nav>
 
       {/* HERO */}
