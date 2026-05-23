@@ -530,3 +530,25 @@ nav.sc {
   #ai-fab { display: none !important; }
   body { padding-bottom: 72px !important; }
 }
+
+@media (max-width: 768px) {
+  #hero { height: 100svh !important; padding-top: 70px !important; }
+  .hero-inner { flex-direction: column !important; padding: 24px 20px !important; gap: 24px !important; align-items: flex-start !important; }
+  .hero-left { flex: unset !important; width: 100% !important; padding: 0 !important; }
+  .hero-h1 .hs1, .hero-h1 .hs2, .hero-h1 .hs3 { font-size: 72px !important; line-height: 0.88 !important; }
+  .hero-sub { font-size: 11px !important; }
+  .hbtn-primary, .hbtn-ghost { font-size: 10px !important; padding: 11px 16px !important; }
+  .hero-right { width: 100% !important; flex: unset !important; height: 200px !important; overflow-x: auto !important; display: flex !important; align-items: center !important; scrollbar-width: none !important; }
+  .cards-stage { width: max-content !important; height: 180px !important; display: flex !important; flex-direction: row !important; gap: 12px !important; position: static !important; margin: 0 !important; }
+  .hcard, .hcard-featured, .hcard-t1, .hcard-t2 { position: static !important; transform: none !important; width: 140px !important; height: 180px !important; right: unset !important; top: unset !important; bottom: unset !important; left: unset !important; }
+  .hcard-img { height: 62% !important; }
+  .hcard-name { font-size: 15px !important; }
+  #stats > div:last-child { grid-template-columns: repeat(2,1fr) !important; }
+  .cards-grid { grid-template-columns: 1fr !important; }
+  .ai-grid { grid-template-columns: 1fr !important; }
+  #newsletter { flex-direction: column !important; padding: 40px 16px !important; }
+  #footer { grid-template-columns: 1fr 1fr !important; padding: 32px 16px !important; }
+  #mobile-nav { display: flex !important; }
+  #ai-fab { display: none !important; }
+  body { padding-bottom: 72px !important; }
+}
