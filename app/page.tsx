@@ -393,120 +393,185 @@ export default function Home() {
         </button>
       </div>
 
-      <style>{`
+     <style>{`
   @keyframes liveBlink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.8)} }
   
   @media (max-width: 768px) {
+
+    /* ── BODY ── */
+    body { padding-bottom: 72px !important; }
+
+    /* ── NAV ── */
+    nav#main-nav { padding: 12px 16px !important; }
+    nav#main-nav ul { display: none !important; }
+
+    /* ── HERO ── */
     #hero {
-      height: auto !important;
+      height: 100svh !important;
       min-height: 100svh !important;
-      padding-bottom: 32px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: flex-end !important;
+      padding-bottom: 0 !important;
+      overflow: hidden !important;
     }
+
+    /* BG — full cover, no cropping */
     .hbg {
-      height: 50% !important;
-      bottom: auto !important;
+      inset: -5% !important;
+      height: 115% !important;
     }
+
+    /* CONTENT — column layout */
     .hero-inner {
       flex-direction: column !important;
-      padding: 90px 20px 20px !important;
-      gap: 28px !important;
+      padding: 0 20px 36px !important;
+      gap: 24px !important;
       align-items: flex-start !important;
+      justify-content: flex-end !important;
+      height: 100% !important;
     }
+
+    /* LEFT text */
     .hero-left {
       flex: unset !important;
       width: 100% !important;
       padding: 0 !important;
+      order: 2 !important;
     }
+
+    .hero-badge {
+      font-size: 9px !important;
+      padding: 5px 10px !important;
+      margin-bottom: 12px !important;
+    }
+
+    /* BIG HEADING */
     .hero-h1 .hs1,
     .hero-h1 .hs2,
     .hero-h1 .hs3 {
-      font-size: clamp(64px, 18vw, 90px) !important;
-      line-height: 0.88 !important;
+      font-size: clamp(68px, 20vw, 96px) !important;
+      line-height: 0.86 !important;
     }
+
     .hero-sub {
       font-size: 10px !important;
-      margin-top: 12px !important;
-      margin-bottom: 16px !important;
+      margin-top: 10px !important;
+      margin-bottom: 14px !important;
+      line-height: 1.9 !important;
     }
+
     .hero-cta-row {
-      flex-wrap: wrap !important;
-      gap: 10px !important;
+      gap: 8px !important;
+      margin-bottom: 14px !important;
     }
-    .hbtn-primary, .hbtn-ghost {
+
+    .hbtn-primary {
       font-size: 10px !important;
-      padding: 10px 16px !important;
+      padding: 11px 18px !important;
     }
-    .hero-ticker {
-      margin-top: 12px !important;
+
+    .hbtn-ghost {
+      font-size: 10px !important;
+      padding: 11px 14px !important;
     }
+
+    /* RIGHT — horizontal card scroll strip */
     .hero-right {
       flex: unset !important;
       width: 100% !important;
-      height: 200px !important;
+      height: 190px !important;
       overflow-x: auto !important;
-      overflow-y: hidden !important;
+      overflow-y: visible !important;
       display: flex !important;
       align-items: center !important;
       scrollbar-width: none !important;
+      order: 1 !important;
+      margin-top: 72px !important;
     }
     .hero-right::-webkit-scrollbar { display: none !important; }
+
+    /* CARDS STAGE — horizontal row */
     .cards-stage {
       position: static !important;
       display: flex !important;
       flex-direction: row !important;
       gap: 12px !important;
       width: max-content !important;
-      height: 185px !important;
+      height: 180px !important;
       margin: 0 !important;
-      padding: 0 4px !important;
+      padding: 0 8px !important;
+      align-items: center !important;
     }
+
+    /* ALL CARDS — reset positioning, uniform size */
     .hcard,
     .hcard-featured,
     .hcard-t1,
     .hcard-t2 {
       position: static !important;
-      transform: none !important;
-      width: 140px !important;
-      height: 185px !important;
+      transform: rotate(-3deg) !important;
+      width: 130px !important;
+      height: 175px !important;
       flex-shrink: 0 !important;
       top: unset !important;
       bottom: unset !important;
       left: unset !important;
       right: unset !important;
-      border-radius: 12px !important;
+      border-radius: 14px !important;
     }
-    .hcard:hover { transform: translateY(-4px) !important; }
-    .hcard-img { height: 60% !important; }
+
+    .hcard-featured {
+      width: 148px !important;
+      height: 190px !important;
+      transform: rotate(-3deg) !important;
+    }
+
+    .hcard:hover {
+      transform: rotate(0deg) translateY(-4px) !important;
+    }
+
+    .hcard-img { height: 58% !important; }
+    .hcard-featured .hcard-img { height: 62% !important; }
+
     .hcard-featured .hcard-body,
     .hcard-t1 .hcard-body,
-    .hcard-t2 .hcard-body { padding: 8px 10px !important; }
-    .hcard-name { font-size: 15px !important; }
+    .hcard-t2 .hcard-body {
+      padding: 8px 10px !important;
+      height: auto !important;
+    }
+
+    .hcard-name { font-size: 14px !important; margin: 2px 0 !important; }
+    .hcard-featured .hcard-name { font-size: 16px !important; }
     .hcard-tag { font-size: 7px !important; }
     .hcard-price { font-size: 9px !important; }
+    .featured-label { font-size: 7px !important; padding: 3px 7px !important; }
+    .hcard-badge { font-size: 8px !important; padding: 2px 7px !important; }
 
-    .nav-links { display: none !important; }
-    .nav-right { gap: 6px !important; }
-    .nav-right .nb { font-size: 10px !important; padding: 7px 10px !important; }
-
+    /* STATS */
     #stats > div:last-child { grid-template-columns: repeat(2,1fr) !important; }
-    .stat { padding: 20px 16px !important; }
-    .stn { font-size: 36px !important; }
-
+    .stat { padding: 20px 14px !important; }
+    .stn { font-size: 34px !important; }
+    .stl { font-size: 9px !important; }
     .lslide { padding: 0 12px !important; gap: 8px !important; }
     .lslide > div:last-child { display: none !important; }
 
+    /* EXPLORE */
+    #explore { padding: 40px 16px !important; }
+    .stitle-d { font-size: clamp(38px, 10vw, 52px) !important; }
     .cards-grid { grid-template-columns: 1fr !important; }
+
+    /* AI */
     .ai-grid { grid-template-columns: 1fr !important; }
     #ai-section { padding: 40px 16px 80px !important; }
-    #explore { padding: 40px 16px !important; }
-    .stitle-d { font-size: 38px !important; }
 
+    /* NEWSLETTER + FOOTER */
     #newsletter { flex-direction: column !important; padding: 40px 16px !important; gap: 24px !important; }
     #footer { grid-template-columns: 1fr 1fr !important; padding: 32px 16px !important; gap: 20px !important; }
 
+    /* MOBILE NAV */
     #mobile-nav { display: flex !important; }
     #ai-fab { display: none !important; }
-    body { padding-bottom: 72px !important; }
   }
 `}</style>
     </>
