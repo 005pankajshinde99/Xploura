@@ -13,10 +13,51 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
       </head>
       <body>
+        <Navbar />
         {children}
         <Footer />
       </body>
     </html>
+  );
+}
+
+function Navbar() {
+  return (
+    <nav style={{
+      position: 'fixed', top: 0, left: 0, right: 0,
+      padding: '22px 48px', display: 'flex', alignItems: 'center',
+      justifyContent: 'space-between', zIndex: 100,
+      background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(20px)',
+      borderBottom: '0.5px solid rgba(255,255,255,0.06)'
+    }}>
+      <a href="/" style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 24, letterSpacing: '0.14em', color: '#fff', textDecoration: 'none' }}>
+        Xploura
+      </a>
+      <ul style={{ display: 'flex', gap: 32, listStyle: 'none', margin: 0, padding: 0 }}>
+        {[
+          { label: 'Trips', href: '/#explore' },
+          { label: 'Dates', href: '/#explore' },
+          { label: 'Cafes', href: '/#explore' },
+          { label: 'Restaurants', href: '/#explore' },
+          { label: 'Adventure', href: '/#explore' },
+          { label: 'X AI Agent', href: '/ai-agent' },
+        ].map(l => (
+          <li key={l.label}>
+            <a href={l.href} style={{ fontSize: 11, letterSpacing: '0.13em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', textDecoration: 'none' }}>
+              {l.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div style={{ display: 'flex', gap: 10 }}>
+        <a href="/auth" style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', border: '0.5px solid rgba(255,255,255,0.12)', padding: '9px 20px', borderRadius: 24, background: 'transparent', color: 'rgba(255,255,255,0.55)', textDecoration: 'none' }}>
+          Sign in
+        </a>
+        <a href="/auth?tab=signup" style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', background: '#FF6B00', color: '#fff', border: 'none', padding: '9px 20px', borderRadius: 24, textDecoration: 'none' }}>
+          Get Started
+        </a>
+      </div>
+    </nav>
   );
 }
 

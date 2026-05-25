@@ -148,19 +148,19 @@ export default function Home() {
       </div>
 
       {/* NAV */}
-      <nav id="main-nav">
-        <a href="/" className="nav-logo">Xploura</a>
-        <ul className="nav-links">
-          {[['Trips','travel'],['Dates','shows'],['Cafes','cafes'],['Restaurants','restaurants'],['Adventure','sports']].map(([l,c]) => (
-            <li key={l}><a href="#explore" onClick={() => setActiveCat(c)}>{l}</a></li>
-          ))}
-          <li><a href="/ai-agent">X AI Agent</a></li>
-        </ul>
-        <div className="nav-right" style={{display:'flex', gap:8}}>
-  <a href="/auth" className="nb" style={{fontSize:11, padding:'8px 14px'}}>Sign in</a>
-  <a href="/auth?tab=signup" className="nb fill" style={{fontSize:11, padding:'8px 14px'}}>Get Started</a>
-</div>
-      </nav>
+  <nav id="main-nav" style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 48px', position:'fixed', top:0, left:0, right:0, zIndex:100, background:'rgba(0,0,0,0.92)', backdropFilter:'blur(20px)'}}>
+  <a href="/" style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:24, letterSpacing:'0.14em', color:'#fff', textDecoration:'none'}}>Xploura</a>
+  <ul style={{display:'flex', gap:32, listStyle:'none', margin:0, padding:0}}>
+    {[['Trips','travel'],['Dates','shows'],['Cafes','cafes'],['Restaurants','restaurants'],['Adventure','sports']].map(([l,c]) => (
+      <li key={l}><a href="#explore" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}} onClick={() => setActiveCat(c)}>{l}</a></li>
+    ))}
+    <li><a href="/ai-agent" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>X AI Agent</a></li>
+  </ul>
+  <div style={{display:'flex', gap:10}}>
+    <a href="/auth" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', border:'0.5px solid rgba(255,255,255,0.12)', padding:'9px 20px', borderRadius:24, color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Sign in</a>
+    <a href="/auth?tab=signup" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', background:'#FF6B00', color:'#fff', padding:'9px 20px', borderRadius:24, textDecoration:'none'}}>Get Started</a>
+  </div>
+</nav>
 
       {/* HERO */}
       <section id="hero">
