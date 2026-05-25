@@ -412,9 +412,9 @@ nav.sc {
     position: absolute !important;
     width: 125px !important;
     height: 185px !important;
-    left: 5 !important;
-    top: 0% !important;
-    transform: translateY(-90%) rotate(-4deg) !important;
+    left: 20 !important;
+    top: 5% !important;
+    transform: translateY(-70%) rotate(-4deg) !important;
     right: unset !important;
     bottom: unset !important;
     z-index: 4 !important;
@@ -430,7 +430,7 @@ nav.sc {
     width: 108px !important;
     height: 148px !important;
     right: -15px !important;
-    top: -110px !important;
+    top: -120px !important;
     left: unset !important;
     bottom: unset !important;
     transform: rotate(-4deg) !important;
@@ -447,7 +447,7 @@ nav.sc {
     width: 108px !important;
     height: 148px !important;
     right: -15px !important;
-    bottom: 280px !important;
+    bottom: 240px !important;
     left: unset !important;
     top: unset !important;
     transform: rotate(-4deg) !important;
