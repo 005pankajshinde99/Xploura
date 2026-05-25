@@ -340,15 +340,21 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
+      {/* FOOTER */}
       <footer id="footer">
         <div>
           <div className="flogo">Xploura</div>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.22)', marginTop: 14, lineHeight: 1.8, maxWidth: 210 }}>Explore the world with AI — travel, events, sports, dining in one place.</p>
         </div>
-        {[{title:'Explore',links:['Travel & Trips','Shows & Concerts','Sports Events','Cafes & Restaurants']},{title:'Company',links:['About Us','Careers','Press','Blog']},{title:'Contact',links:['hello@xploura.in','Instagram','Twitter / X','LinkedIn']}].map(col => (
+        {[
+          {title:'Explore', links:[{l:'Travel & Trips',h:'#'},{l:'Shows & Concerts',h:'#'},{l:'Sports Events',h:'#'},{l:'Cafes & Restaurants',h:'#'}]},
+          {title:'Company', links:[{l:'About Us',h:'#'},{l:'Careers',h:'#'},{l:'Press',h:'#'},{l:'Blog',h:'#'}]},
+          {title:'Contact', links:[{l:'hello@xploura.in',h:'mailto:hello@xploura.in'},{l:'Instagram',h:'#'},{l:'Twitter / X',h:'#'},{l:'LinkedIn',h:'#'}]},
+          {title:'Business 🏪', links:[{l:'List Your Place',h:'/admin'},{l:'Owner Login',h:'/admin'},{l:'Partner With Us',h:'/admin'}]},
+        ].map(col => (
           <div key={col.title}>
             <div className="fcol-t">{col.title}</div>
-            <div className="flinks">{col.links.map(l => <a key={l} href="#">{l}</a>)}</div>
+            <div className="flinks">{col.links.map(l => <a key={l.l} href={l.h} style={{fontSize:13, color: col.title==='Business 🏪' ? 'rgba(255,107,0,0.6)' : 'rgba(255,255,255,0.32)', textDecoration:'none'}}>{l.l}</a>)}</div>
           </div>
         ))}
       </footer>
@@ -377,9 +383,9 @@ export default function Home() {
           <div className="mnav-ai-btn">X</div>
           <span>AI</span>
         </button>
-        <button className="mnav-btn">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
-          <span>Gifts</span>
+        <button className="mnav-btn" onClick={() => window.location.href = '/admin'}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          <span>Business</span>
         </button>
         <button className="mnav-btn">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -389,6 +395,35 @@ export default function Home() {
 
       <style>{`
         @keyframes liveBlink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.8)} }
+        @media (max-width: 768px) {
+          .hero-inner { flex-direction: column !important; padding: 80px 20px 20px !important; gap: 20px !important; }
+          .hero-left { flex: unset !important; width: 100% !important; padding: 0 !important; }
+          .hero-h1 .hs1, .hero-h1 .hs2, .hero-h1 .hs3 { font-size: 80px !important; }
+          .hero-right { flex: unset !important; width: 100% !important; height: 210px !important; overflow-x: auto !important; overflow-y: visible !important; display: flex !important; align-items: center !important; }
+          .cards-stage { position: static !important; display: flex !important; flex-direction: row !important; gap: 12px !important; width: max-content !important; height: 190px !important; margin: 0 !important; }
+          .hcard, .hcard-featured, .hcard-t1, .hcard-t2 { position: static !important; transform: none !important; width: 145px !important; height: 190px !important; top: unset !important; bottom: unset !important; left: unset !important; right: unset !important; flex-shrink: 0 !important; }
+          .hcard:hover { transform: translateY(-4px) !important; }
+          .hcard-img { height: 60% !important; }
+          .hcard-featured .hcard-body, .hcard-t1 .hcard-body, .hcard-t2 .hcard-body { padding: 8px 10px !important; }
+          .hcard-name { font-size: 16px !important; }
+          .hcard-tag { font-size: 7px !important; }
+          .hcard-price { font-size: 9px !important; }
+          .nav-links { display: none !important; }
+          .nav-right { gap: 6px !important; }
+          .nav-right .nb { font-size: 10px !important; padding: 7px 12px !important; }
+          #stats > div:last-child { grid-template-columns: repeat(2,1fr) !important; }
+          .stat { padding: 20px 16px !important; }
+          .stn { font-size: 36px !important; }
+          .cards-grid { grid-template-columns: 1fr !important; }
+          .ai-grid { grid-template-columns: 1fr !important; }
+          #ai-section { padding: 40px 16px 80px !important; }
+          #explore { padding: 40px 16px !important; }
+          #newsletter { flex-direction: column !important; padding: 40px 16px !important; }
+          #footer { grid-template-columns: 1fr 1fr !important; padding: 32px 16px !important; }
+          #mobile-nav { display: flex !important; }
+          #ai-fab { display: none !important; }
+          body { padding-bottom: 72px !important; }
+        }
       `}</style>
     </>
   );
