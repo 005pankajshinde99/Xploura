@@ -412,8 +412,8 @@ nav.sc {
     position: absolute !important;
     width: 125px !important;
     height: 185px !important;
-    left: 10 !important;
-    top: 10% !important;
+    left: 8 !important;
+    top: 4% !important;
     transform: translateY(-90%) rotate(-4deg) !important;
     right: unset !important;
     bottom: unset !important;
@@ -447,7 +447,7 @@ nav.sc {
     width: 108px !important;
     height: 148px !important;
     right: -15px !important;
-    bottom: 300px !important;
+    bottom: 280px !important;
     left: unset !important;
     top: unset !important;
     transform: rotate(-4deg) !important;
