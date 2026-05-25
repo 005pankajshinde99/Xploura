@@ -395,7 +395,10 @@ export default function Home() {
 
   <style>{`
   @keyframes liveBlink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.8)} }
-`}</style>
+`}
+
+
+</style>
     </>
   );
 }
