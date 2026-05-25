@@ -374,7 +374,9 @@ nav.sc {
 @media (max-width: 768px) {
 
   /* NAV */
-  nav#main-nav { padding: 10px 16px !important; }
+  nav#main-nav {
+    padding: 10px 16px !important;
+  }
   nav#main-nav > div:last-child a {
     font-size: 9px !important;
     padding: 5px 10px !important;
@@ -387,84 +389,77 @@ nav.sc {
     overflow: hidden !important;
   }
 
-  /* BG — TOP HALF */
+  /* BG — TOP HALF ONLY */
   .hbg {
     position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
+    top: 0 !important; left: 0 !important; right: 0 !important;
     bottom: auto !important;
-    height: 55% !important;
+    height: 50% !important;
     inset: unset !important;
     width: 100% !important;
   }
 
+  /* OVERLAY — fade to black at 50% */
   .hbg-overlay {
     background: linear-gradient(
       to bottom,
       rgba(0,0,0,0.15) 0%,
-      rgba(0,0,0,0.4) 35%,
-      rgba(0,0,0,0.95) 55%,
+      rgba(0,0,0,0.4) 30%,
+      rgba(0,0,0,0.95) 52%,
       rgba(0,0,0,1) 100%
     ) !important;
   }
 
-  /* HERO INNER — ROW: text left, cards right */
+  /* CONTENT — column */
   .hero-inner {
-    flex-direction: row !important;
-    padding: 72px 16px 20px !important;
-    gap: 10px !important;
-    align-items: center !important;
-    justify-content: space-between !important;
+    flex-direction: column !important;
+    padding: 80px 20px 24px !important;
+    gap: 20px !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
     height: 100% !important;
   }
 
-  /* LEFT TEXT */
+  /* LEFT */
   .hero-left {
-    flex: 0 0 46% !important;
-    width: 46% !important;
+    flex: unset !important;
+    width: 100% !important;
     padding: 0 !important;
   }
 
   .hero-badge {
-    font-size: 7px !important;
-    padding: 4px 8px !important;
-    margin-bottom: 8px !important;
+    font-size: 9px !important;
+    padding: 5px 10px !important;
+    margin-bottom: 10px !important;
   }
 
   .hero-h1 .hs1,
   .hero-h1 .hs2,
   .hero-h1 .hs3 {
-    font-size: clamp(36px, 10vw, 48px) !important;
+    font-size: 64px !important;
     line-height: 0.88 !important;
   }
 
-  .hero-sub {
-    font-size: 7px !important;
-    margin-bottom: 10px !important;
-    line-height: 1.6 !important;
-  }
+  .hero-sub { font-size: 9px !important; margin-bottom: 12px !important; }
 
-  .hero-cta-row { gap: 6px !important; margin-bottom: 8px !important; }
-  .hbtn-primary { font-size: 8px !important; padding: 8px 10px !important; }
-  .hbtn-ghost { font-size: 8px !important; padding: 8px 8px !important; }
-  .htick-text { font-size: 7px !important; }
+  .hbtn-primary { font-size: 10px !important; padding: 10px 16px !important; }
+  .hbtn-ghost { font-size: 10px !important; padding: 10px 12px !important; }
 
-  /* RIGHT — 3 CARDS */
+  /* RIGHT — 3 CARDS DIAGONAL */
   .hero-right {
-    flex: 0 0 52% !important;
-    width: 52% !important;
-    height: 100% !important;
+    flex: unset !important;
+    width: 100% !important;
+    height: 220px !important;
+    position: relative !important;
     overflow: visible !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    position: relative !important;
   }
 
   .cards-stage {
-    width: 190px !important;
-    height: 300px !important;
+    width: 320px !important;
+    height: 210px !important;
     position: relative !important;
     display: block !important;
     margin: 0 auto !important;
@@ -473,58 +468,52 @@ nav.sc {
   /* FEATURED — left bada */
   .hcard-featured {
     position: absolute !important;
-    width: 130px !important;
-    height: 195px !important;
+    width: 155px !important;
+    height: 210px !important;
     left: 0 !important;
     top: 50% !important;
     transform: translateY(-50%) rotate(-4deg) !important;
-    right: unset !important;
-    bottom: unset !important;
-    z-index: 4 !important;
+    right: unset !important; bottom: unset !important;
   }
 
   .hcard-featured .hcard-img { height: 62% !important; }
-  .hcard-featured .hcard-body { padding: 8px 10px !important; height: auto !important; }
-  .hcard-featured .hcard-name { font-size: 14px !important; }
+  .hcard-featured .hcard-body { padding: 10px 12px !important; height: auto !important; }
+  .hcard-featured .hcard-name { font-size: 16px !important; }
 
   /* T1 — top right */
   .hcard-t1 {
     position: absolute !important;
-    width: 115px !important;
-    height: 155px !important;
-    right: -10px !important;
+    width: 140px !important;
+    height: 175px !important;
+    right: 0 !important;
     top: 5px !important;
-    left: unset !important;
-    bottom: unset !important;
+    left: unset !important; bottom: unset !important;
     transform: rotate(-4deg) !important;
-    z-index: 5 !important;
   }
 
   .hcard-t1 .hcard-img { height: 60% !important; }
-  .hcard-t1 .hcard-body { padding: 7px 9px !important; }
-  .hcard-t1 .hcard-name { font-size: 12px !important; }
+  .hcard-t1 .hcard-body { padding: 8px 10px !important; }
+  .hcard-t1 .hcard-name { font-size: 14px !important; }
 
   /* T2 — bottom right */
   .hcard-t2 {
     position: absolute !important;
-    width: 115px !important;
-    height: 155px !important;
-    right: -10px !important;
-    bottom: 5px !important;
-    left: unset !important;
-    top: unset !important;
+    width: 140px !important;
+    height: 175px !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: unset !important; top: unset !important;
     transform: rotate(-4deg) !important;
-    z-index: 3 !important;
   }
 
   .hcard-t2 .hcard-img { height: 60% !important; }
-  .hcard-t2 .hcard-body { padding: 7px 9px !important; }
-  .hcard-t2 .hcard-name { font-size: 12px !important; }
+  .hcard-t2 .hcard-body { padding: 8px 10px !important; }
+  .hcard-t2 .hcard-name { font-size: 14px !important; }
 
-  .hcard-tag { font-size: 6px !important; }
-  .hcard-price { font-size: 8px !important; }
-  .hcard-badge { font-size: 6px !important; padding: 2px 6px !important; }
-  .featured-label { font-size: 6px !important; padding: 2px 6px !important; }
+  .hcard-tag { font-size: 7px !important; }
+  .hcard-price { font-size: 9px !important; }
+  .hcard-badge { font-size: 7px !important; padding: 2px 7px !important; }
+  .featured-label { font-size: 7px !important; padding: 3px 7px !important; }
 
   /* STATS */
   #stats > div:last-child { grid-template-columns: repeat(2,1fr) !important; }
