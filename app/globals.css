@@ -344,7 +344,7 @@ nav.sc {
   /* HERO INNER — text left, cards right — side by side */
   .hero-inner {
     flex-direction: row !important;
-    padding: 76px 14px 20px !important;
+    padding: 55px 14px 20px !important;
     gap: 8px !important;
     align-items: center !important;
     justify-content: space-between !important;
