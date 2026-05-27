@@ -147,13 +147,15 @@ export default function Home() {
         <div className="lp">{loadPct}%</div>
       </div>
 
-      {/* NAV */}
-  <nav id="main-nav" style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 48px', position:'fixed', top:0, left:0, right:0, zIndex:100, background:'rgba(0,0,0,0.92)', backdropFilter:'blur(20px)'}}>
+{/* NAV */}
+<nav id="main-nav" style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 48px', position:'fixed', top:0, left:0, right:0, zIndex:100, background:'rgba(0,0,0,0.92)', backdropFilter:'blur(20px)'}}>
   <a href="/" style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:24, letterSpacing:'0.14em', color:'#fff', textDecoration:'none'}}>Xploura</a>
   <ul style={{display:'flex', gap:32, listStyle:'none', margin:0, padding:0}}>
-    {[['Trips','travel'],['Dates','shows'],['Cafes','cafes'],['Restaurants','restaurants'],['Adventure','sports']].map(([l,c]) => (
-      <li key={l}><a href="#explore" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}} onClick={() => setActiveCat(c)}>{l}</a></li>
-    ))}
+    <li><a href="/trips" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Trips</a></li>
+    <li><a href="/dates" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Dates</a></li>
+    <li><a href="/cafes" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Cafes</a></li>
+    <li><a href="/restaurants" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Restaurants</a></li>
+    <li><a href="/adventure" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Adventure</a></li>
     <li><a href="/ai-agent" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>X AI Agent</a></li>
   </ul>
   <div style={{display:'flex', gap:10}}>
@@ -161,7 +163,6 @@ export default function Home() {
     <a href="/auth?tab=signup" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', background:'#FF6B00', color:'#fff', padding:'9px 20px', borderRadius:24, textDecoration:'none'}}>Get Started</a>
   </div>
 </nav>
-
       {/* HERO */}
       <section id="hero">
         <div className="hbg" ref={hbgRef} />
