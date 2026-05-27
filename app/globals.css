@@ -453,10 +453,10 @@ nav.sc {
     transform: rotate(-4deg) !important;
     z-index: 3 !important;
   }
-  .hcard-t2 .hcard-img { height: 80% !important; }
+  .hcard-t2 .hcard-img { height: 10% !important; }
   .hcard-t2 .hcard-body { padding: 6px 8px !important; }
   .hcard-t2 .hcard-name { font-size: 11px !important; }
-  .hcard-t2 .hcard-badge { bottom: 50px !important; right: 6px !important; padding: 2px 5px !important; }
+  .hcard-t2 .hcard-badge { bottom: 10px !important; right: 6px !important; padding: 2px 5px !important; }
 
   .hcard-tag { font-size: 6px !important; }
   .hcard-price { font-size: 8px !important; }
