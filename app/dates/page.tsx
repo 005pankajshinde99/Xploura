@@ -205,7 +205,7 @@ export default function DatesPage() {
             </div>
             <div className="bw-field">
               <div className="bw-label">📅 Date</div>
-              <input className="bw-input" type="date" value={dateVal} onChange={e => setDateVal(e.target.value)} style={{ colorScheme: 'dark' }} />
+              <input className="bw-input" type="date" defaultValue="" onChange={e => setDateVal(e.target.value)} style={{ colorScheme: 'dark' }} />
             </div>
             <div className="bw-field">
               <div className="bw-label">👥 Guests</div>
