@@ -128,7 +128,7 @@ export default function AIAgent() {
 
     recognition.onstart = () => setIsListening(true);
 
-    recognition.onresult = (e: SpeechRecognitionEvent) => {
+    recognition.onresult = (e: any) => {
       let interim = '';
       let final = '';
       for (let i = e.resultIndex; i < e.results.length; i++) {
