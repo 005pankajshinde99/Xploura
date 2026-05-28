@@ -651,6 +651,14 @@ export default function AIAgent() {
           .welcome-cards { grid-template-columns: 1fr; }
           .welcome { padding: 28px 20px; }
         }
+
+        html, body {
+  background: #0a0a0a !important;
+  color: #fff !important;
+}
+.ai-page {
+  background: #0a0a0a !important;
+}
       `}</style>
 
       <div className="ai-page">
