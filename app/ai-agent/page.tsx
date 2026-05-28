@@ -119,6 +119,7 @@ async function getGroqResponse(
 ): Promise<string | null> {
   try {
     const groqKey = process.env.NEXT_PUBLIC_GROQ_KEY;
+     alert('Key: ' + !!groqKey);
     if (!groqKey) return null;
 
     const messages: { role: string; content: string }[] = [];
