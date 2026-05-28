@@ -495,18 +495,18 @@ export default function AIAgent() {
           max-width: 380px; margin-bottom: 30px;
         }
         .welcome-cards { display: grid; grid-template-columns: repeat(2,1fr); gap: 9px; max-width: 460px; width: 100%; }
-        .wcard {
+        .ai-wcard {
           padding: 14px 15px; background: #161616; border: 1px solid rgba(255,255,255,0.07);
           border-radius: 13px; cursor: pointer; transition: all 0.22s; text-align: left;
           font-family: 'DM Sans', sans-serif;
         }
-        .wcard:hover {
+        .ai-wcard:hover {
           border-color: rgba(255,107,0,0.4); background: rgba(255,107,0,0.05);
           transform: translateY(-2px);
         }
-        .wcard-icon { font-size: 20px; margin-bottom: 7px; }
-        .wcard-title { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 2px; }
-        .wcard-sub { font-size: 11px; color: rgba(255,255,255,0.35); }
+        .ai-wcard-icon { font-size: 20px; margin-bottom: 7px; }
+        .ai-wcard-title { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 2px; }
+        .ai-wcard-sub { font-size: 11px; color: rgba(255,255,255,0.35); }
 
         /* ── MESSAGES ── */
         .msg-row {
@@ -710,10 +710,10 @@ export default function AIAgent() {
                       { icon: '🚗', title: 'Trip Planner', sub: 'Weekend getaways near Pune', txt: 'I want a weekend trip', cat: 'travel' },
                       { icon: '⚡', title: 'Adventure', sub: 'Thrilling experiences around Pune', txt: 'Adventure activities near Pune', cat: 'adventure' },
                     ].map((w, i) => (
-                      <div key={i} className="wcard" onClick={() => quickAsk(w.txt, w.cat)}>
-                        <div className="wcard-icon">{w.icon}</div>
-                        <div className="wcard-title">{w.title}</div>
-                        <div className="wcard-sub">{w.sub}</div>
+                      <div key={i} className="ai-wcard" onClick={() => quickAsk(w.txt, w.cat)}>
+                        <div className="ai-wcard-icon">{w.icon}</div>
+                        <div className="ai-wcard-title">{w.title}</div>
+                        <div className="ai-wcard-sub">{w.sub}</div>
                       </div>
                     ))}
                   </div>
