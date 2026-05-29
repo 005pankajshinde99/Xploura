@@ -22,6 +22,7 @@ export default function Home() {
   const [tickerText, setTickerText] = useState('Riya just booked Pagdandi · 2 min ago');
   const [loadPct, setLoadPct] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [curPos, setCurPos] = useState({ x: 0, y: 0 });
   const [ringPos, setRingPos] = useState({ x: 0, y: 0 });
   const [slideIdx, setSlideIdx] = useState(0);
@@ -77,6 +78,14 @@ export default function Home() {
     const t = setInterval(() => { i = (i + 1) % tickers.length; setTickerText(tickers[i]); }, 3200);
     return () => clearInterval(t);
   }, []);
+
+  // ← YE NAYA useEffect YAHAN ADD KARO ↓
+useEffect(() => {
+  const check = () => setIsMobile(window.innerWidth <= 768);
+  check();
+  window.addEventListener('resize', check);
+  return () => window.removeEventListener('resize', check);
+}, []);
 
   // SLIDE
   useEffect(() => {
@@ -220,6 +229,126 @@ export default function Home() {
               <div className="htick-text">{tickerText}</div>
             </div>
           </div>
+
+          {/* MOBILE ONLY — category blocks */}
+         {isMobile && (
+  <div style={{ marginTop: 14 }}>
+    {/* Search bar */}
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 10,
+      background: 'rgba(255,255,255,0.06)',
+      border: '1px solid rgba(255,255,255,0.1)',
+      borderRadius: 28, padding: '10px 16px',
+      marginBottom: 16,
+      fontSize: 13, color: 'rgba(255,255,255,0.35)',
+      fontFamily: "'DM Sans', sans-serif"
+    }}>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      Dates, cafes, adventure...
+    </div>
+
+    {/* Category blocks */}
+    <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
+      {[
+        { label: 'X AI\nAgent', icon: <RiRobot2Fill size={22} />, id: 'ai', ai: true },
+        { label: 'Dates',       icon: <FaHeart size={20} />,      id: 'dates' },
+        { label: 'Cafes',       icon: <FaCoffee size={20} />,     id: 'cafes' },
+        { label: 'Restaurants', icon: <FaUtensils size={18} />,   id: 'restaurants' },
+        { label: 'Adventure',   icon: <FaMountain size={20} />,   id: 'adventure' },
+        { label: 'Trips',       icon: <FaCompass size={20} />,    id: 'trips' },
+      ].map(cat => (
+        <div
+          key={cat.id}
+          onClick={() => cat.ai
+            ? window.location.href = '/ai-agent'
+            : document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' })
+          }
+          style={{
+            flexShrink: 0,
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+            gap: 6, width: 76, height: 80,
+            borderRadius: 14, cursor: 'pointer',
+            border: cat.ai ? '1px solid #FF6B00' : '1px solid rgba(255,255,255,0.1)',
+            background: cat.ai ? 'rgba(255,107,0,0.15)' : 'rgba(255,255,255,0.04)',
+            position: 'relative',
+            transition: 'all 0.25s',
+          }}
+        >
+          {/* AI badge */}
+          {cat.ai && (
+            <div style={{
+              position: 'absolute', top: -5, right: -5,
+              width: 16, height: 16,
+              background: '#FF6B00', borderRadius: '50%',
+              border: '1.5px solid #0f0d0b',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 7, fontWeight: 700, color: '#fff'
+            }}>X</div>
+          )}
+          <div style={{ color: cat.ai ? '#FF6B00' : 'rgba(255,255,255,0.65)' }}>
+            {cat.icon}
+          </div>
+          <span style={{
+            fontSize: 9.5, letterSpacing: '0.07em',
+            textTransform: 'uppercase',
+            color: cat.ai ? '#FF6B00' : 'rgba(255,255,255,0.45)',
+            textAlign: 'center', lineHeight: 1.2,
+            fontFamily: "'DM Sans', sans-serif",
+            whiteSpace: 'pre-line'
+          }}>{cat.label}</span>
+        </div>
+      ))}
+    </div>
+
+    {/* Trending label */}
+    <div style={{
+      fontSize: 8.5, letterSpacing: '0.2em',
+      textTransform: 'uppercase',
+      color: 'rgba(255,255,255,0.28)',
+      fontFamily: "'DM Sans', sans-serif",
+      margin: '18px 0 12px'
+    }}>Trending Near You</div>
+
+    {/* Trending mini cards */}
+    <div style={{ display: 'flex', gap: 10, overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: 4 }}>
+      {[
+        { img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80', badge: '4.9 ★', tag: 'Adventure · 65km', name: 'LONAVALA', price: 'From ₹2,500' },
+        { img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80', badge: 'New', tag: 'Date Night', name: 'PAASHA ROOFTOP', price: '₹2,500/head', hot: true },
+        { img: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=400&q=80', badge: '⛺ New', tag: 'Camping · 80km', name: 'PAWNA LAKE', price: 'From ₹1,800' },
+      ].map((c, i) => (
+        <div key={i} style={{
+          flexShrink: 0, width: 148, height: 178,
+          borderRadius: 12, overflow: 'hidden',
+          border: '1px solid rgba(255,255,255,0.08)',
+          background: '#1a1714', position: 'relative', cursor: 'pointer'
+        }}>
+          <div style={{
+            width: '100%', height: '60%',
+            backgroundImage: `url('${c.img}')`,
+            backgroundSize: 'cover', backgroundPosition: 'center',
+            filter: 'grayscale(50%) brightness(0.75)'
+          }} />
+          <div style={{
+            position: 'absolute', top: 8, right: 8,
+            fontSize: 8, fontWeight: 600, padding: '3px 7px',
+            background: c.hot ? 'rgba(255,107,0,0.85)' : 'rgba(0,0,0,0.6)',
+            border: c.hot ? 'none' : '0.5px solid rgba(255,255,255,0.15)',
+            borderRadius: 8, color: '#fff',
+            fontFamily: "'DM Sans', sans-serif"
+          }}>{c.badge}</div>
+          <div style={{ padding: '9px 10px' }}>
+            <div style={{ fontSize: 7, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#FF6B00', fontFamily: "'DM Sans', sans-serif", marginBottom: 3 }}>{c.tag}</div>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 16, color: '#fff', letterSpacing: '0.05em' }}>{c.name}</div>
+            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>{c.price}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
           <div className="hero-right">
             <div className="cards-stage">
               <div className="stage-dot" style={{ width: 4, height: 4, top: '15%', left: '48%', opacity: 0.6 }} />
