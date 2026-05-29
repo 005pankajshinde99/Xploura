@@ -410,8 +410,8 @@ nav.sc {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  width: 76px;
-  height: 80px;
+  width: 62px;
+  height: 64px;
   border-radius: 14px;
   border: 1px solid rgba(255,255,255,0.1);
   background: rgba(255,255,255,0.04);
@@ -544,9 +544,9 @@ nav.sc {
 }
   /* STATS */
   #stats > div:last-child { grid-template-columns: repeat(2,1fr) !important; }
-  .stat { padding: 18px 12px !important; }
-  .stn { font-size: 30px !important; }
-  .stl { font-size: 8px !important; }
+  .stat { padding: 10px 8px !important; }
+  .stn { font-size: 22px !important; }
+  .stl { font-size: 7px !important; }
   .lslide { padding: 0 12px !important; gap: 8px !important; }
   .lslide > div:last-child { display: none !important; }
 
