@@ -2,6 +2,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
+import { motion } from 'motion/react';
+import { FaUtensils, FaCompass, FaCoffee, FaHeart, FaMountain } from 'react-icons/fa';
+import { RiRobot2Fill } from 'react-icons/ri';
+
 const _supabase = createClient(
   'https://ttbheiwtysickbyasulr.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0YmhlaXd0eXNpY2tieWFzdWxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDAxMzMsImV4cCI6MjA5NDA3NjEzM30.4qdV5Pyl9EgTzYqJGL_xSRGg9_BSlO01rw_6lCzcLRs'
@@ -148,8 +152,38 @@ export default function Home() {
       </div>
 
 {/* NAV */}
-<nav id="main-nav" style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 48px', position:'fixed', top:0, left:0, right:0, zIndex:100, background:'rgba(0,0,0,0.92)', backdropFilter:'blur(20px)'}}>
-  <a href="/" style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:24, letterSpacing:'0.14em', color:'#fff', textDecoration:'none'}}>Xploura</a>
+<nav id="main-nav" style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 48px', position:'fixed', top:0, left:0, right:0, zIndex:100, background:'rgba(15,13,11,0.92)', backdropFilter:'blur(20px)'}}>
+  {/* ── REPLACE your existing nav logo <a> tag with this ── */}
+
+<a href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
+
+  {/* Orange Circle X Logo */}
+  <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="19" cy="19" r="18" fill="#0a0a0a" stroke="#FF6B00" strokeWidth="2.5"/>
+    <text
+      x="19" y="19"
+      fontFamily="'Arial', sans-serif"
+      fontSize="18"
+      fontWeight="700"
+      textAnchor="middle"
+      dominantBaseline="central"
+      fill="#ffffff"
+    >X</text>
+  </svg>
+
+  {/* XPLOURA text */}
+  <span style={{
+    fontFamily: "'Bebas Neue', 'Arial', sans-serif",
+    fontSize: 22,
+    letterSpacing: '0.18em',
+    color: '#ffffff',
+    lineHeight: 1,
+    fontWeight: 700,
+  }}>
+    XPLOURA
+  </span>
+
+</a>
   <ul style={{display:'flex', gap:32, listStyle:'none', margin:0, padding:0}}>
     <li><a href="/trips" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Trips</a></li>
     <li><a href="/dates" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Dates</a></li>
