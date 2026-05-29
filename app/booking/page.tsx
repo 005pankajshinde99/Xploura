@@ -17,6 +17,15 @@ export default function BookingPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     try { setPlace(JSON.parse(decodeURIComponent(params.get('data') || '{}'))); } catch(e) {}
+    // Load Tabler Icons + Google Fonts
+    const link1 = document.createElement('link');
+    link1.rel = 'stylesheet';
+    link1.href = 'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css';
+    document.head.appendChild(link1);
+    const link2 = document.createElement('link');
+    link2.rel = 'stylesheet';
+    link2.href = 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Bebas+Neue&display=swap';
+    document.head.appendChild(link2);
   }, []);
 
   async function submitBooking() {
@@ -39,48 +48,238 @@ export default function BookingPage() {
     } else { alert('Error: ' + error.message); }
   }
 
-  const crowd = place.rating >= 4.8 ? '🔴 High' : place.rating >= 4.5 ? '🟡 Medium' : '🟢 Low';
+  const crowdLevel = place.rating >= 4.8 ? 'High' : place.rating >= 4.5 ? 'Medium' : 'Low';
+  const crowdColor = place.rating >= 4.8 ? '#FF4444' : place.rating >= 4.5 ? '#FFAA00' : '#22C55E';
 
   return (
     <>
       <style>{`
+        @import url('https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css');
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'DM Sans',sans-serif; background:#FAFAF8; color:#000; }
-        .bnav { background:#000; padding:18px 32px; display:flex; align-items:center; justify-content:space-between; }
-        .bhero { position:relative; height:320px; overflow:hidden; background:#111; }
+        body { font-family:'DM Sans',sans-serif; background:#F5F4F0; color:#0A0A0A; }
+
+        /* NAV */
+        .bnav {
+          background:#0A0A0A;
+          padding:0 40px;
+          height:60px;
+          display:flex;
+          align-items:center;
+          justify-content:space-between;
+          position:sticky;
+          top:0;
+          z-index:100;
+          border-bottom:0.5px solid rgba(255,255,255,0.06);
+        }
+        .bnav-logo { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.16em; color:#FF6B00; text-decoration:none; }
+        .bnav-back {
+          display:flex; align-items:center; gap:6px;
+          font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+          color:rgba(255,255,255,0.35); text-decoration:none;
+          border:0.5px solid rgba(255,255,255,0.12);
+          padding:7px 16px; border-radius:20px;
+          transition:all 0.2s;
+        }
+        .bnav-back:hover { color:rgba(255,255,255,0.7); border-color:rgba(255,255,255,0.25); }
+
+        /* HERO */
+        .bhero { position:relative; height:360px; overflow:hidden; background:#111; }
         .bhero img { width:100%; height:100%; object-fit:cover; }
-        .bhero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,rgba(0,0,0,0.2),rgba(0,0,0,0.75)); }
-        .bhero-content { position:absolute; bottom:0; left:0; right:0; padding:32px; }
-        .stats-row { display:grid; grid-template-columns:repeat(4,1fr); background:#000; }
-        .stat-box { padding:20px 24px; border-right:0.5px solid rgba(255,255,255,0.06); }
-        .stat-label { font-size:9px; letter-spacing:0.16em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:6px; }
-        .stat-val { font-size:18px; font-weight:600; color:#fff; }
-        .bbody { max-width:800px; margin:0 auto; padding:40px 24px; }
-        .card { background:#fff; border:1px solid rgba(0,0,0,0.08); border-radius:16px; padding:24px; margin-bottom:24px; box-shadow:0 2px 8px rgba(0,0,0,0.04); }
-        .btabs { display:flex; gap:10px; margin-bottom:24px; }
-        .btab { flex:1; padding:16px; border-radius:12px; border:1.5px solid rgba(0,0,0,0.1); background:#fff; cursor:pointer; text-align:center; transition:all 0.3s; }
-        .btab.active { border-color:#FF6B00; background:rgba(255,107,0,0.04); }
-        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
-        .finput { width:100%; padding:13px 16px; border:1px solid rgba(0,0,0,0.12); border-radius:10px; font-size:14px; font-family:'DM Sans',sans-serif; outline:none; transition:border-color 0.2s; }
-        .finput:focus { border-color:#FF6B00; }
-        .fsubmit { width:100%; padding:15px; background:#FF6B00; color:#fff; border:none; border-radius:10px; font-size:13px; letter-spacing:0.12em; text-transform:uppercase; font-family:'DM Sans',sans-serif; font-weight:600; cursor:pointer; margin-top:6px; }
-        .fsubmit:hover { background:#FF8C35; }
-        .dbgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
-        .dbitem { padding:14px 10px; border:1px solid rgba(0,0,0,0.08); border-radius:10px; text-align:center; background:#fafafa; }
+        .bhero-overlay {
+          position:absolute; inset:0;
+          background:linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.85) 100%);
+        }
+        .bhero-content { position:absolute; bottom:0; left:0; right:0; padding:36px 40px; }
+        .bhero-badge {
+          display:inline-flex; align-items:center; gap:5px;
+          font-size:9px; letter-spacing:0.2em; text-transform:uppercase;
+          color:#FF6B00; font-weight:600;
+          background:rgba(255,107,0,0.12);
+          border:0.5px solid rgba(255,107,0,0.3);
+          padding:5px 12px; border-radius:20px; margin-bottom:12px;
+        }
+        .bhero-name {
+          font-family:'Bebas Neue',sans-serif;
+          font-size:58px; color:#fff; letter-spacing:0.03em; line-height:1;
+          margin-bottom:8px;
+        }
+        .bhero-loc { display:flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,0.5); }
+
+        /* STATS BAR */
+        .stats-row { display:grid; grid-template-columns:repeat(4,1fr); background:#0A0A0A; }
+        .stat-box {
+          padding:22px 28px;
+          border-right:0.5px solid rgba(255,255,255,0.05);
+          display:flex; flex-direction:column; gap:6px;
+        }
+        .stat-box:last-child { border-right:none; }
+        .stat-icon-label { display:flex; align-items:center; gap:7px; }
+        .stat-icon-label i { font-size:13px; color:rgba(255,255,255,0.25); }
+        .stat-label { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.25); }
+        .stat-val { font-size:17px; font-weight:600; color:#fff; letter-spacing:0.01em; }
+
+        /* BODY */
+        .bbody { max-width:820px; margin:0 auto; padding:44px 24px; }
+
+        /* CARD */
+        .card {
+          background:#fff;
+          border:0.5px solid rgba(0,0,0,0.08);
+          border-radius:18px;
+          padding:28px;
+          margin-bottom:20px;
+        }
+        .card-title {
+          font-family:'Bebas Neue',sans-serif;
+          font-size:22px; letter-spacing:0.06em;
+          margin-bottom:12px;
+          display:flex; align-items:center; gap:10px;
+        }
+        .card-title i { font-size:20px; color:#FF6B00; }
+
+        /* TABS */
+        .btabs { display:flex; gap:10px; margin-bottom:20px; }
+        .btab {
+          flex:1; padding:18px 14px;
+          border-radius:14px;
+          border:0.5px solid rgba(0,0,0,0.1);
+          background:#fff;
+          cursor:pointer; text-align:center;
+          transition:all 0.25s;
+          position:relative;
+          overflow:hidden;
+        }
+        .btab:hover { border-color:rgba(255,107,0,0.3); background:#FFFAF7; }
+        .btab.active {
+          border-color:#FF6B00;
+          background:#FFFAF7;
+        }
+        .btab.active::after {
+          content:'';
+          position:absolute; bottom:0; left:0; right:0; height:2px;
+          background:#FF6B00;
+        }
+        .btab-icon { font-size:22px; margin-bottom:8px; color:#0A0A0A; }
+        .btab.active .btab-icon { color:#FF6B00; }
+        .btab-title {
+          font-family:'Bebas Neue',sans-serif;
+          font-size:16px; letter-spacing:0.06em;
+          color:#0A0A0A;
+        }
+        .btab-sub { font-size:10px; color:rgba(0,0,0,0.3); margin-top:2px; letter-spacing:0.04em; }
+
+        /* FORM */
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+        .finput-wrap { position:relative; }
+        .finput-wrap i {
+          position:absolute; left:14px; top:50%; transform:translateY(-50%);
+          font-size:16px; color:rgba(0,0,0,0.25); pointer-events:none;
+        }
+        .finput {
+          width:100%;
+          padding:13px 16px 13px 40px;
+          border:0.5px solid rgba(0,0,0,0.12);
+          border-radius:11px;
+          font-size:13.5px;
+          font-family:'DM Sans',sans-serif;
+          color:#0A0A0A;
+          background:#FAFAF8;
+          outline:none;
+          transition:border-color 0.2s, background 0.2s;
+        }
+        .finput:focus { border-color:#FF6B00; background:#fff; }
+        .finput::placeholder { color:rgba(0,0,0,0.3); }
+
+        /* SUBMIT BTN */
+        .fsubmit {
+          width:100%; padding:15px;
+          background:#FF6B00; color:#fff;
+          border:none; border-radius:11px;
+          font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+          font-family:'DM Sans',sans-serif; font-weight:600;
+          cursor:pointer; margin-top:4px;
+          display:flex; align-items:center; justify-content:center; gap:8px;
+          transition:background 0.2s, transform 0.1s;
+        }
+        .fsubmit:hover { background:#E55E00; }
+        .fsubmit:active { transform:scale(0.99); }
+        .fsubmit:disabled { opacity:0.6; cursor:not-allowed; }
+        .fsubmit i { font-size:17px; }
+
+        /* DATE BOX GRID */
+        .dbgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+        .dbitem {
+          padding:16px 10px;
+          border:0.5px solid rgba(0,0,0,0.07);
+          border-radius:12px; text-align:center;
+          background:#FAFAF8;
+          transition:border-color 0.2s;
+        }
+        .dbitem:hover { border-color:rgba(255,107,0,0.25); }
+        .dbitem i { font-size:22px; color:#FF6B00; margin-bottom:6px; display:block; }
+        .dbitem-name { font-size:11px; color:rgba(0,0,0,0.45); letter-spacing:0.03em; }
+
+        /* SUCCESS */
+        .success-wrap { text-align:center; padding:64px 24px; }
+        .success-icon {
+          width:72px; height:72px; border-radius:50%;
+          background:rgba(255,107,0,0.08);
+          border:0.5px solid rgba(255,107,0,0.2);
+          display:flex; align-items:center; justify-content:center;
+          margin:0 auto 24px;
+        }
+        .success-icon i { font-size:34px; color:#FF6B00; }
+        .success-title { font-family:'Bebas Neue',sans-serif; font-size:44px; letter-spacing:0.04em; margin-bottom:10px; }
+        .success-sub { font-size:14px; color:rgba(0,0,0,0.4); line-height:1.8; margin-bottom:32px; }
+        .success-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+        .btn-primary {
+          display:flex; align-items:center; gap:8px;
+          padding:13px 28px; border-radius:10px;
+          font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+          font-weight:600; font-family:'DM Sans',sans-serif;
+          background:#FF6B00; color:#fff; text-decoration:none;
+          transition:background 0.2s;
+        }
+        .btn-primary:hover { background:#E55E00; }
+        .btn-outline {
+          display:flex; align-items:center; gap:8px;
+          padding:13px 28px; border-radius:10px;
+          font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+          font-weight:600; font-family:'DM Sans',sans-serif;
+          background:transparent; color:#0A0A0A;
+          border:0.5px solid rgba(0,0,0,0.15); text-decoration:none;
+          transition:all 0.2s;
+        }
+        .btn-outline:hover { border-color:rgba(0,0,0,0.3); }
+
+        /* ABOUT SECTION */
+        .about-text { font-size:14px; color:rgba(0,0,0,0.45); line-height:1.85; }
+
+        /* DIVIDER */
+        .divider { height:0.5px; background:rgba(0,0,0,0.07); margin:16px 0; }
+
+        /* CROWD DOT */
+        .crowd-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+
         @media(max-width:600px) {
           .stats-row { grid-template-columns:repeat(2,1fr); }
           .form-grid { grid-template-columns:1fr; }
           .btabs { flex-direction:column; }
           .dbgrid { grid-template-columns:repeat(2,1fr); }
-          .bnav { padding:14px 16px; }
-          .bbody { padding:24px 16px; }
+          .bnav { padding:0 16px; }
+          .bbody { padding:28px 16px; }
+          .bhero-content { padding:24px 20px; }
+          .bhero-name { font-size:44px; }
         }
       `}</style>
 
       {/* NAV */}
       <nav className="bnav">
-        <a href="/" style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:22, letterSpacing:'0.14em', color:'#FF6B00', textDecoration:'none'}}>Xploura</a>
-        <a href="/" style={{fontSize:12, letterSpacing:'0.1em', textTransform:'uppercase', color:'rgba(255,255,255,0.4)', textDecoration:'none', border:'0.5px solid rgba(255,255,255,0.15)', padding:'8px 16px', borderRadius:20}}>← Back</a>
+        <a href="/" className="bnav-logo">Xploura</a>
+        <a href="/" className="bnav-back">
+          <i className="ti ti-arrow-left" style={{fontSize:13}}></i>
+          Back
+        </a>
       </nav>
 
       {/* HERO */}
@@ -88,45 +287,74 @@ export default function BookingPage() {
         {place.image_url && <img src={place.image_url} alt={place.name} />}
         <div className="bhero-overlay" />
         <div className="bhero-content">
-          <div style={{fontSize:10, letterSpacing:'0.18em', textTransform:'uppercase', color:'#FF6B00', marginBottom:8, fontWeight:500}}>{place.category}</div>
-          <div style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:52, color:'#fff', letterSpacing:'0.04em', lineHeight:1}}>{place.name || 'Loading...'}</div>
-          <div style={{fontSize:14, color:'rgba(255,255,255,0.6)', marginTop:6}}>📍 {place.area}</div>
+          <div className="bhero-badge">
+            <i className="ti ti-tag" style={{fontSize:9}}></i>
+            {place.category || 'Venue'}
+          </div>
+          <div className="bhero-name">{place.name || 'Loading...'}</div>
+          <div className="bhero-loc">
+            <i className="ti ti-map-pin" style={{fontSize:14, color:'rgba(255,255,255,0.4)'}}></i>
+            {place.area || 'Pune'}
+          </div>
         </div>
       </div>
 
       {/* STATS */}
       <div className="stats-row">
         {[
-          {l:'⭐ Rating', v:`${place.rating || '—'} / 5`},
-          {l:'💰 Price', v:place.price || '—'},
-          {l:'🕐 Timings', v:place.timings || '—'},
-          {l:'👥 Crowd', v:crowd},
-        ].map((s,i) => (
+          { icon:'ti-star', label:'Rating', val:`${place.rating || '—'} / 5` },
+          { icon:'ti-receipt-rupee', label:'Price', val: place.price || '—' },
+          { icon:'ti-clock', label:'Timings', val: place.timings || '—' },
+          { icon:'ti-users', label:'Crowd', val: crowdLevel, color: crowdColor },
+        ].map((s, i) => (
           <div key={i} className="stat-box">
-            <div className="stat-label">{s.l}</div>
-            <div className="stat-val">{s.v}</div>
+            <div className="stat-icon-label">
+              <i className={`ti ${s.icon}`}></i>
+              <span className="stat-label">{s.label}</span>
+            </div>
+            <div className="stat-val" style={s.color ? {color: s.color} : {}}>
+              {s.color && <span className="crowd-dot" style={{background: s.color}}></span>}
+              {s.val}
+            </div>
           </div>
         ))}
       </div>
 
       <div className="bbody">
-        {/* DESC */}
+
+        {/* ABOUT */}
         <div className="card">
-          <div style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:22, letterSpacing:'0.06em', marginBottom:10}}>About This Place</div>
-          <div style={{fontSize:14, color:'rgba(0,0,0,0.5)', lineHeight:1.8}}>{place.description || 'A premium experience awaits you in Pune.'}</div>
+          <div className="card-title">
+            <i className="ti ti-info-circle"></i>
+            About This Place
+          </div>
+          <p className="about-text">{place.description || 'A premium experience awaits you in Pune.'}</p>
         </div>
 
         {success ? (
           /* SUCCESS */
-          <div className="card" style={{textAlign:'center', padding:60}}>
-            <div style={{fontSize:64, marginBottom:20}}>🎉</div>
-            <div style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:42, letterSpacing:'0.04em', marginBottom:10}}>Booking Confirmed!</div>
-            <div style={{fontSize:15, color:'rgba(0,0,0,0.45)', lineHeight:1.7, marginBottom:28}}>Your booking has been received.<br/>The venue will contact you shortly.</div>
-            <div style={{display:'flex', gap:12, justifyContent:'center', flexWrap:'wrap'}}>
-              <a href="/" style={{padding:'13px 28px', borderRadius:10, fontSize:12, letterSpacing:'0.1em', textTransform:'uppercase', fontWeight:600, background:'#FF6B00', color:'#fff', textDecoration:'none'}}>Explore More</a>
-              {place.whatsapp && (
-                <a href={`https://wa.me/91${place.whatsapp}`} target="_blank" style={{padding:'13px 28px', borderRadius:10, fontSize:12, letterSpacing:'0.1em', textTransform:'uppercase', fontWeight:600, background:'transparent', color:'#000', border:'1.5px solid rgba(0,0,0,0.15)', textDecoration:'none'}}>WhatsApp Venue</a>
-              )}
+          <div className="card">
+            <div className="success-wrap">
+              <div className="success-icon">
+                <i className="ti ti-check"></i>
+              </div>
+              <div className="success-title">Booking Confirmed!</div>
+              <p className="success-sub">
+                Your booking has been received.<br />
+                The venue will contact you shortly.
+              </p>
+              <div className="success-btns">
+                <a href="/" className="btn-primary">
+                  <i className="ti ti-compass" style={{fontSize:15}}></i>
+                  Explore More
+                </a>
+                {place.whatsapp && (
+                  <a href={`https://wa.me/91${place.whatsapp}`} target="_blank" className="btn-outline">
+                    <i className="ti ti-brand-whatsapp" style={{fontSize:15}}></i>
+                    WhatsApp Venue
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         ) : (
@@ -134,54 +362,100 @@ export default function BookingPage() {
             {/* TABS */}
             <div className="btabs">
               {[
-                {type:'book', icon:'📅', title:'Book Table', sub:'Reserve your spot'},
-                ...(place.category === 'date' ? [{type:'date', icon:'💑', title:'Order Date Box', sub:'Premium date experience'}] : []),
-                {type:'wa', icon:'💬', title:'WhatsApp', sub:'Chat directly'},
+                { type:'book', icon:'ti-calendar-event', title:'Book Table', sub:'Reserve your spot' },
+                ...(place.category === 'date' ? [{ type:'date', icon:'ti-heart', title:'Date Box', sub:'Premium experience' }] : []),
+                { type:'wa', icon:'ti-brand-whatsapp', title:'WhatsApp', sub:'Chat directly' },
               ].map((t) => (
-                <div key={t.type} className={`btab${bookType === t.type ? ' active' : ''}`}
-                  onClick={() => t.type === 'wa' ? (place.whatsapp ? window.open(`https://wa.me/91${place.whatsapp}`) : alert('Not available')) : setBookType(t.type)}>
-                  <div style={{fontSize:24, marginBottom:6}}>{t.icon}</div>
-                  <div style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:18, letterSpacing:'0.06em'}}>{t.title}</div>
-                  <div style={{fontSize:11, color:'rgba(0,0,0,0.35)', marginTop:2}}>{t.sub}</div>
+                <div
+                  key={t.type}
+                  className={`btab${bookType === t.type ? ' active' : ''}`}
+                  onClick={() => t.type === 'wa'
+                    ? (place.whatsapp ? window.open(`https://wa.me/91${place.whatsapp}`) : alert('Not available'))
+                    : setBookType(t.type)
+                  }
+                >
+                  <div className="btab-icon"><i className={`ti ${t.icon}`}></i></div>
+                  <div className="btab-title">{t.title}</div>
+                  <div className="btab-sub">{t.sub}</div>
                 </div>
               ))}
             </div>
 
-            {/* FORM */}
+            {/* FORM CARD */}
             <div className="card">
-              <div style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:24, letterSpacing:'0.06em', marginBottom:20}}>
-                {bookType === 'date' ? 'Order Your Date Box 💑' : 'Book Your Table 📅'}
+              <div className="card-title">
+                <i className={`ti ${bookType === 'date' ? 'ti-heart' : 'ti-calendar-plus'}`}></i>
+                {bookType === 'date' ? 'Order Your Date Box' : 'Book Your Table'}
               </div>
 
               {bookType === 'date' && (
-                <div style={{marginBottom:20}}>
-                  <div style={{fontSize:13, fontWeight:600, marginBottom:12}}>What's included 🎁</div>
+                <>
+                  <p style={{fontSize:12, color:'rgba(0,0,0,0.35)', letterSpacing:'0.04em', textTransform:'uppercase', marginBottom:12, fontWeight:500}}>
+                    What's Included
+                  </p>
                   <div className="dbgrid">
-                    {[['🕯️','Scented Candle'],['🍫','Chocolates'],['💌','Handwritten Note'],['🌸','Mini Flowers'],['🎵','Spotify Playlist'],['🎴','Couple Cards']].map(([icon,name]) => (
+                    {[
+                      ['ti-candle','Scented Candle'],
+                      ['ti-cookie','Chocolates'],
+                      ['ti-mail-heart','Handwritten Note'],
+                      ['ti-flowers','Mini Flowers'],
+                      ['ti-music','Spotify Playlist'],
+                      ['ti-cards','Couple Cards'],
+                    ].map(([icon, name]) => (
                       <div key={name} className="dbitem">
-                        <div style={{fontSize:22, marginBottom:4}}>{icon}</div>
-                        <div style={{fontSize:11, color:'rgba(0,0,0,0.5)'}}>{name}</div>
+                        <i className={`ti ${icon}`}></i>
+                        <div className="dbitem-name">{name}</div>
                       </div>
                     ))}
                   </div>
-                </div>
+                  <div className="divider"></div>
+                </>
               )}
 
               <div className="form-grid">
-                <input className="finput" placeholder="Your Full Name *" value={form.name} onChange={e => setForm({...form, name:e.target.value})} />
-                <input className="finput" placeholder="Phone Number *" type="tel" value={form.phone} onChange={e => setForm({...form, phone:e.target.value})} />
-                <input className="finput" type="date" value={form.date} onChange={e => setForm({...form, date:e.target.value})} />
-                <input className="finput" placeholder="Preferred Time (e.g. 7 PM)" value={form.time} onChange={e => setForm({...form, time:e.target.value})} />
-                <input className="finput" placeholder="No. of Guests" type="number" value={form.guests} onChange={e => setForm({...form, guests:e.target.value})} />
-                <input className="finput" placeholder="Special Note (optional)" value={form.note} onChange={e => setForm({...form, note:e.target.value})} />
+                <div className="finput-wrap">
+                  <i className="ti ti-user"></i>
+                  <input className="finput" placeholder="Your Full Name *" value={form.name} onChange={e => setForm({...form, name:e.target.value})} />
+                </div>
+                <div className="finput-wrap">
+                  <i className="ti ti-phone"></i>
+                  <input className="finput" placeholder="Phone Number *" type="tel" value={form.phone} onChange={e => setForm({...form, phone:e.target.value})} />
+                </div>
+                <div className="finput-wrap">
+                  <i className="ti ti-calendar"></i>
+                  <input className="finput" type="date" value={form.date} onChange={e => setForm({...form, date:e.target.value})} />
+                </div>
+                <div className="finput-wrap">
+                  <i className="ti ti-clock"></i>
+                  <input className="finput" placeholder="Preferred Time (e.g. 7 PM)" value={form.time} onChange={e => setForm({...form, time:e.target.value})} />
+                </div>
+                <div className="finput-wrap">
+                  <i className="ti ti-users"></i>
+                  <input className="finput" placeholder="No. of Guests" type="number" value={form.guests} onChange={e => setForm({...form, guests:e.target.value})} />
+                </div>
+                <div className="finput-wrap">
+                  <i className="ti ti-notes"></i>
+                  <input className="finput" placeholder="Special Note (optional)" value={form.note} onChange={e => setForm({...form, note:e.target.value})} />
+                </div>
               </div>
+
               <button className="fsubmit" onClick={submitBooking} disabled={loading}>
-                {loading ? 'Saving...' : bookType === 'date' ? '💑 Order Date Box' : '📅 Confirm Booking'}
+                {loading ? (
+                  <><i className="ti ti-loader-2" style={{animation:'spin 1s linear infinite'}}></i> Saving...</>
+                ) : bookType === 'date' ? (
+                  <><i className="ti ti-heart"></i> Order Date Box</>
+                ) : (
+                  <><i className="ti ti-calendar-check"></i> Confirm Booking</>
+                )}
               </button>
             </div>
           </>
         )}
       </div>
+
+      <style>{`
+        @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+      `}</style>
     </>
   );
 }
