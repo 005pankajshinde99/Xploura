@@ -381,9 +381,9 @@ useEffect(() => {
       {/* STATS */}
       <div id="stats">
         {/* LIVE SLIDER */}
-        <div style={{ position: 'relative', width: '100%', height: 150, overflow: 'hidden' }}>
+        <div style={{ position: 'relative', width: '100vw', height: 150, overflow: 'hidden', marginLeft: 'calc(-50vw + 50%)', boxSizing: 'border-box' }}>
           {slides.map((s, i) => (
-            <div key={i} className="lslide" style={{ opacity: i === slideIdx ? 1 : 0, background: `linear-gradient(90deg,rgba(0,0,0,0.85) 30%,rgba(0,0,0,0.3) 100%),${s.bg} center/cover` }}>
+            <div key={i} className="lslide" style={{ opacity: i === slideIdx ? 1 : 0, background: `linear-gradient(90deg,rgba(0,0,0,0.85) 30%,rgba(0,0,0,0.3) 100%),${s.bg} center/cover`, width: '100%', boxSizing: 'border-box', padding: '0 16px' }}>
               <div style={{ background: '#FF6B00', color: '#fff', fontFamily: "'DM Sans',sans-serif", fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', padding: '5px 12px', borderRadius: 20, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
                 <div style={{ width: 5, height: 5, borderRadius: '50%', background: '#fff', animation: 'liveBlink 1.2s infinite' }} />{s.label}
               </div>
@@ -453,7 +453,7 @@ useEffect(() => {
       <section id="ai-section">
         <div className="slabel-d">AI Agent</div>
         <div className="stitle-d">Your personal<br /><span className="dim">exploration guide</span></div>
-        <div className="ai-grid">
+        <div className="ai-grid" style={{ width: '100%', boxSizing: 'border-box' }}>
           <div className="ai-info">
             <p>Xploura AI plans your entire experience — from flights to dinner reservations. Just tell it what you want, voice or text, Hindi or English.</p>
             <div>
@@ -559,10 +559,16 @@ useEffect(() => {
 
   <style>{`
   @keyframes liveBlink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.8)} }
-`}
-
-
-</style>
+  @media (max-width: 768px) {
+    body, main, section, #stats, #ai-section, #explore, #newsletter, #footer {
+      width: 100% !important;
+      max-width: 100vw !important;
+      overflow-x: hidden !important;
+      box-sizing: border-box !important;
+    }
+    .lslide { padding: 0 16px !important; width: 100% !important; }
+  }
+`}</style>
     </>
   );
 }
