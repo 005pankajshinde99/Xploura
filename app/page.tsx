@@ -232,14 +232,23 @@ useEffect(() => {
 
           {/* MOBILE ONLY — category blocks */}
          {isMobile && (
-  <div style={{ marginTop: 14 }}>
+  <div style={{
+    width: '100vw',
+    marginLeft: 'calc(-14px)',
+    paddingLeft: 14,
+    paddingRight: 14,
+    boxSizing: 'border-box',
+    marginTop: 14,
+  }}>
+
     {/* Search bar */}
     <div style={{
       display: 'flex', alignItems: 'center', gap: 10,
       background: 'rgba(255,255,255,0.06)',
       border: '1px solid rgba(255,255,255,0.1)',
       borderRadius: 28, padding: '10px 16px',
-      marginBottom: 16,
+      marginBottom: 16, width: '100%',
+      boxSizing: 'border-box',
       fontSize: 13, color: 'rgba(255,255,255,0.35)',
       fontFamily: "'DM Sans', sans-serif"
     }}>
@@ -249,15 +258,22 @@ useEffect(() => {
       Dates, cafes, adventure...
     </div>
 
-    {/* Category blocks */}
-    <div style={{ display: 'flex', gap: 10, overflowX: 'auto', paddingBottom: 4, scrollbarWidth: 'none' }}>
+    {/* Category blocks — 2 rows x 3 cols grid */}
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gap: 10,
+      width: '100%',
+      boxSizing: 'border-box',
+      marginBottom: 20,
+    }}>
       {[
-        { label: 'X AI\nAgent', icon: <RiRobot2Fill size={22} />, id: 'ai', ai: true },
-        { label: 'Dates',       icon: <FaHeart size={20} />,      id: 'dates' },
-        { label: 'Cafes',       icon: <FaCoffee size={20} />,     id: 'cafes' },
-        { label: 'Restaurants', icon: <FaUtensils size={18} />,   id: 'restaurants' },
-        { label: 'Adventure',   icon: <FaMountain size={20} />,   id: 'adventure' },
-        { label: 'Trips',       icon: <FaCompass size={20} />,    id: 'trips' },
+        { label: 'X AI\nAgent', icon: <RiRobot2Fill size={20} />, id: 'ai', ai: true },
+        { label: 'Dates',       icon: <FaHeart size={18} />,      id: 'dates' },
+        { label: 'Cafes',       icon: <FaCoffee size={18} />,     id: 'cafes' },
+        { label: 'Restaurants', icon: <FaUtensils size={16} />,   id: 'restaurants' },
+        { label: 'Adventure',   icon: <FaMountain size={18} />,   id: 'adventure' },
+        { label: 'Trips',       icon: <FaCompass size={18} />,    id: 'trips' },
       ].map(cat => (
         <div
           key={cat.id}
@@ -266,22 +282,20 @@ useEffect(() => {
             : document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' })
           }
           style={{
-            flexShrink: 0,
             display: 'flex', flexDirection: 'column',
             alignItems: 'center', justifyContent: 'center',
-            gap: 6, width: 76, height: 80,
-            borderRadius: 14, cursor: 'pointer',
+            gap: 5, height: 68,
+            borderRadius: 12, cursor: 'pointer',
             border: cat.ai ? '1px solid #FF6B00' : '1px solid rgba(255,255,255,0.1)',
             background: cat.ai ? 'rgba(255,107,0,0.15)' : 'rgba(255,255,255,0.04)',
             position: 'relative',
-            transition: 'all 0.25s',
+            boxSizing: 'border-box',
           }}
         >
-          {/* AI badge */}
           {cat.ai && (
             <div style={{
               position: 'absolute', top: -5, right: -5,
-              width: 16, height: 16,
+              width: 15, height: 15,
               background: '#FF6B00', borderRadius: '50%',
               border: '1.5px solid #0f0d0b',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -292,7 +306,7 @@ useEffect(() => {
             {cat.icon}
           </div>
           <span style={{
-            fontSize: 9.5, letterSpacing: '0.07em',
+            fontSize: 9, letterSpacing: '0.06em',
             textTransform: 'uppercase',
             color: cat.ai ? '#FF6B00' : 'rgba(255,255,255,0.45)',
             textAlign: 'center', lineHeight: 1.2,
@@ -309,18 +323,27 @@ useEffect(() => {
       textTransform: 'uppercase',
       color: 'rgba(255,255,255,0.28)',
       fontFamily: "'DM Sans', sans-serif",
-      margin: '18px 0 12px'
+      marginBottom: 12,
     }}>Trending Near You</div>
 
-    {/* Trending mini cards */}
-    <div style={{ display: 'flex', gap: 10, overflowX: 'auto', scrollbarWidth: 'none', paddingBottom: 4 }}>
+    {/* Trending mini cards — horizontal scroll */}
+    <div style={{
+      display: 'flex', gap: 10,
+      overflowX: 'auto', scrollbarWidth: 'none',
+      paddingBottom: 4,
+      width: '100%',
+      marginLeft: -14,
+      paddingLeft: 14,
+      paddingRight: 14,
+      boxSizing: 'content-box',
+    }}>
       {[
         { img: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=80', badge: '4.9 ★', tag: 'Adventure · 65km', name: 'LONAVALA', price: 'From ₹2,500' },
         { img: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80', badge: 'New', tag: 'Date Night', name: 'PAASHA ROOFTOP', price: '₹2,500/head', hot: true },
         { img: 'https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=400&q=80', badge: '⛺ New', tag: 'Camping · 80km', name: 'PAWNA LAKE', price: 'From ₹1,800' },
       ].map((c, i) => (
         <div key={i} style={{
-          flexShrink: 0, width: 148, height: 178,
+          flexShrink: 0, width: '42vw', maxWidth: 160, height: 178,
           borderRadius: 12, overflow: 'hidden',
           border: '1px solid rgba(255,255,255,0.08)',
           background: '#1a1714', position: 'relative', cursor: 'pointer'
@@ -341,12 +364,13 @@ useEffect(() => {
           }}>{c.badge}</div>
           <div style={{ padding: '9px 10px' }}>
             <div style={{ fontSize: 7, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#FF6B00', fontFamily: "'DM Sans', sans-serif", marginBottom: 3 }}>{c.tag}</div>
-            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 16, color: '#fff', letterSpacing: '0.05em' }}>{c.name}</div>
+            <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 15, color: '#fff', letterSpacing: '0.05em' }}>{c.name}</div>
             <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', fontFamily: "'DM Sans', sans-serif", marginTop: 2 }}>{c.price}</div>
           </div>
         </div>
       ))}
     </div>
+
   </div>
 )}
           <div className="hero-right">
