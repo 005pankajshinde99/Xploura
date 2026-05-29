@@ -26,6 +26,7 @@ export default function Home() {
   const [curPos, setCurPos] = useState({ x: 0, y: 0 });
   const [ringPos, setRingPos] = useState({ x: 0, y: 0 });
   const [slideIdx, setSlideIdx] = useState(0);
+  const [user, setUser] = useState<any>(null);
   const ringRef = useRef({ x: 0, y: 0 });
   const curRef = useRef({ x: 0, y: 0 });
   const hbgRef = useRef<HTMLDivElement>(null);
@@ -52,6 +53,16 @@ export default function Home() {
     }, 40);
     return () => clearInterval(iv);
   }, []);
+
+  useEffect(() => {
+  _supabase.auth.getSession().then(({ data }) => {
+    setUser(data.session?.user ?? null);
+  });
+  const { data: listener } = _supabase.auth.onAuthStateChange((_event, session) => {
+    setUser(session?.user ?? null);
+  });
+  return () => listener.subscription.unsubscribe();
+}, []);
 
   // CURSOR
   useEffect(() => {
@@ -162,37 +173,15 @@ useEffect(() => {
 
 {/* NAV */}
 <nav id="main-nav" style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 48px', position:'fixed', top:0, left:0, right:0, zIndex:100, background:'rgba(15,13,11,0.92)', backdropFilter:'blur(20px)'}}>
-  {/* ── REPLACE your existing nav logo <a> tag with this ── */}
 
-<a href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
+  <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
+    <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="19" cy="19" r="18" fill="#0a0a0a" stroke="#FF6B00" strokeWidth="2.5"/>
+      <text x="19" y="19" fontFamily="'Arial', sans-serif" fontSize="18" fontWeight="700" textAnchor="middle" dominantBaseline="central" fill="#ffffff">X</text>
+    </svg>
+    <span style={{fontFamily:"'Bebas Neue', 'Arial', sans-serif", fontSize:22, letterSpacing:'0.18em', color:'#ffffff', lineHeight:1, fontWeight:700}}>XPLOURA</span>
+  </a>
 
-  {/* Orange Circle X Logo */}
-  <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="19" cy="19" r="18" fill="#0a0a0a" stroke="#FF6B00" strokeWidth="2.5"/>
-    <text
-      x="19" y="19"
-      fontFamily="'Arial', sans-serif"
-      fontSize="18"
-      fontWeight="700"
-      textAnchor="middle"
-      dominantBaseline="central"
-      fill="#ffffff"
-    >X</text>
-  </svg>
-
-  {/* XPLOURA text */}
-  <span style={{
-    fontFamily: "'Bebas Neue', 'Arial', sans-serif",
-    fontSize: 22,
-    letterSpacing: '0.18em',
-    color: '#ffffff',
-    lineHeight: 1,
-    fontWeight: 700,
-  }}>
-    XPLOURA
-  </span>
-
-</a>
   <ul style={{display:'flex', gap:32, listStyle:'none', margin:0, padding:0}}>
     <li><a href="/trips" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Trips</a></li>
     <li><a href="/dates" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Dates</a></li>
@@ -201,10 +190,27 @@ useEffect(() => {
     <li><a href="/adventure" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Adventure</a></li>
     <li><a href="/ai-agent" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>X AI Agent</a></li>
   </ul>
-  <div style={{display:'flex', gap:10}}>
-    <a href="/auth" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', border:'0.5px solid rgba(255,255,255,0.12)', padding:'9px 20px', borderRadius:24, color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Sign in</a>
-    <a href="/auth?tab=signup" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', background:'#FF6B00', color:'#fff', padding:'9px 20px', borderRadius:24, textDecoration:'none'}}>Get Started</a>
+
+  <div style={{display:'flex', gap:10, alignItems:'center'}}>
+    {user ? (
+      <>
+        <span style={{fontSize:11, letterSpacing:'0.08em', color:'rgba(255,255,255,0.45)', textTransform:'uppercase', fontFamily:"'DM Sans',sans-serif"}}>
+          👋 {user.email?.split('@')[0]}
+        </span>
+        <button
+          onClick={async () => { await _supabase.auth.signOut(); window.location.href = '/'; }}
+          style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', border:'0.5px solid rgba(255,255,255,0.12)', padding:'9px 20px', borderRadius:24, color:'rgba(255,255,255,0.55)', background:'transparent', cursor:'pointer', fontFamily:"'DM Sans',sans-serif"}}>
+          Sign Out
+        </button>
+      </>
+    ) : (
+      <>
+        <a href="/auth" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', border:'0.5px solid rgba(255,255,255,0.12)', padding:'9px 20px', borderRadius:24, color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Sign In</a>
+        <a href="/auth?tab=signup" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', background:'#FF6B00', color:'#fff', padding:'9px 20px', borderRadius:24, textDecoration:'none'}}>Get Started</a>
+      </>
+    )}
   </div>
+
 </nav>
       {/* HERO */}
       <section id="hero">
