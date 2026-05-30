@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import Navbar from '../components/Navbar';
 
 const _supabase = createClient(
   'https://ttbheiwtysickbyasulr.supabase.co',
@@ -172,23 +173,7 @@ export default function DatesPage() {
           .bw-btn{margin:0;padding:12px}
         }
       `}</style>
-
-      <nav>
-        <a href="/" className="nav-logo">Xploura</a>
-        <ul className="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/trips">Trips</a></li>
-          <li><a href="/dates" className="active">Dates</a></li>
-          <li><a href="/cafes">Cafes</a></li>
-          <li><a href="/restaurants">Restaurants</a></li>
-          <li><a href="/adventure">Adventure</a></li>
-          <li><a href="/ai-agent">X AI Agent</a></li>
-        </ul>
-        <div className="nav-right">
-          <button className="nb">Sign In</button>
-          <button className="nb fill">Get Started</button>
-        </div>
-      </nav>
+       <Navbar active="dates" />
 
       {/* HERO */}
       <div className="dates-hero">
@@ -250,12 +235,16 @@ export default function DatesPage() {
       <div className="page-layout">
         <aside className="sidebar">
           <div className="sb-title">Vibe / Ambiance</div>
-          {['Rooftop', 'Fine Dining', 'Outdoor', 'Cozy Cafe', 'Live Music', 'Sunset View', 'Luxury', 'Casual'].map(v => (
-            <div key={v} className="sb-option">
-              <div className="sb-opt-l"><div className="sb-check" />{v}</div>
-              <div className="sb-count">{Math.floor(Math.random() * 20 + 3)}</div>
-            </div>
-          ))}
+          {[
+  {v:'Rooftop', n:12}, {v:'Fine Dining', n:8}, {v:'Outdoor', n:15},
+  {v:'Cozy Cafe', n:19}, {v:'Live Music', n:7}, {v:'Sunset View', n:11},
+  {v:'Luxury', n:5}, {v:'Casual', n:22}
+].map(({v, n}) => (
+  <div key={v} className="sb-option">
+    <div className="sb-opt-l"><div className="sb-check" />{v}</div>
+    <div className="sb-count">{n}</div>
+  </div>
+))}
 
           <div className="sb-title" style={{ marginTop: 22 }}>Budget per Head</div>
           <div className="price-row"><span>₹200</span><span>₹5,000+</span></div>

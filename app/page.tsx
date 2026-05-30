@@ -120,6 +120,8 @@ useEffect(() => {
   // CARDS
   useEffect(() => { buildCards(activeCat); }, [activeCat]);
 
+  
+
   // Close dropdown on outside click
 useEffect(() => {
   const handler = (e: MouseEvent) => {
@@ -131,6 +133,43 @@ useEffect(() => {
   document.addEventListener('mousedown', handler);
   return () => document.removeEventListener('mousedown', handler);
 }, []);
+
+// Card scroll fade observer
+useEffect(() => {
+  const cards = document.querySelectorAll('.card');
+  
+  // Pehle sab cards ko reset karo
+  cards.forEach((card) => {
+    card.classList.remove('visible');
+  });
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // Observe karte raho — unobserve mat karo
+        } else {
+          // Jab card screen se bahar jaye toh remove karo
+          entry.target.classList.remove('visible');
+        }
+      });
+    },
+    { threshold: 0.08 }
+  );
+
+  const timer = setTimeout(() => {
+    document.querySelectorAll('.card').forEach((card) => {
+      observer.observe(card);
+    });
+  }, 100);
+
+  return () => {
+    clearTimeout(timer);
+    observer.disconnect();
+  };
+}, [cards]);
+
 
   async function buildCards(cat: string) {
     const { data } = await _supabase.from('cafes').select('*').eq('category', catMap[cat] || cat).order('area', { ascending: true });
@@ -189,13 +228,18 @@ useEffect(() => {
 {/* NAV */}
 <nav id="main-nav" style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 48px', position:'fixed', top:0, left:0, right:0, zIndex:100, background:'rgba(15,13,11,0.92)', backdropFilter:'blur(20px)'}}>
 
-  <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 12, textDecoration: 'none' }}>
-    <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="19" cy="19" r="18" fill="#0a0a0a" stroke="#FF6B00" strokeWidth="2.5"/>
-      <text x="19" y="19" fontFamily="'Arial', sans-serif" fontSize="18" fontWeight="700" textAnchor="middle" dominantBaseline="central" fill="#ffffff">X</text>
-    </svg>
-    <span style={{fontFamily:"'Bebas Neue', 'Arial', sans-serif", fontSize:22, letterSpacing:'0.18em', color:'#ffffff', lineHeight:1, fontWeight:700}}>XPLOURA</span>
-  </a>
+  <a href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+  <span style={{
+    fontFamily: "'Bebas Neue', sans-serif",
+    fontSize: 26,
+    letterSpacing: '0.22em',
+    lineHeight: 1,
+    fontWeight: 700,
+  }}>
+    <span style={{ color: '#FF6B00' }}>X</span>
+    <span style={{ color: '#ffffff' }}>PLOURA</span>
+  </span>
+</a>
 
   <ul style={{display:'flex', gap:32, listStyle:'none', margin:0, padding:0}}>
     <li><a href="/trips" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Trips</a></li>

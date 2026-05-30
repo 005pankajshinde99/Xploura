@@ -19,7 +19,7 @@ body {
   color: var(--white);
   font-family: 'DM Sans', sans-serif;
   overflow-x: hidden;
-  cursor: none;
+  cursor: auto;
   padding-top: 72px;
 }
 
@@ -573,4 +573,35 @@ nav.sc {
   /* MOBILE NAV */
   #mobile-nav { display: flex !important; width: 100% !important; box-sizing: border-box !important; }
   #ai-fab { display: none !important; }
+}
+
+/* ── CARD SCROLL FADE ── */
+.card {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.55s ease, transform 0.55s ease,
+              box-shadow 0.4s, border-color 0.3s !important;
+}
+.card.visible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+.card:hover {
+  transform: translateY(-8px) !important;
+}
+
+/* ── CARD IMAGE BOTTOM GRADIENT ── */
+.card-scene::after {
+  content: '';
+  position: absolute;
+  bottom: 37%;   /* card-overlay height ke upar */
+  left: 0; right: 0;
+  height: 120px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0,0,0,0.75) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
 }

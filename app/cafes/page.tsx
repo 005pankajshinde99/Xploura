@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import Navbar from '../components/Navbar';
 
 const _supabase = createClient(
   'https://ttbheiwtysickbyasulr.supabase.co',
@@ -135,22 +136,7 @@ export default function CafesPage() {
       `}</style>
 
       {/* NAV */}
-      <nav>
-        <a href="/" className="nav-logo">Xploura</a>
-        <ul className="nav-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/trips">Trips</a></li>
-          <li><a href="/dates">Dates</a></li>
-          <li><a href="/cafes" className="active">Cafes</a></li>
-          <li><a href="/restaurants">Restaurants</a></li>
-          <li><a href="/adventure">Adventure</a></li>
-          <li><a href="/ai-agent">X AI Agent</a></li>
-        </ul>
-        <div className="nav-right">
-          <a href="/auth" className="nb">Sign In</a>
-          <a href="/auth?tab=signup" className="nb fill">Get Started</a>
-        </div>
-      </nav>
+     <Navbar active="cafes" />
 
       {/* HERO */}
       <div className="page-hero">
