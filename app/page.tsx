@@ -30,6 +30,7 @@ export default function Home() {
   const [authLoading, setAuthLoading] = useState(true);
   const [dropOpen, setDropOpen] = useState(false);
   const [chatTyping, setChatTyping] = useState(false);
+  const [fabOpen, setFabOpen] = useState(false);
   const ringRef = useRef({ x: 0, y: 0 });
   const curRef = useRef({ x: 0, y: 0 });
   const hbgRef = useRef<HTMLDivElement>(null);
@@ -748,10 +749,52 @@ onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='tran
       </div>
 
       {/* FLOATING AI */}
-      <div id="ai-fab" onClick={() => window.location.href = '/ai-agent'}>
-        <div className="fab-logo">X</div>
-        <div className="fab-label">AI</div>
+<div id="ai-fab" onClick={() => setFabOpen(true)}>
+  <div className="fab-logo">X</div>
+  <div className="fab-label">AI</div>
+</div>
+
+{/* AI OVERLAY */}
+{fabOpen && (
+  <div style={{
+    position: 'fixed', inset: 0, zIndex: 9999,
+    background: 'rgba(0,0,0,0.5)',
+    backdropFilter: 'blur(4px)'
+  }} onClick={() => setFabOpen(false)}>
+    <div style={{
+      position: 'absolute', top: 0, right: 0,
+      width: '50%', height: '100vh',
+      background: '#0f0d0b',
+      display: 'flex', flexDirection: 'column',
+      boxShadow: '-20px 0 60px rgba(0,0,0,0.6)',
+    }} onClick={e => e.stopPropagation()}>
+      {/* Header bar */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '12px 20px',
+        background: '#0f0d0b',
+        borderBottom: '0.5px solid rgba(255,107,0,0.3)',
+        flexShrink: 0
+      }}>
+        <span style={{
+          fontFamily: "'Bebas Neue', sans-serif",
+          fontSize: 18, letterSpacing: '0.15em', color: '#FF6B00'
+        }}>X AI AGENT</span>
+        <button onClick={() => setFabOpen(false)} style={{
+          background: 'rgba(255,255,255,0.08)', border: 'none',
+          color: '#fff', fontSize: 18, width: 34, height: 34,
+          borderRadius: '50%', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+        }}>×</button>
       </div>
+      {/* iframe */}
+      <iframe
+        src="/ai-agent"
+        style={{ flex: 1, width: '100%', border: 'none' }}
+      />
+    </div>
+  </div>
+)}
 
       {/* MOBILE NAV */}
       <div id="mobile-nav">
@@ -763,7 +806,7 @@ onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='tran
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <span>Explore</span>
         </button>
-        <button className="mnav-btn" style={{ marginTop: -20 }} onClick={() => window.location.href = '/ai-agent'}>
+        <button className="mnav-btn" style={{ marginTop: -20 }} onClick={() => setFabOpen(true)}>
           <div className="mnav-ai-btn">X</div>
           <span>AI</span>
         </button>
