@@ -317,23 +317,23 @@ async function sendChat(overrideText?: string) {
           </div>
         </div>
         {/* My Bookings */}
-        <a href="/bookings" style={{
-          display:'flex', alignItems:'center', gap:10,
-          padding:'11px 16px', fontSize:12, color:'rgba(255,255,255,0.6)',
-          textDecoration:'none', fontFamily:"'DM Sans',sans-serif",
-          transition:'background 0.2s, color 0.2s',
-          borderBottom:'0.5px solid rgba(255,255,255,0.05)'
-        }}
-        onMouseOver={e => { (e.currentTarget as HTMLAnchorElement).style.background='rgba(255,107,0,0.08)'; (e.currentTarget as HTMLAnchorElement).style.color='#FF6B00'; }}
-        onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='transparent'; (e.currentTarget as HTMLAnchorElement).style.color='rgba(255,255,255,0.6)'; }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <rect x="3" y="4" width="18" height="18" rx="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-          My Bookings
-        </a>
+<a href="/userbooking" style={{
+  display:'flex', alignItems:'center', gap:10,
+  padding:'11px 16px', fontSize:12, color:'rgba(255,255,255,0.6)',
+  textDecoration:'none', fontFamily:"'DM Sans',sans-serif",
+  transition:'background 0.2s, color 0.2s',
+  borderBottom:'0.5px solid rgba(255,255,255,0.05)'
+}}
+onMouseOver={e => { (e.currentTarget as HTMLAnchorElement).style.background='rgba(255,107,0,0.08)'; (e.currentTarget as HTMLAnchorElement).style.color='#FF6B00'; }}
+onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='transparent'; (e.currentTarget as HTMLAnchorElement).style.color='rgba(255,255,255,0.6)'; }}>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <rect x="3" y="4" width="18" height="18" rx="2"/>
+    <line x1="16" y1="2" x2="16" y2="6"/>
+    <line x1="8" y1="2" x2="8" y2="6"/>
+    <line x1="3" y1="10" x2="21" y2="10"/>
+  </svg>
+  My Bookings
+</a>
         {/* Profile */}
         <a href="/profile" style={{
           display:'flex', alignItems:'center', gap:10,
@@ -769,7 +769,7 @@ async function sendChat(overrideText?: string) {
         </button>
         <button className="mnav-btn" onClick={() => {
   if (user) {
-    window.location.href = '/bookings';
+    window.location.href = '/userbooking';
   } else {
     window.location.href = '/auth';
   }
@@ -828,6 +828,20 @@ async function sendChat(overrideText?: string) {
       <circle cx="12" cy="7" r="4"/>
     </svg>
     Profile
+  </a>
+
+  {/* About */}
+  <a href="/about" style={{
+    display:'flex', alignItems:'center', gap:14,
+    padding:'16px 20px', fontSize:14, color:'rgba(255,255,255,0.7)',
+    textDecoration:'none', borderBottom:'0.5px solid rgba(255,255,255,0.05)'
+  }}>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+    About
   </a>
 
   {/* Sign Out */}
