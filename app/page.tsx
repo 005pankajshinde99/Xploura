@@ -255,7 +255,7 @@ useEffect(() => {
   {authLoading ? (
     <div style={{width: 36, height: 36, borderRadius:'50%', background:'rgba(255,255,255,0.06)'}} />
   ) : user ? (
-   <div style={{position:'relative'}} id="nav-dd">
+    <div style={{position:'relative', display: isMobile ? 'none' : 'block'}} id="nav-dd">
   {/* Avatar Circle — click karo dropdown ke liye */}
  <div onClick={() => setDropOpen(p => !p)} style={{
   width: 36, height: 36, borderRadius: '50%',
@@ -717,7 +717,7 @@ useEffect(() => {
   } else {
     window.location.href = '/auth';
   }
-}} style={{ color: 'rgba(255,255,255,0.4)' }}>
+}} style={{ color: user ? '#FF6B00' : 'rgba(255,255,255,0.4)' }}>
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
     <line x1="16" y1="2" x2="16" y2="6"/>
@@ -726,31 +726,19 @@ useEffect(() => {
   </svg>
   <span>Bookings</span>
 </button>
-       <button className="mnav-btn" onClick={() => {
+      <button className="mnav-btn" onClick={async () => {
   if (user) {
-    window.location.href = '/profile';
+    await _supabase.auth.signOut();
+    window.location.href = '/';
   } else {
     window.location.href = '/auth';
   }
 }}>
-  {user ? (
-    <div style={{
-      width: 26, height: 26, borderRadius: '50%',
-      background: 'rgba(255,107,0,0.15)',
-      border: '1.5px solid #FF6B00',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      fontSize: 12, color: '#FF6B00',
-      fontFamily: "'Bebas Neue', sans-serif"
-    }}>
-      {user.email?.[0]?.toUpperCase()}
-    </div>
-  ) : (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-      <circle cx="12" cy="7" r="4"/>
-    </svg>
-  )}
-  <span>{user ? user.email?.split('@')[0] : 'Profile'}</span>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+    <circle cx="12" cy="7" r="4"/>
+  </svg>
+  <span>{user ? 'Sign Out' : 'Profile'}</span>
 </button>
       </div>
 
