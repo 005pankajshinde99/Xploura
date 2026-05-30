@@ -807,9 +807,17 @@ onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='tran
           <span>Explore</span>
         </button>
         <button className="mnav-btn" style={{ marginTop: -20 }} onClick={() => setFabOpen(true)}>
-          <div className="mnav-ai-btn">X</div>
-          <span>AI</span>
-        </button>
+  <div style={{
+    width: 52, height: 52, borderRadius: '50%',
+    background: '#FF6B00',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    boxShadow: '0 4px 20px rgba(255,107,0,0.5)',
+    border: '3px solid #0f0d0b',
+    fontFamily: "'Bebas Neue', sans-serif",
+    fontSize: 22, color: '#fff', letterSpacing: '0.05em'
+  }}>X</div>
+  <span>AI</span>
+</button>
         <button className="mnav-btn" onClick={() => {
   if (user) {
     window.location.href = '/userbooking';
