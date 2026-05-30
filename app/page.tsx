@@ -27,6 +27,7 @@ export default function Home() {
   const [ringPos, setRingPos] = useState({ x: 0, y: 0 });
   const [slideIdx, setSlideIdx] = useState(0);
   const [user, setUser] = useState<any>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const ringRef = useRef({ x: 0, y: 0 });
   const curRef = useRef({ x: 0, y: 0 });
   const hbgRef = useRef<HTMLDivElement>(null);
@@ -54,12 +55,14 @@ export default function Home() {
     return () => clearInterval(iv);
   }, []);
 
-  useEffect(() => {
+useEffect(() => {
   _supabase.auth.getSession().then(({ data }) => {
     setUser(data.session?.user ?? null);
+    setAuthLoading(false);
   });
   const { data: listener } = _supabase.auth.onAuthStateChange((_event, session) => {
     setUser(session?.user ?? null);
+    setAuthLoading(false);
   });
   return () => listener.subscription.unsubscribe();
 }, []);
@@ -116,6 +119,18 @@ useEffect(() => {
 
   // CARDS
   useEffect(() => { buildCards(activeCat); }, [activeCat]);
+
+  // Close dropdown on outside click
+useEffect(() => {
+  const handler = (e: MouseEvent) => {
+    const dd = document.getElementById('nav-dropdown');
+    if (dd && !dd.contains(e.target as Node)) {
+      dd.style.display = 'none';
+    }
+  };
+  document.addEventListener('mousedown', handler);
+  return () => document.removeEventListener('mousedown', handler);
+}, []);
 
   async function buildCards(cat: string) {
     const { data } = await _supabase.from('cafes').select('*').eq('category', catMap[cat] || cat).order('area', { ascending: true });
@@ -191,25 +206,87 @@ useEffect(() => {
     <li><a href="/ai-agent" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>X AI Agent</a></li>
   </ul>
 
-  <div style={{display:'flex', gap:10, alignItems:'center'}}>
-    {user ? (
-      <>
-        <span style={{fontSize:11, letterSpacing:'0.08em', color:'rgba(255,255,255,0.45)', textTransform:'uppercase', fontFamily:"'DM Sans',sans-serif"}}>
-          👋 {user.email?.split('@')[0]}
-        </span>
+ <div style={{display:'flex', gap:10, alignItems:'center', position:'relative'}}>
+  {authLoading ? (
+    <div style={{width: 36, height: 36, borderRadius:'50%', background:'rgba(255,255,255,0.06)'}} />
+  ) : user ? (
+    <div style={{position:'relative'}}>
+      {/* Avatar Circle — click karo dropdown ke liye */}
+      <div
+        onClick={() => {
+          const dd = document.getElementById('nav-dropdown');
+          if (dd) dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+        }}
+        style={{
+          width: 36, height: 36, borderRadius:'50%',
+          background:'rgba(255,107,0,0.15)',
+          border:'1.5px solid #FF6B00',
+          display:'flex', alignItems:'center', justifyContent:'center',
+          cursor:'pointer', fontFamily:"'Bebas Neue', sans-serif",
+          fontSize: 16, color:'#FF6B00', letterSpacing:'0.05em',
+          userSelect:'none'
+        }}>
+        {user.email?.[0]?.toUpperCase()}
+      </div>
+
+      {/* Dropdown */}
+      <div
+        id="nav-dropdown"
+        style={{
+          display:'none', position:'absolute', top: 46, right: 0,
+          background:'#1a1714', border:'0.5px solid rgba(255,255,255,0.1)',
+          borderRadius: 10, minWidth: 180, zIndex: 999,
+          boxShadow:'0 16px 40px rgba(0,0,0,0.6)',
+          overflow:'hidden'
+        }}>
+        {/* User info */}
+        <div style={{padding:'12px 16px', borderBottom:'0.5px solid rgba(255,255,255,0.07)'}}>
+          <div style={{fontSize:11, color:'rgba(255,255,255,0.35)', letterSpacing:'0.06em', fontFamily:"'DM Sans',sans-serif"}}>Signed in as</div>
+          <div style={{fontSize:12, color:'#fff', fontWeight:500, marginTop:2, fontFamily:"'DM Sans',sans-serif", overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:148}}>
+            {user.email}
+          </div>
+        </div>
+        {/* Links */}
+        {[
+          {label:'My Bookings', href:'/bookings', icon:'📅'},
+          {label:'Profile', href:'/profile', icon:'👤'},
+        ].map(item => (
+          <a key={item.href} href={item.href} style={{
+            display:'flex', alignItems:'center', gap:10,
+            padding:'11px 16px', fontSize:12, color:'rgba(255,255,255,0.6)',
+            textDecoration:'none', fontFamily:"'DM Sans',sans-serif",
+            transition:'background 0.2s, color 0.2s',
+            borderBottom:'0.5px solid rgba(255,255,255,0.05)'
+          }}
+          onMouseOver={e => { (e.currentTarget as HTMLAnchorElement).style.background='rgba(255,107,0,0.08)'; (e.currentTarget as HTMLAnchorElement).style.color='#FF6B00'; }}
+          onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='transparent'; (e.currentTarget as HTMLAnchorElement).style.color='rgba(255,255,255,0.6)'; }}>
+            <span>{item.icon}</span>{item.label}
+          </a>
+        ))}
+        {/* Sign Out */}
         <button
           onClick={async () => { await _supabase.auth.signOut(); window.location.href = '/'; }}
-          style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', border:'0.5px solid rgba(255,255,255,0.12)', padding:'9px 20px', borderRadius:24, color:'rgba(255,255,255,0.55)', background:'transparent', cursor:'pointer', fontFamily:"'DM Sans',sans-serif"}}>
-          Sign Out
+          style={{
+            width:'100%', padding:'11px 16px',
+            display:'flex', alignItems:'center', gap:10,
+            fontSize:12, color:'rgba(255,80,80,0.75)',
+            background:'transparent', border:'none', cursor:'pointer',
+            fontFamily:"'DM Sans',sans-serif", textAlign:'left',
+            transition:'background 0.2s'
+          }}
+          onMouseOver={e => { (e.currentTarget as HTMLButtonElement).style.background='rgba(255,50,50,0.08)'; }}
+          onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background='transparent'; }}>
+          <span>🚪</span> Sign Out
         </button>
-      </>
-    ) : (
-      <>
-        <a href="/auth" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', border:'0.5px solid rgba(255,255,255,0.12)', padding:'9px 20px', borderRadius:24, color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Sign In</a>
-        <a href="/auth?tab=signup" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', background:'#FF6B00', color:'#fff', padding:'9px 20px', borderRadius:24, textDecoration:'none'}}>Get Started</a>
-      </>
-    )}
-  </div>
+      </div>
+    </div>
+  ) : (
+    <>
+      <a href="/auth" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', border:'0.5px solid rgba(255,255,255,0.12)', padding:'9px 20px', borderRadius:24, color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Sign In</a>
+      <a href="/auth?tab=signup" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', background:'#FF6B00', color:'#fff', padding:'9px 20px', borderRadius:24, textDecoration:'none'}}>Get Started</a>
+    </>
+  )}
+</div>
 
 </nav>
       {/* HERO */}
@@ -592,10 +669,17 @@ useEffect(() => {
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
   <span>Bookings</span>
 </button>
-        <button className="mnav-btn">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span>Profile</span>
-        </button>
+        <button className="mnav-btn" onClick={async () => {
+  if (user) {
+    await _supabase.auth.signOut();
+    window.location.href = '/';
+  } else {
+    window.location.href = '/auth';
+  }
+}}>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  <span>{user ? 'Sign Out' : 'Profile'}</span>
+</button>
       </div>
 
   <style>{`
