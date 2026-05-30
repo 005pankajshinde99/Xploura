@@ -192,6 +192,10 @@ export default function AIAgentPage() {
     setMicSupported(!!SR);
   }, []);
 
+  useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
+
   const scrollBottom = useCallback(() => {
     setTimeout(() => {
       if (messagesRef.current)
@@ -1111,9 +1115,7 @@ export default function AIAgentPage() {
                 <div className="xa-welcome">
                   <div className="xa-orb">X</div>
                   <div className="xa-welcome-title">Hey, I'm Xploura AI 👋</div>
-                  <div className="xa-welcome-sub">
-                    Your Pune insider — cafes, date nights, weekend trips, restaurants & adventures. Just ask anything!
-                  </div>
+              
                   <div className="xa-grid">
                     {QUICK_ACTIONS.map((a, i) => (
                       <div key={i} className="xa-card" onClick={() => quickAsk(a.query, a.cat)}>
