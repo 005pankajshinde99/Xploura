@@ -28,6 +28,7 @@ export default function Home() {
   const [slideIdx, setSlideIdx] = useState(0);
   const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [dropOpen, setDropOpen] = useState(false);
   const ringRef = useRef({ x: 0, y: 0 });
   const curRef = useRef({ x: 0, y: 0 });
   const hbgRef = useRef<HTMLDivElement>(null);
@@ -125,9 +126,9 @@ useEffect(() => {
   // Close dropdown on outside click
 useEffect(() => {
   const handler = (e: MouseEvent) => {
-    const dd = document.getElementById('nav-dropdown');
+    const dd = document.getElementById('nav-dd');
     if (dd && !dd.contains(e.target as Node)) {
-      dd.style.display = 'none';
+      setDropOpen(false);
     }
   };
   document.addEventListener('mousedown', handler);
@@ -254,30 +255,30 @@ useEffect(() => {
   {authLoading ? (
     <div style={{width: 36, height: 36, borderRadius:'50%', background:'rgba(255,255,255,0.06)'}} />
   ) : user ? (
-    <div style={{position:'relative'}}>
-      {/* Avatar Circle — click karo dropdown ke liye */}
-      <div
-        onClick={() => {
-          const dd = document.getElementById('nav-dropdown');
-          if (dd) dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
-        }}
-        style={{
-          width: 36, height: 36, borderRadius:'50%',
-          background:'rgba(255,107,0,0.15)',
-          border:'1.5px solid #FF6B00',
-          display:'flex', alignItems:'center', justifyContent:'center',
-          cursor:'pointer', fontFamily:"'Bebas Neue', sans-serif",
-          fontSize: 16, color:'#FF6B00', letterSpacing:'0.05em',
-          userSelect:'none'
-        }}>
-        {user.email?.[0]?.toUpperCase()}
-      </div>
+   <div style={{position:'relative'}} id="nav-dd">
+  {/* Avatar Circle — click karo dropdown ke liye */}
+ <div onClick={() => setDropOpen(p => !p)} style={{
+  width: 36, height: 36, borderRadius: '50%',
+  background: 'rgba(255,107,0,0.15)',
+  border: '1.5px solid #FF6B00',
+  display: 'flex', alignItems: 'center',
+  justifyContent: 'center', cursor: 'pointer',
+  position: 'relative', overflow: 'hidden'
+}}>
+  {/* Professional user icon */}
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+    stroke="#FF6B00" strokeWidth="1.8">
+    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+    <circle cx="12" cy="7" r="4"/>
+  </svg>
+</div>
 
       {/* Dropdown */}
+      {/* Dropdown */}
+      {dropOpen && (
       <div
-        id="nav-dropdown"
         style={{
-          display:'none', position:'absolute', top: 46, right: 0,
+          position:'absolute', top: 46, right: 0,
           background:'#1a1714', border:'0.5px solid rgba(255,255,255,0.1)',
           borderRadius: 10, minWidth: 180, zIndex: 999,
           boxShadow:'0 16px 40px rgba(0,0,0,0.6)',
@@ -323,6 +324,7 @@ useEffect(() => {
           <span>🚪</span> Sign Out
         </button>
       </div>
+      )}
     </div>
   ) : (
     <>
@@ -709,20 +711,46 @@ useEffect(() => {
           <div className="mnav-ai-btn">X</div>
           <span>AI</span>
         </button>
-        <button className="mnav-btn" onClick={() => window.location.href = '/bookings'}>
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <button className="mnav-btn" onClick={() => {
+  if (user) {
+    window.location.href = '/bookings';
+  } else {
+    window.location.href = '/auth';
+  }
+}} style={{ color: 'rgba(255,255,255,0.4)' }}>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+    <line x1="16" y1="2" x2="16" y2="6"/>
+    <line x1="8" y1="2" x2="8" y2="6"/>
+    <line x1="3" y1="10" x2="21" y2="10"/>
+  </svg>
   <span>Bookings</span>
 </button>
-        <button className="mnav-btn" onClick={async () => {
+       <button className="mnav-btn" onClick={() => {
   if (user) {
-    await _supabase.auth.signOut();
-    window.location.href = '/';
+    window.location.href = '/profile';
   } else {
     window.location.href = '/auth';
   }
 }}>
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-  <span>{user ? 'Sign Out' : 'Profile'}</span>
+  {user ? (
+    <div style={{
+      width: 26, height: 26, borderRadius: '50%',
+      background: 'rgba(255,107,0,0.15)',
+      border: '1.5px solid #FF6B00',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontSize: 12, color: '#FF6B00',
+      fontFamily: "'Bebas Neue', sans-serif"
+    }}>
+      {user.email?.[0]?.toUpperCase()}
+    </div>
+  ) : (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+  )}
+  <span>{user ? user.email?.split('@')[0] : 'Profile'}</span>
 </button>
       </div>
 
