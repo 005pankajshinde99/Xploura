@@ -788,10 +788,15 @@ onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='tran
         }}>×</button>
       </div>
       {/* iframe */}
-      <iframe
-        src="/ai-agent"
-        style={{ flex: 1, width: '100%', border: 'none' }}
-      />
+     <iframe
+  src="/ai-agent"
+  style={{ flex: 1, width: '100%', border: 'none' }}
+  onLoad={(e) => {
+    try {
+      (e.target as HTMLIFrameElement).contentWindow?.scrollTo(0, 0);
+    } catch {}
+  }}
+/>
     </div>
   </div>
 )}
