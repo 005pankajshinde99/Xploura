@@ -291,23 +291,40 @@ useEffect(() => {
             {user.email}
           </div>
         </div>
-        {/* Links */}
-        {[
-          {label:'My Bookings', href:'/bookings', icon:'📅'},
-          {label:'Profile', href:'/profile', icon:'👤'},
-        ].map(item => (
-          <a key={item.href} href={item.href} style={{
-            display:'flex', alignItems:'center', gap:10,
-            padding:'11px 16px', fontSize:12, color:'rgba(255,255,255,0.6)',
-            textDecoration:'none', fontFamily:"'DM Sans',sans-serif",
-            transition:'background 0.2s, color 0.2s',
-            borderBottom:'0.5px solid rgba(255,255,255,0.05)'
-          }}
-          onMouseOver={e => { (e.currentTarget as HTMLAnchorElement).style.background='rgba(255,107,0,0.08)'; (e.currentTarget as HTMLAnchorElement).style.color='#FF6B00'; }}
-          onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='transparent'; (e.currentTarget as HTMLAnchorElement).style.color='rgba(255,255,255,0.6)'; }}>
-            <span>{item.icon}</span>{item.label}
-          </a>
-        ))}
+        {/* My Bookings */}
+        <a href="/bookings" style={{
+          display:'flex', alignItems:'center', gap:10,
+          padding:'11px 16px', fontSize:12, color:'rgba(255,255,255,0.6)',
+          textDecoration:'none', fontFamily:"'DM Sans',sans-serif",
+          transition:'background 0.2s, color 0.2s',
+          borderBottom:'0.5px solid rgba(255,255,255,0.05)'
+        }}
+        onMouseOver={e => { (e.currentTarget as HTMLAnchorElement).style.background='rgba(255,107,0,0.08)'; (e.currentTarget as HTMLAnchorElement).style.color='#FF6B00'; }}
+        onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='transparent'; (e.currentTarget as HTMLAnchorElement).style.color='rgba(255,255,255,0.6)'; }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          My Bookings
+        </a>
+        {/* Profile */}
+        <a href="/profile" style={{
+          display:'flex', alignItems:'center', gap:10,
+          padding:'11px 16px', fontSize:12, color:'rgba(255,255,255,0.6)',
+          textDecoration:'none', fontFamily:"'DM Sans',sans-serif",
+          transition:'background 0.2s, color 0.2s',
+          borderBottom:'0.5px solid rgba(255,255,255,0.05)'
+        }}
+        onMouseOver={e => { (e.currentTarget as HTMLAnchorElement).style.background='rgba(255,107,0,0.08)'; (e.currentTarget as HTMLAnchorElement).style.color='#FF6B00'; }}
+        onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='transparent'; (e.currentTarget as HTMLAnchorElement).style.color='rgba(255,255,255,0.6)'; }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          Profile
+        </a>
         {/* Sign Out */}
         <button
           onClick={async () => { await _supabase.auth.signOut(); window.location.href = '/'; }}
@@ -321,7 +338,12 @@ useEffect(() => {
           }}
           onMouseOver={e => { (e.currentTarget as HTMLButtonElement).style.background='rgba(255,50,50,0.08)'; }}
           onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background='transparent'; }}>
-          <span>🚪</span> Sign Out
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Sign Out
         </button>
       </div>
       )}
@@ -726,10 +748,10 @@ useEffect(() => {
   </svg>
   <span>Bookings</span>
 </button>
-      <button className="mnav-btn" onClick={async () => {
+      <button className="mnav-btn" onClick={() => {
   if (user) {
-    await _supabase.auth.signOut();
-    window.location.href = '/';
+    const sheet = document.getElementById('mobile-profile-sheet');
+    if (sheet) sheet.style.display = sheet.style.display === 'flex' ? 'none' : 'flex';
   } else {
     window.location.href = '/auth';
   }
@@ -738,9 +760,74 @@ useEffect(() => {
     <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
     <circle cx="12" cy="7" r="4"/>
   </svg>
-  <span>{user ? 'Sign Out' : 'Profile'}</span>
+  <span>Profile</span>
 </button>
       </div>
+
+{/* MOBILE PROFILE SHEET */}
+<div id="mobile-profile-sheet" style={{
+  display: 'none',
+  position: 'fixed', bottom: 64, left: 0, right: 0,
+  background: '#1a1714',
+  border: '0.5px solid rgba(255,255,255,0.1)',
+  borderRadius: '16px 16px 0 0',
+  zIndex: 998, flexDirection: 'column',
+  boxShadow: '0 -8px 40px rgba(0,0,0,0.6)',
+  fontFamily: "'DM Sans', sans-serif"
+}}>
+  {/* Header */}
+  <div style={{padding:'16px 20px', borderBottom:'0.5px solid rgba(255,255,255,0.07)'}}>
+    <div style={{fontSize:9, color:'rgba(255,255,255,0.3)', letterSpacing:'0.1em', textTransform:'uppercase', marginBottom:4}}>Signed in as</div>
+    <div style={{fontSize:13, color:'#fff', fontWeight:500, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>
+      {user?.email}
+    </div>
+  </div>
+
+  {/* Profile */}
+  <a href="/profile" style={{
+    display:'flex', alignItems:'center', gap:14,
+    padding:'16px 20px', fontSize:14, color:'rgba(255,255,255,0.7)',
+    textDecoration:'none', borderBottom:'0.5px solid rgba(255,255,255,0.05)'
+  }}>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+    Profile
+  </a>
+
+  {/* Sign Out */}
+  <button onClick={async () => {
+    await _supabase.auth.signOut();
+    window.location.href = '/';
+  }} style={{
+    display:'flex', alignItems:'center', gap:14,
+    padding:'16px 20px', fontSize:14, color:'rgba(255,80,80,0.85)',
+    background:'transparent', border:'none', cursor:'pointer',
+    fontFamily:"'DM Sans',sans-serif", textAlign:'left',
+    borderBottom:'0.5px solid rgba(255,255,255,0.05)'
+  }}>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+      <polyline points="16 17 21 12 16 7"/>
+      <line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+    Sign Out
+  </button>
+
+  {/* Cancel */}
+  <button onClick={() => {
+    const sheet = document.getElementById('mobile-profile-sheet');
+    if (sheet) sheet.style.display = 'none';
+  }} style={{
+    padding:'16px 20px', fontSize:13,
+    color:'rgba(255,255,255,0.3)', background:'transparent',
+    border:'none', cursor:'pointer',
+    fontFamily:"'DM Sans',sans-serif", textAlign:'center'
+  }}>
+    Cancel
+  </button>
+</div>
 
   <style>{`
   @keyframes liveBlink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.8)} }
