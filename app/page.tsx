@@ -29,6 +29,7 @@ export default function Home() {
   const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [dropOpen, setDropOpen] = useState(false);
+  const [chatTyping, setChatTyping] = useState(false);
   const ringRef = useRef({ x: 0, y: 0 });
   const curRef = useRef({ x: 0, y: 0 });
   const hbgRef = useRef<HTMLDivElement>(null);
@@ -181,28 +182,51 @@ useEffect(() => {
     window.location.href = `/booking?data=${encodeURIComponent(JSON.stringify(d))}`;
   }
 
-  const REPS: any = {
-    mumbai: ['Found amazing Mumbai packages!', '3D/2N from ₹8,500 — Gateway, Marine Drive, street food tour. Book it?'],
-    ipl: ['IPL 2026 tickets available!', 'MI vs CSK at Wankhede — ₹1,200 (Gen) to ₹8,500 (Premium). Check availability?'],
-    cafe: ['Top Pune cafes found!', 'Pagdandi (Baner), The Flour Works (KP), Vohuman (Camp). Reserve a table?'],
-    goa: ['Goa weekend sorted!', '2N/3D — Calangute resort + scooter + beach shacks. ₹6,800/person. Book now?'],
-    def: ['On it! Searching for you...', 'Found great options matching your request. Want me to show the best picks?'],
-  };
-  function getRep(t: string) {
-    t = t.toLowerCase();
-    if (t.includes('mumbai') || t.includes('trip')) return REPS.mumbai;
-    if (t.includes('ipl') || t.includes('cricket')) return REPS.ipl;
-    if (t.includes('cafe') || t.includes('coffee')) return REPS.cafe;
-    if (t.includes('goa') || t.includes('beach')) return REPS.goa;
-    return REPS.def;
-  }
-  function sendChat() {
-    if (!chatInput.trim()) return;
-    const txt = chatInput.trim(); setChatInput('');
-    setChatMsgs(prev => [...prev, { type: 'user', text: txt }]);
-    const r = getRep(txt);
-    setTimeout(() => { r.forEach((m: string, i: number) => { setTimeout(() => { setChatMsgs(prev => [...prev, { type: 'ai', text: m }]); }, i * 700); }); }, 1000);
-  }
+async function sendChat(overrideText?: string) {
+  const txt = (overrideText ?? chatInput).trim();
+  if (!txt || chatTyping) return;
+  setChatInput('');
+  setChatMsgs(prev => [...prev, { type: 'user', text: txt }]);
+  setChatTyping(true);
+
+  try {
+    const groqKey = process.env.NEXT_PUBLIC_GROQ_KEY;
+    if (groqKey) {
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + groqKey },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            { role: 'system', content: `You are Xploura AI — a super friendly local guide for Pune, India. Talk like a knowledgeable friend. Keep replies under 80 words. Use 1-2 emojis max. Be specific about places, prices, what to order. Never say "Certainly!" or "Of course!". Vary your openings every time.` },
+            ...chatMsgs.slice(-6).map(m => ({ role: m.type === 'ai' ? 'assistant' : 'user', content: m.text })),
+            { role: 'user', content: txt }
+          ],
+          max_tokens: 200,
+          temperature: 0.9,
+        }),
+      });
+      const data = await res.json();
+      const reply = data.choices?.[0]?.message?.content?.trim();
+      if (reply) {
+        setChatMsgs(prev => [...prev, { type: 'ai', text: reply }]);
+        setChatTyping(false);
+        return;
+      }
+    }
+  } catch {}
+
+  // Fallback if Groq fails
+  const lower = txt.toLowerCase();
+  const fallback = lower.includes('mumbai') || lower.includes('trip')
+    ? '3D/2N from ₹8,500 — Gateway of India, Marine Drive, street food tour. Book it? 🧡'
+    : lower.includes('ipl') ? 'MI vs CSK at Wankhede — ₹1,200 to ₹8,500. Check availability?'
+    : lower.includes('cafe') ? 'Pagdandi (Baner), The Flour Works (KP), Vohuman (Camp) — all absolute must-visits ☕'
+    : lower.includes('goa') ? 'Calangute resort + scooter + beach shacks — ₹6,800/person. This weekend? 🏖️'
+    : 'I know Pune inside out — cafes, dates, trips, adventure! What are you planning? 🧡';
+  setChatMsgs(prev => [...prev, { type: 'ai', text: fallback }]);
+  setChatTyping(false);
+}
 
   const filteredCards = cards.filter(d => !searchVal || d.name?.toLowerCase().includes(searchVal.toLowerCase()) || d.tag?.toLowerCase().includes(searchVal.toLowerCase()));
 
@@ -249,6 +273,7 @@ useEffect(() => {
     <li><a href="/restaurants" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Restaurants</a></li>
     <li><a href="/adventure" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Adventure</a></li>
     <li><a href="/ai-agent" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>X AI Agent</a></li>
+    <li><a href="/about" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>About</a></li>
   </ul>
 
  <div style={{display:'flex', gap:10, alignItems:'center', position:'relative'}}>
@@ -658,22 +683,31 @@ useEffect(() => {
               {chatMsgs.map((m, i) => (
                 <div key={i} className={`cm ${m.type}`}><div className="cmb">{m.text}</div></div>
               ))}
+              {chatTyping && (
+                <div className="cm ai">
+                  <div className="cmb" style={{display:'flex',gap:5,alignItems:'center',padding:'10px 14px'}}>
+                    {[0,0.2,0.4].map((d,i) => (
+                      <div key={i} style={{width:7,height:7,borderRadius:'50%',background:'#FF6B00',
+                        animation:'dotB 1.2s infinite',animationDelay:`${d}s`}}/>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             <div className="chat-sugs">
               {['Plan Mumbai trip 3 days','IPL match tickets','Best cafes in Pune','Goa weekend'].map(s => (
-                <button key={s} className="sug" onClick={() => { setChatInput(s); setTimeout(sendChat, 50); }}>{s}</button>
+                <button key={s} className="sug" onClick={() => sendChat(s)}>{s}</button>
               ))}
             </div>
             <div className="chat-irow">
               <input className="cinp" value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendChat()} placeholder="Ask anything — travel, events, food..." />
-              <button className="bsend" onClick={sendChat}>
+              <button className="bsend" onClick={() => sendChat()}>
                 <svg viewBox="0 0 24 24" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7"/></svg>
               </button>
             </div>
           </div>
         </div>
       </section>
-
       {/* NEWSLETTER */}
       <section id="newsletter">
         <div className="nl-l">
@@ -829,7 +863,8 @@ useEffect(() => {
   </button>
 </div>
 
-  <style>{`
+ <style>{`
+  @keyframes dotB { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-5px);opacity:1} }
   @keyframes liveBlink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.8)} }
   @media (max-width: 768px) {
     body, main, section, #stats, #ai-section, #explore, #newsletter, #footer {

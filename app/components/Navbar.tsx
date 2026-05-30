@@ -41,6 +41,7 @@ export default function Navbar({ active }: { active?: string }) {
     { l: 'Restaurants', h: '/restaurants' },
     { l: 'Adventure', h: '/adventure' },
     { l: 'X AI Agent', h: '/ai-agent' },
+    { l: 'About', h: '/about' },
   ];
 
   return (
