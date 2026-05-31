@@ -58,6 +58,15 @@ export default function BookingPage() {
   const crowdLevel = place.rating >= 4.8 ? 'High' : place.rating >= 4.5 ? 'Medium' : 'Low';
   const crowdColor = place.rating >= 4.8 ? '#FF4444' : place.rating >= 4.5 ? '#FFAA00' : '#22C55E';
 
+  if (!place.name) return (
+    <div style={{minHeight:'100vh',background:'#F5F4F0',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"'DM Sans',sans-serif"}}>
+      <div style={{textAlign:'center',color:'rgba(0,0,0,0.25)'}}>
+        <div style={{fontFamily:"'Bebas Neue',sans-serif",fontSize:32,letterSpacing:'0.06em',marginBottom:8}}>Loading...</div>
+        <div style={{fontSize:12,letterSpacing:'0.08em',textTransform:'uppercase'}}>Fetching place details</div>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <style>{`
@@ -83,7 +92,7 @@ export default function BookingPage() {
         .stat-label { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.25); }
         .stat-val { font-size:17px; font-weight:600; color:#fff; letter-spacing:0.01em; }
         .bbody { max-width:820px; margin:0 auto; padding:44px 24px; }
-        .card { background:#fff; border:0.5px solid rgba(0,0,0,0.08); border-radius:18px; padding:28px; margin-bottom:20px; }
+        .card { background:#fff; border:0.5px solid rgba(0,0,0,0.08); border-radius:18px; padding:28px; margin-bottom:20px; opacity:1 !important; transform:none !important; }
         .card-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:0.06em; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
         .card-title i { font-size:20px; color:#FF6B00; }
         .btabs { display:flex; gap:10px; margin-bottom:20px; }
@@ -146,7 +155,10 @@ export default function BookingPage() {
       </nav>
 
       <div className="bhero">
-        {place.image_url && <img src={place.image_url} alt={place.name} />}
+        {place.image_url
+          ? <img src={place.image_url} alt={place.name} style={{width:'100%',height:'100%',objectFit:'cover'}} />
+          : <div style={{width:'100%',height:'100%',background:'linear-gradient(135deg,#1a1410 0%,#2a1f15 50%,#0f0d0b 100%)'}} />
+        }
         <div className="bhero-overlay" />
         <div className="bhero-content">
           <div className="bhero-badge">
@@ -214,7 +226,21 @@ export default function BookingPage() {
           <>
             <div className="btabs">
               {[
-                { type:'book', icon:'ti-calendar-event', title:'Book Table', sub:'Reserve your spot' },
+                {
+                type:'book',
+                icon: place.category === 'travel' ? 'ti-map-pin'
+                     : place.category === 'adventure' ? 'ti-mountain'
+                     : place.category === 'cafe' ? 'ti-coffee'
+                     : 'ti-calendar-event',
+                title: place.category === 'travel' ? 'Book Trip'
+                      : place.category === 'adventure' ? 'Book Activity'
+                      : place.category === 'cafe' ? 'Reserve Seat'
+                      : place.category === 'restaurant' ? 'Reserve Table'
+                      : 'Book Now',
+                sub: place.category === 'travel' ? 'Plan your trip'
+                   : place.category === 'adventure' ? 'Secure your slot'
+                   : 'Reserve your spot'
+              },
                 ...(place.category === 'date' ? [{ type:'date', icon:'ti-heart', title:'Date Box', sub:'Premium experience' }] : []),
                 { type:'wa', icon:'ti-brand-whatsapp', title:'WhatsApp', sub:'Chat directly' },
               ].map((t) => (
@@ -232,8 +258,19 @@ export default function BookingPage() {
 
             <div className="card">
               <div className="card-title">
-                <i className={`ti ${bookType === 'date' ? 'ti-heart' : 'ti-calendar-plus'}`}></i>
-                {bookType === 'date' ? 'Order Your Date Box' : 'Book Your Table'}
+                <i className={`ti ${
+                  bookType === 'date' ? 'ti-heart'
+                  : place.category === 'travel' ? 'ti-map-pin'
+                  : place.category === 'adventure' ? 'ti-mountain'
+                  : place.category === 'cafe' ? 'ti-coffee'
+                  : 'ti-calendar-plus'
+                }`}></i>
+                {bookType === 'date' ? 'Order Your Date Box'
+                  : place.category === 'travel' ? 'Book Your Trip'
+                  : place.category === 'adventure' ? 'Book Your Activity'
+                  : place.category === 'cafe' ? 'Reserve Your Seat'
+                  : place.category === 'restaurant' ? 'Reserve Your Table'
+                  : 'Book Now'}
               </div>
 
               {bookType === 'date' && (
