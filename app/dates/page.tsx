@@ -43,9 +43,28 @@ export default function DatesPage() {
     _supabase.from('cafes').select('*').eq('category', 'date').then(({ data }) => setCards(data || []));
   }, []);
 
-  const displayed = cards.filter(d =>
+  
+
+   const displayed = cards.filter(d =>
     (!search || d.name?.toLowerCase().includes(search.toLowerCase()))
   );
+
+  // YAHAN paste karo ↓
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+          else entry.target.classList.remove('visible');
+        });
+      },
+      { threshold: 0.08 }
+    );
+    const timer = setTimeout(() => {
+      document.querySelectorAll('.date-card').forEach(card => observer.observe(card));
+    }, 300);
+    return () => { clearTimeout(timer); observer.disconnect(); };
+  }, [displayed.length]);
 
   function openBooking(d: any) {
     window.location.href = `/booking?data=${encodeURIComponent(JSON.stringify(d))}`;
@@ -133,11 +152,13 @@ export default function DatesPage() {
         .sort-sel{background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);padding:7px 12px;border-radius:3px;font-size:11px;font-family:'DM Sans',sans-serif;outline:none;cursor:pointer}
         /* CARDS */
         .dates-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-        .date-card{border-radius:8px;overflow:hidden;background:#0d0d0d;border:0.5px solid rgba(255,255,255,0.07);cursor:pointer;transition:all 0.35s;position:relative}
+        .date-card{border-radius:8px;overflow:hidden;background:#0d0d0d;border:0.5px solid rgba(255,255,255,0.07);cursor:pointer;transition:all 0.35s;position:relative;opacity:0;transform:translateY(24px)}
+        .date-card.visible{opacity:1;transform:translateY(0);transition:opacity 0.5s ease,transform 0.5s ease,border-color 0.35s,box-shadow 0.35s}
         .date-card:hover{border-color:rgba(255,107,0,0.4);transform:translateY(-5px);box-shadow:0 20px 48px rgba(255,107,0,0.08)}
-        .date-img{height:180px;overflow:hidden;position:relative}
+       .date-img{height:180px;overflow:hidden;position:relative}
         .date-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s}
         .date-card:hover .date-img img{transform:scale(1.06)}
+        .date-img::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,transparent 100%);pointer-events:none;z-index:1}
         .date-badge{position:absolute;top:10px;left:10px;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;background:rgba(0,0,0,0.75);border:0.5px solid rgba(255,255,255,0.15);padding:4px 8px;border-radius:2px;color:rgba(255,255,255,0.7);backdrop-filter:blur(8px)}
         .date-rating{position:absolute;top:10px;right:10px;font-size:9px;background:#FF6B00;padding:3px 8px;border-radius:2px;color:#fff;font-weight:500}
         .date-heart{position:absolute;bottom:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.6);border:0.5px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:12px;backdrop-filter:blur(8px);transition:all 0.2s}

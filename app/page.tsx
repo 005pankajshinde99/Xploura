@@ -57,6 +57,7 @@ function CategoryRow({ label, icon, cat, supabase, catMap, onBook }: any) {
           <div
             key={i}
             onClick={() => onBook(d)}
+            className="card"
             style={{
               flexShrink: 0,
               width: 220, borderRadius: 14,
@@ -77,6 +78,12 @@ function CategoryRow({ label, icon, cat, supabase, catMap, onBook }: any) {
           >
             {/* Image */}
             <div style={{ width: '100%', height: 160, position: 'relative', overflow: 'hidden' }}>
+  <div style={{
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    height: '60%', zIndex: 1,
+    background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)',
+    pointerEvents: 'none',
+  }} />
               {d.image_url
                 ? <img src={d.image_url} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                 : <div style={{ width: '100%', height: '100%', background: 'rgba(255,107,0,0.06)' }} />

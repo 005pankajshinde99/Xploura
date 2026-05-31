@@ -39,10 +39,27 @@ export default function TripsPage() {
     _supabase.from('cafes').select('*').eq('category', 'travel').then(({ data }) => setCards(data || []));
   }, []);
 
-  const displayed = cards.filter(d =>
+   const displayed = cards.filter(d =>
     (!search || d.name?.toLowerCase().includes(search.toLowerCase())) &&
     (!filter || d.tag?.toLowerCase().includes(filter))
   );
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+          else entry.target.classList.remove('visible');
+        });
+      },
+      { threshold: 0.08 }
+    );
+    const timer = setTimeout(() => {
+      document.querySelectorAll('.trip-card').forEach(card => observer.observe(card));
+    }, 300);
+    return () => { clearTimeout(timer); observer.disconnect(); };
+  }, [displayed.length]);
+
 
   function openBooking(d: any) {
     window.location.href = `/booking?data=${encodeURIComponent(JSON.stringify(d))}`;
@@ -145,9 +162,13 @@ export default function TripsPage() {
         .feat-badge{position:absolute;top:10px;right:10px;font-size:9px;background:rgba(0,0,0,0.7);border:0.5px solid rgba(255,255,255,0.15);padding:4px 8px;border-radius:2px;color:rgba(255,255,255,0.8);backdrop-filter:blur(8px)}
         /* GRID CARDS */
         .trips-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-        .trip-card{border-radius:6px;overflow:hidden;background:#0d0d0d;border:0.5px solid rgba(255,255,255,0.07);cursor:pointer;transition:all 0.35s;position:relative}
+        .trip-card{border-radius:6px;overflow:hidden;background:#0d0d0d;border:0.5px solid rgba(255,255,255,0.07);cursor:pointer;position:relative;opacity:0;transform:translateY(24px);transition:opacity 0.5s ease,transform 0.5s ease}
+        .trip-card.visible{opacity:1;transform:translateY(0)}
         .trip-card:hover{border-color:rgba(255,107,0,0.4);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.4)}
         .trip-img-wrap{height:160px;overflow:hidden;position:relative}
+        .trip-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s}
+        .trip-card:hover .trip-img-wrap img{transform:scale(1.06)}
+        .trip-img-wrap::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(to top,rgba(0,0,0,0.75) 0%,transparent 100%);pointer-events:none;z-index:1}
         .trip-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s}
         .trip-card:hover .trip-img-wrap img{transform:scale(1.06)}
         .trip-badge{position:absolute;top:10px;left:10px;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;background:rgba(0,0,0,0.75);border:0.5px solid rgba(255,255,255,0.15);padding:4px 8px;border-radius:2px;color:rgba(255,255,255,0.7);backdrop-filter:blur(8px)}
