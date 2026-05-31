@@ -11,6 +11,110 @@ const _supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0YmhlaXd0eXNpY2tieWFzdWxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg1MDAxMzMsImV4cCI6MjA5NDA3NjEzM30.4qdV5Pyl9EgTzYqJGL_xSRGg9_BSlO01rw_6lCzcLRs'
 );
 
+function CategoryRow({ label, icon, cat, supabase, catMap, onBook }: any) {
+  const [items, setItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from('cafes')
+      .select('*')
+      .eq('category', catMap[cat] || cat)
+      .order('area', { ascending: true })
+      .then(({ data }: any) => setItems(data || []));
+  }, [cat]);
+
+  if (items.length === 0) return null;
+
+  return (
+    <div style={{ marginBottom: 52 }}>
+      {/* Section heading */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+        <div style={{
+          width: 36, height: 36, borderRadius: 8,
+          background: 'rgba(255,107,0,0.12)',
+          border: '1px solid rgba(255,107,0,0.25)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+        }}>
+          {cat === 'shows' && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>}
+          {cat === 'travel' && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>}
+          {cat === 'sports' && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><polygon points="3 17 12 3 21 17"/><line x1="3" y1="17" x2="21" y2="17"/></svg>}
+          {cat === 'cafes' && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>}
+          {cat === 'restaurants' && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>}
+        </div>
+        <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#111', margin: 0, lineHeight: 1 }}>{label}</h2>
+        <div style={{ fontSize: 10, color: 'rgba(255,107,0,0.7)', fontFamily: "'DM Sans',sans-serif", letterSpacing: '0.06em', border: '0.5px solid rgba(255,107,0,0.25)', padding: '3px 10px', borderRadius: 20 }}>{items.length} places</div>
+        <div style={{ marginLeft: 'auto', fontSize: 11, color: 'rgba(255,255,255,0.25)', fontFamily: "'DM Sans',sans-serif", cursor: 'pointer', letterSpacing: '0.06em' }}>View all →</div>
+      </div>
+
+      {/* Horizontal scroll cards */}
+      <div style={{
+        display: 'flex', gap: 16,
+        overflowX: 'auto', scrollbarWidth: 'none',
+        paddingBottom: 8,
+        marginLeft: -4, paddingLeft: 4,
+      }}>
+        {items.map((d: any, i: number) => (
+          <div
+            key={i}
+            onClick={() => onBook(d)}
+            style={{
+              flexShrink: 0,
+              width: 220, borderRadius: 14,
+              overflow: 'hidden',
+              background: '#1a1714',
+              border: '0.5px solid rgba(255,255,255,0.08)',
+              cursor: 'pointer',
+              transition: 'all 0.22s',
+            }}
+            onMouseOver={e => {
+              (e.currentTarget as HTMLDivElement).style.border = '0.5px solid rgba(255,107,0,0.4)';
+              (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)';
+            }}
+            onMouseOut={e => {
+              (e.currentTarget as HTMLDivElement).style.border = '0.5px solid rgba(255,255,255,0.08)';
+              (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
+            }}
+          >
+            {/* Image */}
+            <div style={{ width: '100%', height: 160, position: 'relative', overflow: 'hidden' }}>
+              {d.image_url
+                ? <img src={d.image_url} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                : <div style={{ width: '100%', height: '100%', background: 'rgba(255,107,0,0.06)' }} />
+              }
+              {/* Rating */}
+              <div style={{
+                position: 'absolute', top: 8, right: 8,
+                background: 'rgba(0,0,0,0.6)', borderRadius: 20,
+                padding: '3px 8px', fontSize: 10, color: '#fff',
+                fontFamily: "'DM Sans',sans-serif",
+              }}>⭐ {d.rating}</div>
+            </div>
+
+            {/* Info */}
+            <div style={{ padding: '12px 14px' }}>
+              <div style={{
+                fontSize: 8, letterSpacing: '0.18em', textTransform: 'uppercase',
+                color: '#FF6B00', fontFamily: "'DM Sans',sans-serif", marginBottom: 5,
+              }}>{d.tag || `${d.category} · ${d.area}`}</div>
+              <div style={{
+                fontFamily: "'Bebas Neue',sans-serif", fontSize: 19,
+                color: '#fff', letterSpacing: '0.04em', lineHeight: 1.1, marginBottom: 6,
+                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+              }}>{d.name}</div>
+              <div style={{
+                fontSize: 11, color: 'rgba(255,255,255,0.32)',
+                fontFamily: "'DM Sans',sans-serif",
+              }}>{d.price}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Divider */}
+      <div style={{ height: 0.5, background: 'rgba(255,255,255,0.06)', marginTop: 8 }} />
+    </div>
+  );
+}
 export default function Home() {
   const [cards, setCards] = useState<any[]>([]);
   const [activeCat, setActiveCat] = useState('travel');
@@ -631,34 +735,21 @@ onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='tran
       </div>
 
       {/* EXPLORE */}
+     {/* EXPLORE */}
       <section id="explore">
         <div className="slabel-d">Discover</div>
         <div className="stitle-d">What are you<br /><span className="dim">exploring today?</span></div>
-        <div className="search-row">
-          <input id="search-inp" value={searchVal} onChange={e => setSearchVal(e.target.value)} placeholder="Search cafes, places, restaurants..." />
-        </div>
-        <div className="cat-row">
-          {[{l:'Dates',c:'shows'},{l:'Trips',c:'travel'},{l:'Adventure',c:'sports'},{l:'Cafes',c:'cafes'},{l:'Restaurants',c:'restaurants'}].map(({l,c}) => (
-            <button key={c} className={`cat-btn${activeCat === c ? ' active' : ''}`} onClick={() => setActiveCat(c)}>{l}</button>
-          ))}
-        </div>
-        <div className="cards-grid">
-          {filteredCards.length === 0 ? (
-            <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 40, color: 'rgba(0,0,0,0.3)' }}>No listings found</div>
-          ) : filteredCards.map((d, i) => (
-            <div key={i} className="card" onClick={() => openBooking(d)}>
-              <div className="card-scene">
-                {d.image_url ? <img src={d.image_url} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.6s' }} onMouseOver={e => (e.currentTarget.style.transform = 'scale(1.08)')} onMouseOut={e => (e.currentTarget.style.transform = 'scale(1)')} /> : null}
-              </div>
-              <div className="card-overlay">
-                <div className="ctag">{d.tag || `${d.category} · ${d.area}`}</div>
-                <div className="cname">{d.name}</div>
-                <div className="cprice">{d.price}</div>
-              </div>
-              <div className="cbadge">⭐{d.rating}</div>
-            </div>
-          ))}
-        </div>
+
+        {[
+          { label: 'Dates',       c: 'shows',       icon: '💑' },
+          { label: 'Trips',       c: 'travel',       icon: '🧭' },
+          { label: 'Adventure',   c: 'sports',       icon: '⛰️' },
+          { label: 'Cafes',       c: 'cafes',        icon: '☕' },
+          { label: 'Restaurants', c: 'restaurants',  icon: '🍽️' },
+        ].map(({ label, c, icon }) => (
+          <CategoryRow key={c} label={label} icon={icon} cat={c} supabase={_supabase} catMap={catMap} onBook={openBooking} />
+        ))}
+
       </section>
 
       {/* AI SECTION */}
