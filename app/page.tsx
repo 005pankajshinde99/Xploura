@@ -140,6 +140,7 @@ export default function Home() {
   const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [dropOpen, setDropOpen] = useState(false);
+  const [guestSheetOpen, setGuestSheetOpen] = useState(false);
   const [chatTyping, setChatTyping] = useState(false);
   const [fabOpen, setFabOpen] = useState(false);
   const ringRef = useRef({ x: 0, y: 0 });
@@ -941,7 +942,7 @@ onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='tran
     const sheet = document.getElementById('mobile-profile-sheet');
     if (sheet) sheet.style.display = sheet.style.display === 'flex' ? 'none' : 'flex';
   } else {
-    window.location.href = '/auth';
+    setGuestSheetOpen(true);
   }
 }}>
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -1030,6 +1031,189 @@ onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='tran
     Cancel
   </button>
 </div>
+
+{/* GUEST PROFILE SHEET — non-logged-in users */}
+{guestSheetOpen && (
+  <div
+    style={{
+      position: 'fixed', inset: 0, zIndex: 9990,
+      background: 'rgba(0,0,0,0.6)',
+      backdropFilter: 'blur(6px)',
+    }}
+    onClick={() => setGuestSheetOpen(false)}
+  >
+    <div
+      style={{
+        position: 'absolute', bottom: 64, left: 0, right: 0,
+        background: '#161412',
+        border: '0.5px solid rgba(255,255,255,0.08)',
+        borderRadius: '20px 20px 0 0',
+        zIndex: 9991,
+        boxShadow: '0 -12px 60px rgba(0,0,0,0.7)',
+        fontFamily: "'DM Sans', sans-serif",
+        overflow: 'hidden',
+      }}
+      onClick={e => e.stopPropagation()}
+    >
+      {/* Orange top bar */}
+      <div style={{ height: 3, background: 'linear-gradient(90deg, #FF6B00, #ff9240)' }} />
+
+      <div style={{ padding: '22px 20px 28px' }}>
+
+        {/* Logo + tagline */}
+        <div style={{ textAlign: 'center', marginBottom: 20 }}>
+          <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 26, letterSpacing: '0.22em' }}>
+            <span style={{ color: '#FF6B00' }}>X</span>
+            <span style={{ color: '#fff' }}>PLOURA</span>
+          </div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 5, letterSpacing: '0.04em', lineHeight: 1.5 }}>
+            Pune's AI-powered exploration platform
+          </div>
+        </div>
+
+        {/* About features — professional SVG icons */}
+        <div style={{
+          display: 'flex', flexDirection: 'column', gap: 0,
+          marginBottom: 20,
+          background: 'rgba(255,255,255,0.03)',
+          borderRadius: 12,
+          border: '0.5px solid rgba(255,255,255,0.07)',
+          overflow: 'hidden',
+        }}>
+          {[
+            {
+              icon: (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M12 8v4l3 3"/>
+                </svg>
+              ),
+              title: 'X AI Agent',
+              desc: 'Plans your entire night or weekend trip',
+            },
+            {
+              icon: (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8">
+                  <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+              ),
+              title: 'Curated in Pune',
+              desc: 'Verified cafes, dates, trips & adventure',
+            },
+            {
+              icon: (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8">
+                  <rect x="2" y="7" width="20" height="14" rx="2"/>
+                  <path d="M16 7V5a2 2 0 00-4 0v2M8 7V5a2 2 0 014 0"/>
+                  <line x1="12" y1="12" x2="12" y2="16"/>
+                  <line x1="10" y1="14" x2="14" y2="14"/>
+                </svg>
+              ),
+              title: 'One-tap Booking',
+              desc: 'Book events, cafes & adventures instantly',
+            },
+            {
+              icon: (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8">
+                  <rect x="1" y="4" width="22" height="16" rx="2"/>
+                  <line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+              ),
+              title: 'Secure Checkout',
+              desc: 'Safe payments — no hidden charges',
+            },
+          ].map((item, i, arr) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', gap: 14,
+              padding: '13px 16px',
+              borderBottom: i < arr.length - 1 ? '0.5px solid rgba(255,255,255,0.05)' : 'none',
+            }}>
+              <div style={{
+                width: 34, height: 34, borderRadius: 8, flexShrink: 0,
+                background: 'rgba(255,107,0,0.1)',
+                border: '0.5px solid rgba(255,107,0,0.2)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                {item.icon}
+              </div>
+              <div>
+                <div style={{ fontSize: 12, color: '#fff', fontWeight: 600, letterSpacing: '0.02em' }}>{item.title}</div>
+                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginTop: 1, letterSpacing: '0.02em' }}>{item.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* About Us link */}
+        <a
+          href="/about"
+          style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            padding: '11px', borderRadius: 10, marginBottom: 12,
+            border: '0.5px solid rgba(255,255,255,0.08)',
+            background: 'rgba(255,255,255,0.03)',
+            fontSize: 11, color: 'rgba(255,255,255,0.4)',
+            textDecoration: 'none', letterSpacing: '0.1em',
+            textTransform: 'uppercase',
+          }}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          About Xploura
+        </a>
+
+        {/* CTA buttons */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <a
+            href="/auth?tab=signup"
+            style={{
+              display: 'block', textAlign: 'center',
+              background: '#FF6B00',
+              color: '#fff',
+              padding: '14px', borderRadius: 12,
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 13, fontWeight: 700,
+              letterSpacing: '0.1em', textTransform: 'uppercase',
+              textDecoration: 'none',
+            }}
+          >
+            Get Started — Its Free
+          </a>
+          <a
+            href="/auth"
+            style={{
+              display: 'block', textAlign: 'center',
+              border: '0.5px solid rgba(255,255,255,0.15)',
+              color: 'rgba(255,255,255,0.6)',
+              padding: '13px', borderRadius: 12,
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: 13, letterSpacing: '0.08em',
+              textTransform: 'uppercase', textDecoration: 'none',
+            }}
+          >
+            Sign In
+          </a>
+          <button
+            onClick={() => setGuestSheetOpen(false)}
+            style={{
+              background: 'transparent', border: 'none',
+              color: 'rgba(255,255,255,0.2)', fontSize: 12,
+              cursor: 'pointer', padding: '8px',
+              fontFamily: "'DM Sans', sans-serif",
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+)}
 
  <style>{`
   @keyframes dotB { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-5px);opacity:1} }
