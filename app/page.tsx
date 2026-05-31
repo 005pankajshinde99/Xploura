@@ -861,7 +861,7 @@ onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='tran
   }} onClick={() => setFabOpen(false)}>
     <div style={{
       position: 'absolute', top: 0, right: 0,
-      width: '50%', height: '100vh',
+      width: isMobile ? '100%' : '50%', height: '100vh',
       background: '#0f0d0b',
       display: 'flex', flexDirection: 'column',
       boxShadow: '-20px 0 60px rgba(0,0,0,0.6)',

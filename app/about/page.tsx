@@ -1,7 +1,25 @@
 'use client';
+import { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 
 export default function AboutPage() {
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('visible');
+          else entry.target.classList.remove('visible');
+        });
+      },
+      { threshold: 0.08 }
+    );
+    const timer = setTimeout(() => {
+      document.querySelectorAll('.anim').forEach(el => observer.observe(el));
+    }, 300);
+    return () => { clearTimeout(timer); observer.disconnect(); };
+  }, []);
+
   return (
     <>
       <Navbar active="about" />
@@ -57,7 +75,10 @@ export default function AboutPage() {
           background: var(--saffron);
           animation: pulse 2s infinite;
         }
-        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.7)} }
+       @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.7)} }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+        .anim{opacity:0;transform:translateY(28px);transition:opacity 0.6s ease,transform 0.6s ease}
+        .anim.visible{opacity:1;transform:translateY(0)}
 
         .about-hero-h1 {
           font-family: 'Bebas Neue', sans-serif;
@@ -371,7 +392,7 @@ export default function AboutPage() {
 
       {/* ── STORY ── */}
       <section className="about-story">
-        <div className="story-left">
+        <div className="story-left anim">
           <div className="story-label">The Beginning</div>
           <h2 className="story-h2">
             Every Weekend<br />
@@ -395,7 +416,7 @@ export default function AboutPage() {
             </p>
           </div>
         </div>
-        <div className="story-right">
+        <div className="story-right anim">
           <div className="story-float-badge">
             <div className="sfb-num">92K</div>
             <div className="sfb-label">Explorers Trust Us</div>
@@ -416,7 +437,7 @@ export default function AboutPage() {
           { num: '4.9', suffix: '★', label: 'Average Rating' },
           { num: '18', suffix: 'K', label: 'Events Booked' },
         ].map((s, i) => (
-          <div key={i} className="astat">
+          <div key={i} className="astat anim">
             <div className="astat-num"><em>{s.num}</em><span>{s.suffix}</span></div>
             <div className="astat-label">{s.label}</div>
           </div>
@@ -455,7 +476,7 @@ export default function AboutPage() {
               icon: <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 22"/><path d="M9.1 17.4c-.9-5 2.3-9.9 8-11.4"/><path d="M14.5 5c0-2-1.5-3-3-3s-3 1-3 3 1.5 3 3 3 3-1 3-3z"/></svg>
             },
           ].map((v, i) => (
-            <div key={i} className="value-card">
+             <div key={i} className="value-card anim">
               <div className="value-card-bg" style={{ backgroundImage: `url(${v.bg})` }} />
               <div className="value-card-overlay" />
               <div className="value-num">{v.num}</div>
@@ -471,7 +492,7 @@ export default function AboutPage() {
 
       {/* ── FOUNDER ── */}
       <section className="about-founder">
-        <div className="founder-inner">
+         <div className="founder-inner anim">
           {/* Decorative panel — no photo */}
           <div className="founder-deco">
             <div className="founder-deco-grid" />
@@ -534,7 +555,7 @@ export default function AboutPage() {
               date: 'Apr 2026', read: '6 min read'
             },
           ].map((b, i) => (
-            <div key={i} className="blog-card">
+            <div key={i} className="blog-card anim">
               <div className="blog-img">
                 <img src={b.img} alt={b.title} />
                 <div className="blog-img-overlay" />
