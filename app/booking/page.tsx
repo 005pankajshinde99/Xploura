@@ -73,25 +73,25 @@ export default function BookingPage() {
         @import url('https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css');
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'DM Sans',sans-serif; background:#F5F4F0; color:#0A0A0A; }
-        .bnav { background:#0A0A0A; padding:0 40px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; border-bottom:0.5px solid rgba(255,255,255,0.06); }
+        .bnav { background:#0A0A0A; padding:0 20px; height:60px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; border-bottom:0.5px solid rgba(255,255,255,0.06); }
         .bnav-logo { font-family:'Bebas Neue',sans-serif; font-size:24px; letter-spacing:0.16em; color:#FF6B00; text-decoration:none; }
         .bnav-back { display:flex; align-items:center; gap:6px; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.35); text-decoration:none; border:0.5px solid rgba(255,255,255,0.12); padding:7px 16px; border-radius:20px; transition:all 0.2s; }
         .bnav-back:hover { color:rgba(255,255,255,0.7); border-color:rgba(255,255,255,0.25); }
-        .bhero { position:relative; height:360px; overflow:hidden; background:#111; }
+        .bhero { position:relative; height:260px; overflow:hidden; background:#111; max-width:900px; margin:0 auto; border-radius:12px; }
         .bhero img { width:100%; height:100%; object-fit:cover; }
         .bhero-overlay { position:absolute; inset:0; background:linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.85) 100%); }
-        .bhero-content { position:absolute; bottom:0; left:0; right:0; padding:36px 40px; }
+        .bhero-content { position:absolute; bottom:0; left:0; right:0; padding:36px 20px; }
         .bhero-badge { display:inline-flex; align-items:center; gap:5px; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:#FF6B00; font-weight:600; background:rgba(255,107,0,0.12); border:0.5px solid rgba(255,107,0,0.3); padding:5px 12px; border-radius:20px; margin-bottom:12px; }
-        .bhero-name { font-family:'Bebas Neue',sans-serif; font-size:58px; color:#fff; letter-spacing:0.03em; line-height:1; margin-bottom:8px; }
+        .bhero-name { font-family:'Bebas Neue',sans-serif; font-size:42px; color:#fff; letter-spacing:0.03em; line-height:1; margin-bottom:8px; }
         .bhero-loc { display:flex; align-items:center; gap:6px; font-size:13px; color:rgba(255,255,255,0.5); }
-        .stats-row { display:grid; grid-template-columns:repeat(4,1fr); background:#0A0A0A; }
-        .stat-box { padding:22px 28px; border-right:0.5px solid rgba(255,255,255,0.05); display:flex; flex-direction:column; gap:6px; }
+        .stats-row { display:grid; grid-template-columns:repeat(4,1fr); background:#0A0A0A; max-width:900px; margin:0 auto; }
+        .stat-box { padding:22px 16px; border-right:0.5px solid rgba(255,255,255,0.05); display:flex; flex-direction:column; gap:6px; }
         .stat-box:last-child { border-right:none; }
         .stat-icon-label { display:flex; align-items:center; gap:7px; }
         .stat-icon-label i { font-size:13px; color:rgba(255,255,255,0.25); }
         .stat-label { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.25); }
         .stat-val { font-size:17px; font-weight:600; color:#fff; letter-spacing:0.01em; }
-        .bbody { max-width:820px; margin:0 auto; padding:44px 24px; }
+        .bbody { max-width:900px; margin:0 auto; padding:44px 24px; }
         .card { background:#fff; border:0.5px solid rgba(0,0,0,0.08); border-radius:18px; padding:28px; margin-bottom:20px; opacity:1 !important; transform:none !important; }
         .card-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:0.06em; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
         .card-title i { font-size:20px; color:#FF6B00; }
@@ -142,7 +142,7 @@ export default function BookingPage() {
           .bnav { padding:0 16px; }
           .bbody { padding:28px 16px; }
           .bhero-content { padding:24px 20px; }
-          .bhero-name { font-size:44px; }
+          .bhero-name { font-size:32px; }
         }
       `}</style>
 
@@ -156,7 +156,7 @@ export default function BookingPage() {
 
       <div className="bhero">
         {place.image_url
-          ? <img src={place.image_url} alt={place.name} style={{width:'100%',height:'100%',objectFit:'cover'}} />
+          ? <img src={place.image_url} alt={place.name} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center center'}} />
           : <div style={{width:'100%',height:'100%',background:'linear-gradient(135deg,#1a1410 0%,#2a1f15 50%,#0f0d0b 100%)'}} />
         }
         <div className="bhero-overlay" />
