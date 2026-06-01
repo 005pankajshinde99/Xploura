@@ -143,6 +143,8 @@ export default function Home() {
   const [guestSheetOpen, setGuestSheetOpen] = useState(false);
   const [chatTyping, setChatTyping] = useState(false);
   const [fabOpen, setFabOpen] = useState(false);
+  const [featuredPlaces, setFeaturedPlaces] = useState<any[]>([]);
+const [featuredIdx, setFeaturedIdx] = useState(0);
   const ringRef = useRef({ x: 0, y: 0 });
   const curRef = useRef({ x: 0, y: 0 });
   const hbgRef = useRef<HTMLDivElement>(null);
@@ -169,6 +171,24 @@ export default function Home() {
     }, 40);
     return () => clearInterval(iv);
   }, []);
+
+  // FEATURED FETCH
+useEffect(() => {
+  _supabase
+    .from('cafes')
+    .select('*')
+    .eq('featured', true)
+    .then(({ data }) => setFeaturedPlaces(data || []));
+}, []);
+
+// FEATURED AUTO SLIDE
+useEffect(() => {
+  if (featuredPlaces.length <= 1) return;
+  const t = setInterval(() => {
+    setFeaturedIdx(p => (p + 1) % featuredPlaces.length);
+  }, 2800);
+  return () => clearInterval(t);
+}, [featuredPlaces]);
 
 useEffect(() => {
   _supabase.auth.getSession().then(({ data }) => {
@@ -503,11 +523,130 @@ onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='tran
         <div className="hero-inner">
           <div className="hero-left">
             <div className="hero-badge"><div className="hbdot" />AI-Powered Booking Platform</div>
-            <h1 className="hero-h1">
-              <span className="hs1">Explore</span>
-              <span className="hs2">Every</span>
-              <span className="hs3">World</span>
-            </h1>
+            <h1 className="hero-h1" style={isMobile ? {display:'flex', alignItems:'center', justifyContent:'space-between', gap:12} : {}}>
+  <div>
+    <span className="hs1">Explore</span>
+    <span className="hs2">Every</span>
+    <span className="hs3">World</span>
+  </div>
+
+  {/* Featured Card — Mobile Only */}
+{isMobile && featuredPlaces.length > 0 && (
+  <div style={{flexShrink:0, width:132}}>
+
+    {/* Header */}
+    <div style={{display:'flex', alignItems:'center', gap:5, marginBottom:7}}>
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="#FF6B00">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+      <span style={{fontSize:8, color:'#FF6B00', letterSpacing:'0.18em', textTransform:'uppercase', fontWeight:700, fontFamily:"'DM Sans',sans-serif"}}>Featured</span>
+      <div style={{
+        width:5, height:5, borderRadius:'50%',
+        background:'#FF6B00',
+        marginLeft:2,
+        animation:'featPulse 1.8s ease-in-out infinite',
+      }}/>
+    </div>
+
+    {/* Card — Square */}
+    <div style={{
+      width:132, height:165,
+borderRadius:13, overflow:'hidden',
+      position:'relative',
+      border:'0.5px solid rgba(255,107,0,0.3)',
+      cursor:'pointer',
+    }}
+    onClick={() => openBooking(featuredPlaces[featuredIdx])}
+    >
+      {/* Slide track */}
+      <div style={{
+        display:'flex',
+        width:`${featuredPlaces.length * 132}px`,
+        height:'165px',
+        transform:`translateX(-${featuredIdx * 132}px)`,
+        transition:'transform 0.55s cubic-bezier(0.77,0,0.18,1)',
+        willChange:'transform',
+      }}>
+        {featuredPlaces.map((f, i) => (
+          <div key={i} style={{
+            width:132, height:165,
+            flexShrink:0,
+            position:'relative',
+            backgroundImage:`url('${f.image_url}')`,
+            backgroundSize:'cover',
+            backgroundPosition:'center',
+          }}>
+            {/* Gradient */}
+            <div style={{
+              position:'absolute', inset:0,
+              background:'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.22) 100%)',
+            }}/>
+
+            {/* Top row */}
+            <div style={{
+              position:'absolute', top:7, left:7, right:7,
+              display:'flex', alignItems:'center', justifyContent:'space-between',
+            }}>
+              <div style={{
+                background:'rgba(255,107,0,0.95)',
+                borderRadius:20, padding:'3px 7px',
+                display:'flex', alignItems:'center', gap:3,
+              }}>
+                {f.category === 'cafe' && <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/></svg>}
+                {f.category === 'restaurant' && <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/></svg>}
+                {f.category === 'adventure' && <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2"><polygon points="3 17 12 3 21 17"/></svg>}
+                {f.category === 'date' && <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>}
+                {f.category === 'travel' && <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/></svg>}
+                <span style={{fontSize:7, color:'#fff', fontWeight:700, letterSpacing:'0.08em', textTransform:'uppercase', fontFamily:"'DM Sans',sans-serif"}}>{f.category}</span>
+              </div>
+              {f.rating && (
+                <div style={{background:'rgba(0,0,0,0.65)', border:'0.5px solid rgba(255,255,255,0.12)', borderRadius:20, padding:'2px 6px', display:'flex', alignItems:'center', gap:3}}>
+                  <svg width="7" height="7" viewBox="0 0 24 24" fill="#FFB800"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  <span style={{fontSize:8, color:'#fff', fontFamily:"'DM Sans',sans-serif"}}>{f.rating}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Bottom info */}
+            <div style={{position:'absolute', bottom:22, left:8, right:8}}>
+              <div style={{fontSize:7, letterSpacing:'0.14em', textTransform:'uppercase', color:'rgba(255,107,0,0.9)', fontFamily:"'DM Sans',sans-serif", marginBottom:2}}>{f.area}</div>
+              <div style={{fontFamily:"'Bebas Neue',sans-serif", fontSize:14, color:'#fff', letterSpacing:'0.04em', lineHeight:1.1, textShadow:'0 1px 8px rgba(0,0,0,0.7)'}}>{f.name}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Book button */}
+      <div style={{
+        position:'absolute', bottom:8, right:7,
+        background:'#FF6B00', borderRadius:20,
+        padding:'3px 9px', zIndex:10,
+        display:'flex', alignItems:'center', gap:3,
+      }}>
+        <span style={{fontSize:7, fontWeight:700, color:'#fff', letterSpacing:'0.1em', textTransform:'uppercase', fontFamily:"'DM Sans',sans-serif"}}>Book</span>
+        <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5">
+          <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        </svg>
+      </div>
+
+      {/* Dots */}
+      {featuredPlaces.length > 1 && (
+        <div style={{position:'absolute', bottom:11, left:8, display:'flex', gap:3, alignItems:'center', zIndex:10}}>
+          {featuredPlaces.map((_, i) => (
+            <div key={i} onClick={e => { e.stopPropagation(); setFeaturedIdx(i); }} style={{
+              width: i === featuredIdx ? 14 : 4,
+              height:3, borderRadius:2,
+              background: i === featuredIdx ? '#FF6B00' : 'rgba(255,255,255,0.28)',
+              transition:'all 0.4s cubic-bezier(0.4,0,0.2,1)',
+              cursor:'pointer',
+            }}/>
+          ))}
+        </div>
+      )}
+    </div>
+  </div>
+)}
+</h1>
             <p className="hero-sub">Dates · Cafes · Adventure · Restaurants · Trips<br />Step into your next experience</p>
             <div className="hero-cta-row">
               <button className="hbtn-primary" onClick={() => document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' })}>Plan My Night →</button>
