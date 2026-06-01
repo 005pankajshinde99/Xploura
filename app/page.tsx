@@ -532,7 +532,7 @@ onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='tran
 
   {/* Featured Card — Mobile Only */}
 {isMobile && featuredPlaces.length > 0 && (
-  <div style={{flexShrink:0, width:132}}>
+  <div style={{flexShrink:0, width:148}}>
 
     {/* Header */}
     <div style={{display:'flex', alignItems:'center', gap:5, marginBottom:7}}>
@@ -550,7 +550,7 @@ onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='tran
 
     {/* Card — Square */}
     <div style={{
-      width:132, height:165,
+      width:148, height:145,
 borderRadius:13, overflow:'hidden',
       position:'relative',
       border:'0.5px solid rgba(255,107,0,0.3)',
@@ -561,15 +561,15 @@ borderRadius:13, overflow:'hidden',
       {/* Slide track */}
       <div style={{
         display:'flex',
-        width:`${featuredPlaces.length * 132}px`,
-        height:'165px',
-        transform:`translateX(-${featuredIdx * 132}px)`,
+        width:`${featuredPlaces.length * 148}px`,
+        height:'145px',
+        transform:`translateX(-${featuredIdx * 148}px)`,
         transition:'transform 0.55s cubic-bezier(0.77,0,0.18,1)',
         willChange:'transform',
       }}>
         {featuredPlaces.map((f, i) => (
           <div key={i} style={{
-            width:132, height:165,
+            width:148, height:145,
             flexShrink:0,
             position:'relative',
             backgroundImage:`url('${f.image_url}')`,
