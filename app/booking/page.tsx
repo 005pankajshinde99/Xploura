@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
-
 const _supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -92,7 +91,7 @@ export default function BookingPage() {
         .stat-icon-label i { font-size:13px; color:rgba(255,255,255,0.25); }
         .stat-label { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.25); }
         .stat-val { font-size:17px; font-weight:600; color:#fff; letter-spacing:0.01em; }
-        .bbody { max-width:900px; margin:0 auto; padding:44px 24px; }
+        .bbody { max-width:900px; margin:0 auto; padding:44px 24px 40px; }
         .card { background:#fff; border:0.5px solid rgba(0,0,0,0.08); border-radius:18px; padding:28px; margin-bottom:20px; opacity:1 !important; transform:none !important; }
         .card-title { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:0.06em; margin-bottom:12px; display:flex; align-items:center; gap:10px; }
         .card-title i { font-size:20px; color:#FF6B00; }
@@ -105,13 +104,14 @@ export default function BookingPage() {
         .btab.active .btab-icon { color:#FF6B00; }
         .btab-title { font-family:'Bebas Neue',sans-serif; font-size:16px; letter-spacing:0.06em; color:#0A0A0A; }
         .btab-sub { font-size:10px; color:rgba(0,0,0,0.3); margin-top:2px; letter-spacing:0.04em; }
-        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+        .form-grid { display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:14px; }
         .finput-wrap { position:relative; }
         .finput-wrap i { position:absolute; left:14px; top:50%; transform:translateY(-50%); font-size:16px; color:rgba(0,0,0,0.25); pointer-events:none; }
-        .finput { width:100%; padding:13px 16px 13px 40px; border:0.5px solid rgba(0,0,0,0.12); border-radius:11px; font-size:13.5px; font-family:'DM Sans',sans-serif; color:#0A0A0A; background:#FAFAF8; outline:none; transition:border-color 0.2s, background 0.2s; }
+        .finput { width:100%; padding:13px 16px 13px 40px; border:0.5px solid rgba(0,0,0,0.12); border-radius:11px; font-size:13.5px; font-family:'DM Sans',sans-serif; color:#0A0A0A; background:#FAFAF8 !important; outline:none; transition:border-color 0.2s, background 0.2s; -webkit-appearance:none; }
         .finput:focus { border-color:#FF6B00; background:#fff; }
         .finput::placeholder { color:rgba(0,0,0,0.3); }
-        .fsubmit { width:100%; padding:15px; background:#FF6B00; color:#fff; border:none; border-radius:11px; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; font-family:'DM Sans',sans-serif; font-weight:600; cursor:pointer; margin-top:4px; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s, transform 0.1s; }
+        .fsubmit-wrap { padding:0 24px 40px; max-width:900px; margin:0 auto; }
+        .fsubmit { width:100%; padding:16px; background:#FF6B00; color:#fff; border:none; border-radius:14px; font-size:12px; letter-spacing:0.14em; text-transform:uppercase; font-family:'DM Sans',sans-serif; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s, transform 0.1s; }
         .fsubmit:hover { background:#E55E00; }
         .fsubmit:active { transform:scale(0.99); }
         .fsubmit:disabled { opacity:0.6; cursor:not-allowed; }
@@ -135,13 +135,16 @@ export default function BookingPage() {
         .divider { height:0.5px; background:rgba(0,0,0,0.07); margin:16px 0; }
         .crowd-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:middle; }
         @keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+        @media(min-width:601px) {
+          .form-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+        }
         @media(max-width:600px) {
           .stats-row { grid-template-columns:repeat(2,1fr); }
-          .form-grid { grid-template-columns:1fr; }
           .btabs { flex-direction:column; }
           .dbgrid { grid-template-columns:repeat(2,1fr); }
           .bnav { padding:0 16px; }
-          .bbody { padding:28px 16px; }
+          .bbody { padding:28px 16px 20px; }
+          .fsubmit-wrap { padding:0 16px 40px; }
           .bhero-content { padding:24px 20px; }
           .bhero-name { font-size:32px; }
         }
@@ -228,20 +231,20 @@ export default function BookingPage() {
             <div className="btabs">
               {[
                 {
-                type:'book',
-                icon: place.category === 'travel' ? 'ti-map-pin'
-                     : place.category === 'adventure' ? 'ti-mountain'
-                     : place.category === 'cafe' ? 'ti-coffee'
-                     : 'ti-calendar-event',
-                title: place.category === 'travel' ? 'Book Trip'
-                      : place.category === 'adventure' ? 'Book Activity'
-                      : place.category === 'cafe' ? 'Reserve Seat'
-                      : place.category === 'restaurant' ? 'Reserve Table'
-                      : 'Book Now',
-                sub: place.category === 'travel' ? 'Plan your trip'
-                   : place.category === 'adventure' ? 'Secure your slot'
-                   : 'Reserve your spot'
-              },
+                  type:'book',
+                  icon: place.category === 'travel' ? 'ti-map-pin'
+                       : place.category === 'adventure' ? 'ti-mountain'
+                       : place.category === 'cafe' ? 'ti-coffee'
+                       : 'ti-calendar-event',
+                  title: place.category === 'travel' ? 'Book Trip'
+                        : place.category === 'adventure' ? 'Book Activity'
+                        : place.category === 'cafe' ? 'Reserve Seat'
+                        : place.category === 'restaurant' ? 'Reserve Table'
+                        : 'Book Now',
+                  sub: place.category === 'travel' ? 'Plan your trip'
+                     : place.category === 'adventure' ? 'Secure your slot'
+                     : 'Reserve your spot'
+                },
                 ...(place.category === 'date' ? [{ type:'date', icon:'ti-heart', title:'Date Box', sub:'Premium experience' }] : []),
                 { type:'wa', icon:'ti-brand-whatsapp', title:'WhatsApp', sub:'Chat directly' },
               ].map((t) => (
@@ -301,7 +304,10 @@ export default function BookingPage() {
                 <div className="finput-wrap"><i className="ti ti-users"></i><input className="finput" placeholder="No. of Guests" type="number" value={form.guests} onChange={e => setForm({...form, guests:e.target.value})} /></div>
                 <div className="finput-wrap"><i className="ti ti-notes"></i><input className="finput" placeholder="Special Note (optional)" value={form.note} onChange={e => setForm({...form, note:e.target.value})} /></div>
               </div>
+            </div>
 
+            {/* Button card ke BAHAR hai — kabhi hide nahi hoga */}
+            <div className="fsubmit-wrap">
               <button className="fsubmit" onClick={submitBooking} disabled={loading}>
                 {loading ? (
                   <><i className="ti ti-loader-2" style={{animation:'spin 1s linear infinite'}}></i> Saving...</>
