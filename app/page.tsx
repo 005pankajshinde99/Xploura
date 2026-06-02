@@ -1,10 +1,12 @@
 'use client';
 import { useEffect, useState, useRef } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import Navbar from './components/Navbar';
 
 import { motion } from 'motion/react';
 import { FaUtensils, FaCompass, FaCoffee, FaHeart, FaMountain } from 'react-icons/fa';
 import { RiRobot2Fill } from 'react-icons/ri';
+
 
 const _supabase = createClient(
   'https://ttbheiwtysickbyasulr.supabase.co',
@@ -139,7 +141,7 @@ export default function Home() {
   const [slideIdx, setSlideIdx] = useState(0);
   const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
-  const [dropOpen, setDropOpen] = useState(false);
+
   const [guestSheetOpen, setGuestSheetOpen] = useState(false);
   const [chatTyping, setChatTyping] = useState(false);
   const [fabOpen, setFabOpen] = useState(false);
@@ -242,32 +244,13 @@ useEffect(() => {
     return () => clearInterval(t);
   }, []);
 
-  // NAV SCROLL
-  useEffect(() => {
-    const onScroll = () => {
-      const nav = document.getElementById('main-nav');
-      if (nav) nav.className = window.scrollY > 60 ? 'sc' : '';
-    };
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+
 
   // CARDS
   useEffect(() => { buildCards(activeCat); }, [activeCat]);
 
   
 
-  // Close dropdown on outside click
-useEffect(() => {
-  const handler = (e: MouseEvent) => {
-    const dd = document.getElementById('nav-dd');
-    if (dd && !dd.contains(e.target as Node)) {
-      setDropOpen(false);
-    }
-  };
-  document.addEventListener('mousedown', handler);
-  return () => document.removeEventListener('mousedown', handler);
-}, []);
 
 // Card scroll fade observer
 useEffect(() => {
@@ -384,137 +367,7 @@ async function sendChat(overrideText?: string) {
       </div>
 
 {/* NAV */}
-<nav id="main-nav" style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 48px', position:'fixed', top:0, left:0, right:0, zIndex:100, background:'rgba(15,13,11,0.92)', backdropFilter:'blur(20px)'}}>
-
-  <a href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-  <span style={{
-    fontFamily: "'Bebas Neue', sans-serif",
-    fontSize: 26,
-    letterSpacing: '0.22em',
-    lineHeight: 1,
-    fontWeight: 700,
-  }}>
-    <span style={{ color: '#FF6B00' }}>X</span>
-    <span style={{ color: '#ffffff' }}>PLOURA</span>
-  </span>
-</a>
-
-  <ul style={{display:'flex', gap:32, listStyle:'none', margin:0, padding:0}}>
-    <li><a href="/trips" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Trips</a></li>
-    <li><a href="/dates" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Dates</a></li>
-    <li><a href="/cafes" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Cafes</a></li>
-    <li><a href="/restaurants" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Restaurants</a></li>
-    <li><a href="/adventure" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Adventure</a></li>
-    <li><a href="/ai-agent" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>X AI Agent</a></li>
-    <li><a href="/about" style={{fontSize:11, letterSpacing:'0.13em', textTransform:'uppercase', color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>About</a></li>
-  </ul>
-
- <div style={{display:'flex', gap:10, alignItems:'center', position:'relative'}}>
-  {authLoading ? (
-    <div style={{width: 36, height: 36, borderRadius:'50%', background:'rgba(255,255,255,0.06)'}} />
-  ) : user ? (
-    <div style={{position:'relative', display: isMobile ? 'none' : 'block'}} id="nav-dd">
-  {/* Avatar Circle — click karo dropdown ke liye */}
- <div onClick={() => setDropOpen(p => !p)} style={{
-  width: 36, height: 36, borderRadius: '50%',
-  background: 'rgba(255,107,0,0.15)',
-  border: '1.5px solid #FF6B00',
-  display: 'flex', alignItems: 'center',
-  justifyContent: 'center', cursor: 'pointer',
-  position: 'relative', overflow: 'hidden'
-}}>
-  {/* Professional user icon */}
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-    stroke="#FF6B00" strokeWidth="1.8">
-    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-    <circle cx="12" cy="7" r="4"/>
-  </svg>
-</div>
-
-      {/* Dropdown */}
-      {/* Dropdown */}
-      {dropOpen && (
-      <div
-        style={{
-          position:'absolute', top: 46, right: 0,
-          background:'#1a1714', border:'0.5px solid rgba(255,255,255,0.1)',
-          borderRadius: 10, minWidth: 180, zIndex: 999,
-          boxShadow:'0 16px 40px rgba(0,0,0,0.6)',
-          overflow:'hidden'
-        }}>
-        {/* User info */}
-        <div style={{padding:'12px 16px', borderBottom:'0.5px solid rgba(255,255,255,0.07)'}}>
-          <div style={{fontSize:11, color:'rgba(255,255,255,0.35)', letterSpacing:'0.06em', fontFamily:"'DM Sans',sans-serif"}}>Signed in as</div>
-          <div style={{fontSize:12, color:'#fff', fontWeight:500, marginTop:2, fontFamily:"'DM Sans',sans-serif", overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap', maxWidth:148}}>
-            {user.email}
-          </div>
-        </div>
-        {/* My Bookings */}
-<a href="/userbooking" style={{
-  display:'flex', alignItems:'center', gap:10,
-  padding:'11px 16px', fontSize:12, color:'rgba(255,255,255,0.6)',
-  textDecoration:'none', fontFamily:"'DM Sans',sans-serif",
-  transition:'background 0.2s, color 0.2s',
-  borderBottom:'0.5px solid rgba(255,255,255,0.05)'
-}}
-onMouseOver={e => { (e.currentTarget as HTMLAnchorElement).style.background='rgba(255,107,0,0.08)'; (e.currentTarget as HTMLAnchorElement).style.color='#FF6B00'; }}
-onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='transparent'; (e.currentTarget as HTMLAnchorElement).style.color='rgba(255,255,255,0.6)'; }}>
-  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-    <rect x="3" y="4" width="18" height="18" rx="2"/>
-    <line x1="16" y1="2" x2="16" y2="6"/>
-    <line x1="8" y1="2" x2="8" y2="6"/>
-    <line x1="3" y1="10" x2="21" y2="10"/>
-  </svg>
-  My Bookings
-</a>
-        {/* Profile */}
-        <a href="/profile" style={{
-          display:'flex', alignItems:'center', gap:10,
-          padding:'11px 16px', fontSize:12, color:'rgba(255,255,255,0.6)',
-          textDecoration:'none', fontFamily:"'DM Sans',sans-serif",
-          transition:'background 0.2s, color 0.2s',
-          borderBottom:'0.5px solid rgba(255,255,255,0.05)'
-        }}
-        onMouseOver={e => { (e.currentTarget as HTMLAnchorElement).style.background='rgba(255,107,0,0.08)'; (e.currentTarget as HTMLAnchorElement).style.color='#FF6B00'; }}
-        onMouseOut={e => { (e.currentTarget as HTMLAnchorElement).style.background='transparent'; (e.currentTarget as HTMLAnchorElement).style.color='rgba(255,255,255,0.6)'; }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
-          Profile
-        </a>
-        {/* Sign Out */}
-        <button
-          onClick={async () => { await _supabase.auth.signOut(); window.location.href = '/'; }}
-          style={{
-            width:'100%', padding:'11px 16px',
-            display:'flex', alignItems:'center', gap:10,
-            fontSize:12, color:'rgba(255,80,80,0.75)',
-            background:'transparent', border:'none', cursor:'pointer',
-            fontFamily:"'DM Sans',sans-serif", textAlign:'left',
-            transition:'background 0.2s'
-          }}
-          onMouseOver={e => { (e.currentTarget as HTMLButtonElement).style.background='rgba(255,50,50,0.08)'; }}
-          onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background='transparent'; }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
-            <polyline points="16 17 21 12 16 7"/>
-            <line x1="21" y1="12" x2="9" y2="12"/>
-          </svg>
-          Sign Out
-        </button>
-      </div>
-      )}
-    </div>
-  ) : (
-    <>
-      <a href="/auth" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', border:'0.5px solid rgba(255,255,255,0.12)', padding:'9px 20px', borderRadius:24, color:'rgba(255,255,255,0.55)', textDecoration:'none'}}>Sign In</a>
-      <a href="/auth?tab=signup" style={{fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', background:'#FF6B00', color:'#fff', padding:'9px 20px', borderRadius:24, textDecoration:'none'}}>Get Started</a>
-    </>
-  )}
-</div>
-
-</nav>
+<Navbar active="home" />
       {/* HERO */}
       <section id="hero">
         <div className="hbg" ref={hbgRef} />
