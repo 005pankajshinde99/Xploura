@@ -219,9 +219,9 @@ async function getGroqResponse(
         Authorization: 'Bearer ' + groqKey,
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: 'llama3-70b-8192',
         messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
-        max_tokens: 220,
+        max_tokens: 150,
         temperature: 0.92,
         presence_penalty: 0.6,
         frequency_penalty: 0.5,
@@ -230,7 +230,8 @@ async function getGroqResponse(
 
     const data = await res.json();
     return data.choices?.[0]?.message?.content?.trim() || null;
-  } catch {
+  } catch (err) {
+    console.error('Groq error:', err);
     return null;
   }
 }
