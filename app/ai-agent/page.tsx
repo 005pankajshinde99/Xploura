@@ -190,12 +190,8 @@ async function getGroqResponse(
   context?: string
 ): Promise<string | null> {
   try {
-    const groqKey = process.env.NEXT_PUBLIC_GROQ_KEY;
-    if (!groqKey) return null;
-
     const messages: { role: string; content: string }[] = [];
 
-    // Inject DB context as a system-level note
     if (context) {
       messages.push({
         role: 'user',
@@ -204,7 +200,6 @@ async function getGroqResponse(
       messages.push({ role: 'assistant', content: 'Got it, using that info.' });
     }
 
-    // Add conversation history (last 6 turns)
     const recentHistory = conversationHistory.slice(-6);
     for (const turn of recentHistory) {
       messages.push({ role: turn.role, content: turn.content });
@@ -212,16 +207,15 @@ async function getGroqResponse(
 
     messages.push({ role: 'user', content: userMsg });
 
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + groqKey,
       },
       body: JSON.stringify({
-        model: 'llama3-70b-8192',
+        model: 'llama-3.3-70b-versatile',
         messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
-        max_tokens: 150,
+        max_tokens: 220,
         temperature: 0.92,
         presence_penalty: 0.6,
         frequency_penalty: 0.5,
@@ -230,8 +224,7 @@ async function getGroqResponse(
 
     const data = await res.json();
     return data.choices?.[0]?.message?.content?.trim() || null;
-  } catch (err) {
-    console.error('Groq error:', err);
+  } catch {
     return null;
   }
 }

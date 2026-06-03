@@ -306,33 +306,30 @@ async function sendChat(overrideText?: string) {
   setChatTyping(true);
 
   try {
-    const groqKey = process.env.GROQ_KEY;
-    if (groqKey) {
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + groqKey },
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          messages: [
-            { role: 'system', content: `You are Xploura AI — a super friendly local guide for Pune, India. Talk like a knowledgeable friend. Keep replies under 80 words. Use 1-2 emojis max. Be specific about places, prices, what to order. Never say "Certainly!" or "Of course!". Vary your openings every time.` },
-            ...chatMsgs.slice(-6).map(m => ({ role: m.type === 'ai' ? 'assistant' : 'user', content: m.text })),
-            { role: 'user', content: txt }
-          ],
-          max_tokens: 200,
-          temperature: 0.9,
-        }),
-      });
-      const data = await res.json();
-      const reply = data.choices?.[0]?.message?.content?.trim();
-      if (reply) {
-        setChatMsgs(prev => [...prev, { type: 'ai', text: reply }]);
-        setChatTyping(false);
-        return;
-      }
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          { role: 'system', content: `You are Xploura AI — a super friendly local guide for Pune, India. Talk like a knowledgeable friend. Keep replies under 80 words. Use 1-2 emojis max. Be specific about places, prices, what to order. Never say "Certainly!" or "Of course!". Vary your openings every time.` },
+          ...chatMsgs.slice(-6).map(m => ({ role: m.type === 'ai' ? 'assistant' : 'user', content: m.text })),
+          { role: 'user', content: txt }
+        ],
+        max_tokens: 200,
+        temperature: 0.9,
+      }),
+    });
+    const data = await res.json();
+    const reply = data.choices?.[0]?.message?.content?.trim();
+    if (reply) {
+      setChatMsgs(prev => [...prev, { type: 'ai', text: reply }]);
+      setChatTyping(false);
+      return;
     }
   } catch {}
 
-  // Fallback if Groq fails
+  // Fallback
   const lower = txt.toLowerCase();
   const fallback = lower.includes('mumbai') || lower.includes('trip')
     ? '3D/2N from ₹8,500 — Gateway of India, Marine Drive, street food tour. Book it? 🧡'
