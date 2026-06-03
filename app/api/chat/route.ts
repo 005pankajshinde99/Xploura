@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.NEXT_PUBLIC_GROQ_KEY}`,
+      'Authorization': `Bearer ${process.env.GROQ_KEY}`,
     },
     body: JSON.stringify(body),
   });

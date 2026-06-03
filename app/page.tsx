@@ -306,7 +306,7 @@ async function sendChat(overrideText?: string) {
   setChatTyping(true);
 
   try {
-    const groqKey = process.env.NEXT_PUBLIC_GROQ_KEY;
+    const groqKey = process.env.GROQ_KEY;
     if (groqKey) {
       const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
