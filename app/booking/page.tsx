@@ -148,10 +148,14 @@ export default function BookingPage() {
           .bhero-content { padding:24px 20px; }
           .bhero-name { font-size:32px; }
         }
+
+        html, body { margin:0; padding:0; }
       `}</style>
 
       <nav className="bnav">
-        <a href="/" className="bnav-logo">Xploura</a>
+        <a href="/" className="bnav-logo">
+  <span style={{color:'#FF6B00'}}>X</span>PLOURA
+</a>
         <a href="/" className="bnav-back">
           <i className="ti ti-arrow-left" style={{fontSize:13}}></i>
           Back

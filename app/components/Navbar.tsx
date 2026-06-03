@@ -14,6 +14,7 @@ const links = [
   { l: 'Cafes',       h: '/cafes' },
   { l: 'Restaurants', h: '/restaurants' },
   { l: 'Adventure',   h: '/adventure' },
+  { l: 'Vibes',       h: '/vibes' }, 
   { l: 'X AI Agent',  h: '/ai-agent' },
   { l: 'About',       h: '/about' },
 ];
@@ -24,7 +25,16 @@ export default function Navbar({ active }: { active?: string }) {
   const [dropOpen, setDropOpen]   = useState(false);
   const [scrolled, setScrolled]   = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const [isMobile, setIsMobile]   = useState(false);
   const ddRef = useRef<HTMLDivElement>(null);
+
+  /* ── mobile detection ── */
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   /* ── auth ── */
   useEffect(() => {
@@ -49,7 +59,7 @@ export default function Navbar({ active }: { active?: string }) {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  /* ── scroll detection for blur intensity ── */
+  /* ── scroll detection ── */
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -58,7 +68,6 @@ export default function Navbar({ active }: { active?: string }) {
 
   return (
     <>
-      {/* ── Inject CSS ── */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap');
 
@@ -70,8 +79,6 @@ export default function Navbar({ active }: { active?: string }) {
           font-family: 'DM Sans', sans-serif;
           transition: background 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
         }
-
-        /* Transparent when at top, subtle fill when scrolled */
         .xp-nav.at-top {
           background: transparent;
           border-bottom: 1px solid transparent;
@@ -96,7 +103,7 @@ export default function Navbar({ active }: { active?: string }) {
         .xp-logo-x   { color: #FF6B00; }
         .xp-logo-rest{ color: #fff; }
 
-        /* ── Nav links container — pill shape like Raycast ── */
+        /* ── Nav links container ── */
         .xp-links-wrap {
           display: flex;
           align-items: center;
@@ -108,8 +115,6 @@ export default function Navbar({ active }: { active?: string }) {
           backdrop-filter: blur(8px);
           -webkit-backdrop-filter: blur(8px);
         }
-
-        /* ── Individual link ── */
         .xp-link {
           position: relative;
           padding: 6px 14px;
@@ -122,15 +127,8 @@ export default function Navbar({ active }: { active?: string }) {
           transition: color 0.2s;
           white-space: nowrap;
         }
-        .xp-link:hover,
-        .xp-link.hovered {
-          color: rgba(255,255,255,0.85);
-        }
-        .xp-link.active-link {
-          color: #fff;
-        }
-
-        /* Active pill — appears behind the active/hovered link */
+        .xp-link:hover, .xp-link.hovered { color: rgba(255,255,255,0.85); }
+        .xp-link.active-link { color: #fff; }
         .xp-link-pill {
           position: absolute; inset: 0;
           border-radius: 999px;
@@ -161,7 +159,6 @@ export default function Navbar({ active }: { active?: string }) {
           padding: 7px 18px; border-radius: 999px;
           text-decoration: none;
           transition: background 0.2s, box-shadow 0.2s;
-          box-shadow: 0 0 0 0 rgba(255,107,0,0);
         }
         .xp-btn-started:hover {
           background: #ff7d1a;
@@ -177,10 +174,7 @@ export default function Navbar({ active }: { active?: string }) {
           cursor: pointer;
           transition: border-color 0.2s, background 0.2s;
         }
-        .xp-avatar:hover {
-          background: rgba(255,107,0,0.22);
-          border-color: #FF6B00;
-        }
+        .xp-avatar:hover { background: rgba(255,107,0,0.22); border-color: #FF6B00; }
 
         /* ── Dropdown ── */
         .xp-dropdown {
@@ -190,28 +184,18 @@ export default function Navbar({ active }: { active?: string }) {
           -webkit-backdrop-filter: blur(24px) saturate(160%);
           border: 1px solid rgba(255,255,255,0.09);
           border-radius: 14px; min-width: 206px; z-index: 9999;
-          box-shadow: 0 20px 50px rgba(0,0,0,0.65),
-                      0 0 0 1px rgba(255,255,255,0.03) inset;
+          box-shadow: 0 20px 50px rgba(0,0,0,0.65);
           overflow: hidden;
           animation: ddIn 0.18s cubic-bezier(0.23,1,0.32,1);
           transform-origin: top right;
         }
         @keyframes ddIn {
           from { opacity:0; transform: scale(0.94) translateY(-6px); }
-          to   { opacity:1; transform: scale(1)    translateY(0); }
+          to   { opacity:1; transform: scale(1) translateY(0); }
         }
-        .xp-dd-email-area {
-          padding: 13px 16px;
-          border-bottom: 1px solid rgba(255,255,255,0.06);
-        }
-        .xp-dd-label {
-          font-size: 9px; color: rgba(255,255,255,0.25);
-          letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px;
-        }
-        .xp-dd-email {
-          font-size: 12px; color: #fff; font-weight: 500;
-          overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 170px;
-        }
+        .xp-dd-email-area { padding: 13px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .xp-dd-label { font-size: 9px; color: rgba(255,255,255,0.25); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px; }
+        .xp-dd-email { font-size: 12px; color: #fff; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 170px; }
         .xp-dd-item {
           display: flex; align-items: center; gap: 10px;
           padding: 11px 16px; font-size: 12.5px;
@@ -221,26 +205,51 @@ export default function Navbar({ active }: { active?: string }) {
           cursor: pointer; background: transparent; border-left: none; border-right: none; border-top: none;
           width: 100%; font-family: 'DM Sans', sans-serif; text-align: left;
         }
-        .xp-dd-item:hover {
-          background: rgba(255,255,255,0.05);
-          color: rgba(255,255,255,0.9);
-        }
+        .xp-dd-item:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.9); }
         .xp-dd-item.danger { color: rgba(255,80,80,0.75); border-bottom: none; }
         .xp-dd-item.danger:hover { background: rgba(255,50,50,0.07); color: rgba(255,100,100,1); }
-
-        /* skeleton */
         .xp-skel { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.05); }
+
+        /* ══════════════════════════════
+           MOBILE — max-width: 768px
+           Logo ✅  |  Nav tabs ❌  |  Auth (only if logged out) ✅
+           ══════════════════════════════ */
+        @media (max-width: 768px) {
+          .xp-nav {
+            padding: 0 16px;
+            height: 52px;
+          }
+          /* Hide nav tab pills */
+          .xp-links-wrap {
+            display: none !important;
+          }
+          /* Hide avatar & skeleton — profile handled by bottom nav */
+          .xp-mobile-hide {
+            display: none !important;
+          }
+          /* Smaller auth buttons on mobile */
+          .xp-btn-signin {
+            font-size: 10px;
+            padding: 6px 13px;
+            letter-spacing: 0.08em;
+          }
+          .xp-btn-started {
+            font-size: 10px;
+            padding: 6px 13px;
+            letter-spacing: 0.08em;
+          }
+        }
       `}</style>
 
       <nav className={`xp-nav ${scrolled ? 'scrolled' : 'at-top'}`}>
 
-        {/* LOGO */}
+        {/* LOGO — always visible */}
         <a href="/" className="xp-logo">
           <span className="xp-logo-x">X</span>
           <span className="xp-logo-rest">PLOURA</span>
         </a>
 
-        {/* LINKS — pill container */}
+        {/* LINKS — hidden on mobile */}
         <div className="xp-links-wrap">
           {links.map(({ l, h }) => {
             const isActive  = active === l.toLowerCase();
@@ -265,23 +274,27 @@ export default function Navbar({ active }: { active?: string }) {
         {/* AUTH */}
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', position: 'relative' }}>
           {authLoading ? (
-            <div className="xp-skel" />
+            /* skeleton — hidden on mobile */
+            <div className={`xp-skel${isMobile ? ' xp-mobile-hide' : ''}`} />
           ) : user ? (
-            <div ref={ddRef} style={{ position: 'relative' }}>
+            /* Logged in: show avatar on desktop, hide on mobile (bottom nav handles it) */
+            <div
+              ref={ddRef}
+              style={{ position: 'relative' }}
+              className={isMobile ? 'xp-mobile-hide' : ''}
+            >
               <div className="xp-avatar" onClick={() => setDropOpen(p => !p)}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8">
                   <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
                   <circle cx="12" cy="7" r="4"/>
                 </svg>
               </div>
-
               {dropOpen && (
                 <div className="xp-dropdown">
                   <div className="xp-dd-email-area">
                     <div className="xp-dd-label">Signed in as</div>
                     <div className="xp-dd-email">{user.email}</div>
                   </div>
-
                   <a href="/bookings" className="xp-dd-item">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <rect x="3" y="4" width="18" height="18" rx="2"/>
@@ -291,7 +304,6 @@ export default function Navbar({ active }: { active?: string }) {
                     </svg>
                     My Bookings
                   </a>
-
                   <a href="/profile" className="xp-dd-item">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
@@ -299,7 +311,6 @@ export default function Navbar({ active }: { active?: string }) {
                     </svg>
                     Profile
                   </a>
-
                   <button
                     className="xp-dd-item danger"
                     onClick={async () => { await _supabase.auth.signOut(); window.location.href = '/'; }}
@@ -315,6 +326,7 @@ export default function Navbar({ active }: { active?: string }) {
               )}
             </div>
           ) : (
+            /* Not logged in: show Sign In + Get Started on BOTH mobile and desktop */
             <>
               <a href="/auth" className="xp-btn-signin">Sign In</a>
               <a href="/auth?tab=signup" className="xp-btn-started">Get Started</a>

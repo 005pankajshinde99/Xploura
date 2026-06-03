@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import Navbar from './components/Navbar';
 
 import { motion } from 'motion/react';
-import { FaUtensils, FaCompass, FaCoffee, FaHeart, FaMountain } from 'react-icons/fa';
+import { FaUtensils, FaCompass, FaCoffee, FaHeart, FaMountain, FaFire } from 'react-icons/fa';
 import { RiRobot2Fill } from 'react-icons/ri';
 
 
@@ -549,12 +549,13 @@ borderRadius:13, overflow:'hidden',
       marginBottom: 20,
     }}>
       {[
-        { label: 'X AI\nAgent', icon: <RiRobot2Fill size={20} />, id: 'ai', ai: true },
-        { label: 'Dates',       icon: <FaHeart size={18} />,      id: 'dates' },
-        { label: 'Cafes',       icon: <FaCoffee size={18} />,     id: 'cafes' },
-        { label: 'Restaurants', icon: <FaUtensils size={16} />,   id: 'restaurants' },
-        { label: 'Adventure',   icon: <FaMountain size={18} />,   id: 'adventure' },
-        { label: 'Trips',       icon: <FaCompass size={18} />,    id: 'trips' },
+       { label: 'X AI\nAgent', icon: <RiRobot2Fill size={20} />, id: 'ai', ai: true },
+{ label: 'Dates',       icon: <FaHeart size={18} />,      id: 'dates' },
+{ label: 'Cafes',       icon: <FaCoffee size={18} />,     id: 'cafes' },
+{ label: 'Restaurants', icon: <FaUtensils size={16} />,   id: 'restaurants' },
+{ label: 'Adventure',   icon: <FaMountain size={18} />,   id: 'adventure' },
+{ label: 'Vibes',       icon: <FaFire size={18} />,       id: 'vibes' },  // ← YE
+{ label: 'Trips',       icon: <FaCompass size={18} />,    id: 'trips' },
       ].map(cat => (
         <div
           key={cat.id}
@@ -565,6 +566,7 @@ borderRadius:13, overflow:'hidden',
     cafes: '/cafes',
     restaurants: '/restaurants',
     adventure: '/adventure',
+    vibes: '/vibes',
     trips: '/trips',
   };
   if (routeMap[cat.id]) {

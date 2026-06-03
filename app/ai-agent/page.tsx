@@ -813,6 +813,89 @@ export default function AIAgentPage() {
           text-align: center;
           animation: fadeUp 0.45s ease;
         }
+
+       .xa-welcome { position: relative; overflow: hidden; }
+.xa-welcome::before {
+content: '';
+position: absolute;
+top: -120px; left: 50%; transform: translateX(-50%);
+width: 700px; height: 500px;
+background: radial-gradient(ellipse, rgba(255,107,0,0.14) 0%, transparent 68%);
+pointer-events: none; z-index: 0;
+}
+.xa-welcome > * { position: relative; z-index: 1; }
+        /* Ruixen-style pill actions */
+        .xa-pill-grid {
+          display: flex; flex-wrap: wrap;
+          justify-content: center; gap: 10px;
+          max-width: 560px; margin-top: 28px;
+        }
+        .xa-pill {
+          display: flex; align-items: center; gap: 8px;
+          padding: 10px 20px;
+          background: rgba(255,255,255,0.04);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 999px;
+          font-size: 13px; font-weight: 500;
+          color: rgba(255,255,255,0.72);
+          cursor: pointer;
+          transition: all 0.22s ease;
+          font-family: 'DM Sans', sans-serif;
+          letter-spacing: 0.01em;
+          white-space: nowrap;
+        }
+        .xa-pill:hover {
+background: rgba(120,80,220,0.12);
+border-color: rgba(140,100,240,0.5);
+color: #c4aaff;
+box-shadow: 0 4px 16px rgba(120,80,220,0.12);
+}
+        .xa-pill-icon { font-size: 17px; line-height: 1; }
+        .xa-input-center {
+          width: 100%; max-width: 640px;
+          background: rgba(20,20,20,0.85);
+          backdrop-filter: blur(12px);
+          border: 1px solid rgba(255,255,255,0.12);
+border-radius: 20px;
+background: rgba(255,255,255,0.04);
+backdrop-filter: blur(20px);
+          padding: 14px 14px 12px 18px;
+          margin-top: 24px;
+          transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .xa-input-center:focus-within {
+          border-color: rgba(255,107,0,0.45);
+          box-shadow: 0 0 0 3px rgba(255,107,0,0.06);
+        }
+        .xa-center-textarea {
+          width: 100%; background: transparent;
+          border: none; outline: none;
+          color: rgba(255,255,255,0.86);
+          font-size: 15px; font-family: 'DM Sans', sans-serif;
+          resize: none; min-height: 26px; max-height: 120px;
+          line-height: 1.6; caret-color: #FF6B00;
+        }
+        .xa-center-textarea::placeholder { color: rgba(255,255,255,0.2); }
+        .xa-center-footer {
+          display: flex; align-items: center; justify-content: space-between;
+          margin-top: 10px;
+        }
+        .xa-center-hint {
+          font-size: 10px; color: rgba(255,255,255,0.16);
+          letter-spacing: 0.04em;
+        }
+        .xa-center-send {
+          width: 34px; height: 34px; border-radius: 9px;
+          background: #FF6B00; border: none; cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+          transition: all 0.18s; flex-shrink: 0;
+        }
+        .xa-center-send:hover { background: #FF8333; transform: scale(1.06); }
+        .xa-center-send:disabled { opacity: 0.25; cursor: not-allowed; transform: none; }
+        .xa-center-send svg {
+          width: 14px; height: 14px; stroke: #fff; fill: none;
+          stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+        }
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(16px); }
           to { opacity: 1; transform: translateY(0); }
@@ -836,8 +919,16 @@ export default function AIAgentPage() {
           color: #EDE8E1; margin-bottom: 8px;
           letter-spacing: -0.015em;
         }
+
+        .xa-brand { margin-bottom: 12px; }
+.xa-brand-name {
+font-family: 'Sora', sans-serif;
+font-size: 42px; font-weight: 700;
+color: #EDE8E1; letter-spacing: -0.02em;
+}
         .xa-welcome-sub {
-          font-size: 13px; color: rgba(255,255,255,0.36);
+          font-size: 15px; color: rgba(255,255,255,0.45);
+font-weight: 400; margin-bottom: 32px;
           line-height: 1.8; max-width: 340px; margin-bottom: 28px;
         }
         .xa-grid {
@@ -1113,16 +1204,51 @@ export default function AIAgentPage() {
             <div className="xa-messages" ref={messagesRef}>
               {!chatStarted ? (
                 <div className="xa-welcome">
-                  <div className="xa-orb">X</div>
-                  <div className="xa-welcome-title">Hey, I'm Xploura AI 👋</div>
-              
-                  <div className="xa-grid">
-                    {QUICK_ACTIONS.map((a, i) => (
-                      <div key={i} className="xa-card" onClick={() => quickAsk(a.query, a.cat)}>
-                        <div className="xa-card-icon">{a.icon}</div>
-                        <div className="xa-card-title">{a.label}</div>
-                        <div className="xa-card-sub">{a.query}</div>
-                      </div>
+                  <div className="xa-brand">
+<span className="xa-brand-name">Xploura AI</span>
+</div>
+                  <p className="xa-welcome-sub">
+Build something amazing — just start typing below.
+</p>
+
+                  {/* Ruixen-style centered input */}
+                  <div className="xa-input-center">
+                    <textarea
+                      className="xa-center-textarea"
+                      value={input}
+                      rows={1}
+                      onChange={e => { setInput(e.target.value); autoResize(); }}
+                      onKeyDown={e => {
+                        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+                      }}
+                      placeholder="Kaha jaana hai? Kya khana hai? Plan karo…"
+                    />
+                    <div className="xa-center-footer">
+                      <span className="xa-center-hint">enter to send · shift+enter new line</span>
+                      <button
+                        className="xa-center-send"
+                        onClick={() => sendMessage()}
+                        disabled={typing || !input.trim()}
+                      >
+                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Pill quick actions */}
+                  <div className="xa-pill-grid">
+                    {[
+                      { icon: 'ti-coffee', label: 'Best Cafes', query: 'Best cafes in Pune?', cat: 'cafe' },
+{ icon: 'ti-heart', label: 'Date Night', query: 'Plan a date night in Pune', cat: 'date' },
+{ icon: 'ti-car', label: 'Weekend Trip', query: 'Best weekend trips from Pune', cat: 'travel' },
+{ icon: 'ti-bolt', label: 'Adventure', query: 'Adventure activities near Pune', cat: 'adventure' },
+{ icon: 'ti-tools-kitchen-2', label: 'Restaurants', query: 'Best restaurants in Pune', cat: 'restaurant'},
+{ icon: 'ti-sunrise', label: 'Sunrise Spots', query: 'Best sunrise spots near Pune', cat: 'travel' },
+                    ].map((a, i) => (
+                      <button key={i} className="xa-pill" onClick={() => quickAsk(a.query, a.cat)}>
+                       <i className={`ti ${a.icon} xa-pill-icon`} aria-hidden="true" />
+                        {a.label}
+                      </button>
                     ))}
                   </div>
                 </div>
