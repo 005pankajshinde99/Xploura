@@ -59,17 +59,13 @@ const BUDGET_MAP: Record<string, string> = {
 const CITIES = ['pune', 'mumbai', 'solapur', 'satara', 'nashik', 'kolhapur', 'nagpur', 'aurangabad'];
 
 const QUICK_ACTIONS = [
-  { icon: '☕', label: 'Best Cafes', query: 'Best cafes in Pune?', cat: 'cafe' },
-  { icon: '💕', label: 'Date Night', query: 'Plan a date night in Pune', cat: 'date' },
-  { icon: '🚗', label: 'Weekend Trip', query: 'Best weekend trips from Pune', cat: 'travel' },
-  { icon: '⚡', label: 'Adventure', query: 'Adventure activities near Pune', cat: 'adventure' },
+  { icon: 'ti-coffee', label: 'Best Cafes', query: 'Best cafes in Pune?', cat: 'cafe' },
+  { icon: 'ti-heart', label: 'Date Night', query: 'Plan a date night in Pune', cat: 'date' },
+  { icon: 'ti-car', label: 'Weekend Trip', query: 'Best weekend trips from Pune', cat: 'travel' },
+  { icon: 'ti-bolt', label: 'Adventure', query: 'Adventure activities near Pune', cat: 'adventure' },
 ];
 
-const SIDEBAR_INIT = [
-  { id: 1, title: 'Pune Weekend Plan', sub: '2 min ago', active: true },
-  { id: 2, title: 'Koregaon Park Cafes', sub: 'Yesterday', active: false },
-  { id: 3, title: 'Date Night Ideas', sub: '2 days ago', active: false },
-];
+const SIDEBAR_INIT: { id: number; title: string; sub: string; active: boolean }[] = [];
 
 const THINKING_PHRASES = [
   'Checking the vibes… 🧡',
@@ -92,7 +88,11 @@ const SYSTEM_PROMPT = `You are Xploura AI — a super friendly, genuine local gu
 PERSONALITY & VOICE:
 - Talk like that one friend who's been everywhere in Pune — warm, excited, zero robotic energy
 - Use casual natural English: "Ooh!", "Okay so...", "Trust me on this one", "Honestly?", "Tbh", "No cap"
-- Keep it SHORT — under 80 words. Punchy. Personal. Never bullet dumps.
+- Simple questions → 2-3 lines max. 
+- When user asks for options/plans/activities → give 3-4 lines minimum. 
+  Format: intro line + 2-3 options each with WHY they should pick it (1 sentence each) + closing question.
+- Never give just 1 option for "dusra de / give me ideas" type questions — always 2-3 choices.
+- Make user feel like THEY are choosing, not you deciding for them.
 - Show real excitement about places — give specific deets: what to order, best time to go, exact vibe
 - End with a natural follow-up question that moves the conversation forward
 - NEVER say "Certainly!", "Of course!", "As an AI", "Great choice!" every single time — vary it
@@ -109,7 +109,79 @@ CRITICAL RULES:
 - Only ask about budget when user is ready to pick a place and hasn't mentioned budget at all.
 - NEVER change subject when user is asking a follow-up about the same place or topic.
 
-NEVER repeat the same phrasing or opening across messages. Keep it fresh every time.`;
+CONVERSATION MEMORY — NEVER FORGET:
+- Keep track of ALL user preferences mentioned in the conversation, not just the last message
+- Build a mental "user profile" as chat goes on — combine ALL constraints together
+- Example: user said "dhup hai" earlier + now says "4 couples, no crowd" = your answer must satisfy BOTH: indoor/shaded + low crowd + couple-friendly
+- Never suggest something that contradicts what user already complained about
+- When giving recommendations, mentally check: does this satisfy EVERYTHING user mentioned so far?
+- If unsure, recap user's needs: "Okay so — hot day, 4 couples, low crowd vibe — here's what fits all three..."
+
+WRONG: User said dhup hai → later says 4 couples → AI suggests outdoor rooftop restaurant (ignores the heat complaint)
+RIGHT: User said dhup hai → later says 4 couples → AI suggests indoor gaming + dining combo that is cool, couple-friendly, AND not crowded
+
+NEVER repeat the same phrasing or opening across messages. Keep it fresh every time.
+
+RESPONSE LENGTH EXAMPLES:
+User: "mai apne friends ke saath jaana chahta hoon, shor macha sakein, dhup se bachein"
+BAD: "Try Smaaash, it's fun!"
+GOOD: "Okay friends + noise + no sun — perfect combo 🔥 Three solid options: 
+Smaaash in Phoenix Mall — bowling, cricket nets, VR games, you can literally scream there and no one cares 😂 
+E-Zone at Amanora — similar vibe, arcade games, air hockey, great for a group. 
+Escape Room Pune — locks you in a room with friends, you'll definitely be yelling trying to solve puzzles 😅 
+Smaaash is my personal pick for max chaos — which one's calling you?"
+
+RESPONSE FORMAT RULE:
+- NEVER write one long paragraph when giving multiple options
+- Use this structure when suggesting 2-3 places:
+
+[1 line hook/reaction]
+
+→ Place Name (Area) — what it is + why it fits. 1 line only.
+→ Place Name (Area) — what it is + why it fits. 1 line only.
+→ Place Name (Area) — what it is + why it fits. 1 line only.
+
+[1 closing question]
+
+Example:
+"Sun-free + 4 couples + fun = easy 😄
+
+→ Smaaash, Phoenix Mall — bowling, VR, arcade. Fully AC, couples love it.
+→ GameOn, Aundh — indoor gaming arena, chill crowd, not too packed.
+→ Escape Room Pune — solve puzzles together, fully indoors, great for groups.
+
+All three are sun-free — loud & sporty, chill, or brain-teasing? 😄"
+
+EMOTIONAL INTELLIGENCE — CRITICAL:
+- Always acknowledge the user's feeling FIRST, then offer alternatives
+- When user says "dhup hai / too hot / it's sunny" — NEVER suggest outdoor treks or hikes. 
+  Pivot COMPLETELY to: water parks, AC cafes, malls, indoor activities, evening plans, rooftop dining
+- When user says "dusra de / give another idea" — they are REJECTING your last suggestion. 
+  Switch category entirely. Don't repeat similar options.
+- "Hot day in city" full option list to pick from:
+  → Water parks: Wet N Joy Lonavala, Sentosa Water Park, Diamond Water Park
+  → Indoor fun: bowling alleys, gaming zones, escape rooms, movies
+  → AC cafes & restaurants: rooftop cafes, shaded brunch spots
+  → Evening plans: lake-side spots after 5pm, night markets, sunset points
+  → Drive options: Lonavala (hill station, cooler temp)
+- Formula: 1 line empathy + 3-4 VARIED options from different categories
+- When user says "good / nice / okay / sahi hai / sounds good" after you gave options → 
+  DON'T ask a new generic question. 
+  Instead recap YOUR previous options shortly and ask which one they're going with.
+  
+  Example:
+  BAD: "Glad you liked it! Are you looking for adventurous or relaxed?"
+  GOOD: "Nice! So which one are you locking in — Smaaash for bowling & VR, 
+  GameOn for chill gaming, or Escape Room for group fun? 😄"
+- If user keeps saying "dusra de" — keep switching categories, never repeat
+
+Example:
+User: "dhup ka koi option de yaar"
+GOOD: "Okay hot day survival guide 😅 — Wet N Joy water park is the obvious move, 
+or hit a gaming zone/bowling if you want AC vibes, Inox/PVR for a movie marathon, 
+or just wait till evening and hit Viman Nagar food street when it cools down. Which sounds fun?"`;
+
+
 
 // ─── Groq API helper ──────────────────────────────────────────────────────────
 async function getGroqResponse(
@@ -194,6 +266,11 @@ export default function AIAgentPage() {
 
   useEffect(() => {
   window.scrollTo(0, 0);
+}, []);
+
+useEffect(() => {
+  const saved = localStorage.getItem('xploura-history');
+  if (saved) setSidebarChats(JSON.parse(saved));
 }, []);
 
   const scrollBottom = useCallback(() => {
@@ -597,17 +674,23 @@ export default function AIAgentPage() {
     sendMessage(query);
   };
 
-  const newChat = () => {
-    setMsgs([]);
-    setChatStarted(false);
-    conversationHistoryRef.current = [];
-    flowRef.current = { step: null, city: null, category: null, budget: null, crowd: null, lastTopic: null };
-    setSidebarChats(prev => [
-      { id: Date.now(), title: 'New Chat', sub: 'Just now', active: true },
-      ...prev.map(c => ({ ...c, active: false })),
-    ]);
-  };
-
+const newChat = () => {
+  // Save current chat to history
+  if (msgs.length > 0) {
+    const firstMsg = msgs.find(m => m.type === 'user');
+    const title = firstMsg ? firstMsg.text.slice(0, 28) + (firstMsg.text.length > 28 ? '…' : '') : 'Chat';
+    const entry = { id: Date.now(), title, sub: 'Just now', active: false };
+    setSidebarChats((prev: { id: number; title: string; sub: string; active: boolean }[]) => {
+  const updated = [entry, ...prev.map((c: { id: number; title: string; sub: string; active: boolean }) => ({ ...c, active: false }))].slice(0, 6);
+  localStorage.setItem('xploura-history', JSON.stringify(updated));
+  return updated;
+});
+  }
+  setMsgs([]);
+  setChatStarted(false);
+  conversationHistoryRef.current = [];
+  flowRef.current = { step: null, city: null, category: null, budget: null, crowd: null, lastTopic: null };
+};
   // ─── Render ────────────────────────────────────────────────────────────────
   return (
     <>
@@ -1152,6 +1235,22 @@ font-weight: 400; margin-bottom: 32px;
           .xa-grid { grid-template-columns: 1fr; }
           .xa-welcome { padding: 24px 16px; }
         }
+
+        .xa-model-badge {
+  display: flex; align-items: center; gap: 4px;
+  padding: 3px 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  font-size: 11px; font-weight: 500;
+  color: rgba(255,255,255,0.35);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+body {
+  padding-top: 0 !important;
+}
       `}</style>
 
       <div className="xa-page">
@@ -1192,10 +1291,11 @@ font-weight: 400; margin-bottom: 32px;
             <div className="xa-sb-foot">
               <div className="xa-quick-label">Quick asks</div>
               {QUICK_ACTIONS.map((a, i) => (
-                <button key={i} className="xa-quick-item" onClick={() => quickAsk(a.query, a.cat)}>
-                  {a.icon} {a.label}
-                </button>
-              ))}
+  <button key={i} className="xa-quick-item" onClick={() => quickAsk(a.query, a.cat)}>
+    <i className={`ti ${a.icon}`} style={{ fontSize: '13px', opacity: 0.7 }} />
+    {a.label}
+  </button>
+))}
             </div>
           </aside>
 
@@ -1221,19 +1321,37 @@ Build something amazing — just start typing below.
                       onKeyDown={e => {
                         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
                       }}
-                      placeholder="Kaha jaana hai? Kya khana hai? Plan karo…"
+                      placeholder="Where to go? What to do? Let's plan…"
                     />
                     <div className="xa-center-footer">
-                      <span className="xa-center-hint">enter to send · shift+enter new line</span>
-                      <button
-                        className="xa-center-send"
-                        onClick={() => sendMessage()}
-                        disabled={typing || !input.trim()}
-                      >
-                        <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                      </button>
-                    </div>
-                  </div>
+  <span className="xa-center-hint">enter to send · shift+enter new line</span>
+  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+    <span className="xa-model-badge">X-1.1</span>
+    {micSupported && (
+      <button
+        className={`xa-mic${isListening ? ' on' : ''}`}
+        onClick={isListening ? stopListening : startListening}
+        aria-label={isListening ? 'Stop' : 'Speak'}
+        title={isListening ? 'Stop listening' : 'Voice input'}
+      >
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+    <line x1="12" y1="19" x2="12" y2="22"/>
+    <line x1="8" y1="22" x2="16" y2="22"/>
+  </svg>
+</button>
+    )}
+    <button
+      className="xa-center-send"
+      onClick={() => sendMessage()}
+      disabled={typing || !input.trim()}
+    >
+      <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</div>
+</div>  
 
                   {/* Pill quick actions */}
                   <div className="xa-pill-grid">
@@ -1300,7 +1418,8 @@ Build something amazing — just start typing below.
             )}
 
             {/* INPUT */}
-            <div className="xa-input-area">
+            {chatStarted && (
+<div className="xa-input-area">
               <div className="xa-input-wrap">
                 <div className="xa-input-row">
                   <textarea
@@ -1315,7 +1434,10 @@ Build something amazing — just start typing below.
                     rows={1}
                   />
                   <div className="xa-btn-row">
-                    {micSupported && (
+  <span className="xa-model-badge">
+    X-1.1
+  </span>
+  {micSupported && (
                       <button
                         className={`xa-mic${isListening ? ' on' : ''}`}
                         onClick={isListening ? stopListening : startListening}
@@ -1340,9 +1462,11 @@ Build something amazing — just start typing below.
                 </div>
               </div>
             </div>
+            )}
           </main>
         </div>
       </div>
     </>
+                  
   );
 }
