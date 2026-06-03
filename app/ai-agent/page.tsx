@@ -190,8 +190,7 @@ async function getGroqResponse(
   context?: string
 ): Promise<string | null> {
   try {
-    const groqKey = process.env.NEXT_PUBLIC_GROQ_KEY;
-    if (!groqKey) return null;
+   
 
     const messages: { role: string; content: string }[] = [];
 
@@ -212,11 +211,10 @@ async function getGroqResponse(
 
     messages.push({ role: 'user', content: userMsg });
 
-    const res = await fetch('/api/chat', {
+   const res = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + groqKey,
       },
       body: JSON.stringify({
         model: 'llama3-70b-8192',
