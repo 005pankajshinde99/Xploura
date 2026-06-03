@@ -495,49 +495,57 @@ useEffect(() => {
       } catch { /* fallthrough */ }
     }
 
-    // ── 3. City detection ──
-    const cityMatch = CITIES.find(c => lower.includes(c));
-    if (cityMatch) {
-      flow.city = cityMatch;
+   // ── 3. City detection ──
+const cityMatch = CITIES.find(c => lower.includes(c));
+if (cityMatch) {
+  flow.city = cityMatch;
 
-      if (cityMatch === 'pune') {
-        flow.step = 'area';
-        try {
-          let areaQ = _supabase.from('cafes').select('area');
-          if (flow.category) areaQ = (areaQ as any).eq('category', flow.category);
-          const { data } = await (areaQ as any).limit(50);
-          const availAreas = data
-            ? ([...new Set(data.map((d: any) => d.area).filter(Boolean))].slice(0, 6) as string[])
-            : ['Koregaon Park', 'Baner', 'Viman Nagar', 'Camp', 'FC Road', 'Kalyani Nagar'];
+  if (cityMatch === 'pune') {
+    flow.step = 'area';
 
-          const context = `User picked Pune as their city. Category: ${flow.category || 'general'}. Available areas: ${availAreas.join(', ')}. Ask them which area they're in or prefer — warmly, conversationally, like a friend. Under 50 words.`;
-          const aiText = await getGroqResponse(text, conversationHistoryRef.current, context);
-          await new Promise(r => setTimeout(r, 800));
-          setTyping(false);
-          addMsg(aiText || "Ooh Pune! That's my city 🧡 Which area are you heading to?", 'ai', availAreas);
-          return;
-        } catch {
-          setTyping(false);
-          addMsg('Pune it is! Which area are you in?', 'ai', ['Koregaon Park', 'Baner', 'Viman Nagar', 'Camp']);
-          return;
-        }
+    const skipAreaCheck = [
+      'water', 'ride', 'rides', 'trek', 'fort', 'hike',
+      'paragliding', 'camping', 'theme park', 'imagica',
+      'della', 'wet n joy', 'sentosa', 'water park'
+    ].some(w => lower.includes(w));
+
+    if (!skipAreaCheck) {
+      try {
+        let areaQ = _supabase.from('cafes').select('area');
+        if (flow.category) areaQ = (areaQ as any).eq('category', flow.category);
+        const { data } = await (areaQ as any).limit(50);
+        const availAreas = data
+          ? ([...new Set(data.map((d: any) => d.area).filter(Boolean))].slice(0, 6) as string[])
+          : ['Koregaon Park', 'Baner', 'Viman Nagar', 'Camp', 'FC Road', 'Kalyani Nagar'];
+
+        const context = `User picked Pune as their city. Category: ${flow.category || 'general'}. Available areas: ${availAreas.join(', ')}. Ask them which area they're in or prefer — warmly, conversationally, like a friend. Under 50 words.`;
+        const aiText = await getGroqResponse(text, conversationHistoryRef.current, context);
+        await new Promise(r => setTimeout(r, 800));
+        setTyping(false);
+        addMsg(aiText || "Ooh Pune! That's my city 🧡 Which area are you heading to?", 'ai', availAreas);
+        return;
+      } catch {
+        setTyping(false);
+        addMsg('Pune it is! Which area are you in?', 'ai', ['Koregaon Park', 'Baner', 'Viman Nagar', 'Camp']);
+        return;
       }
-
-      const aiText = await getGroqResponse(
-        text,
-        conversationHistoryRef.current,
-        `User asked about ${cityMatch} but we only have Pune data right now. Tell them warmly, suggest Pune instead. Under 50 words.`
-      );
-      await new Promise(r => setTimeout(r, 700));
-      setTyping(false);
-      addMsg(
-        aiText || `Expanding to ${cityMatch.charAt(0).toUpperCase() + cityMatch.slice(1)} soon! For now I know Pune inside out 😊`,
-        'ai',
-        ['Explore Pune instead']
-      );
-      return;
     }
-
+  } else {
+    const aiText = await getGroqResponse(
+      text,
+      conversationHistoryRef.current,
+      `User asked about ${cityMatch} but we only have Pune data right now. Tell them warmly, suggest Pune instead. Under 50 words.`
+    );
+    await new Promise(r => setTimeout(r, 700));
+    setTyping(false);
+    addMsg(
+      aiText || `Expanding to ${cityMatch.charAt(0).toUpperCase() + cityMatch.slice(1)} soon! For now I know Pune inside out 😊`,
+      'ai',
+      ['Explore Pune instead']
+    );
+    return;
+  }
+}
     // ── 4. Category detected, ask city ──
     if (catKey && flow.step === null && !flow.city) {
       flow.category = CAT_MAP[catKey];
