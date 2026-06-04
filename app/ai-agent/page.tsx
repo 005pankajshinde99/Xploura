@@ -67,6 +67,15 @@ const QUICK_ACTIONS = [
 
 const SIDEBAR_INIT: { id: number; title: string; sub: string; active: boolean }[] = [];
 
+interface SavedChat {
+  id: number;
+  title: string;
+  sub: string;
+  active: boolean;
+  messages: Msg[];
+  savedAt: number;
+}
+
 const THINKING_PHRASES = [
   'Checking the vibes… 🧡',
   'Digging through my local knowledge…',
@@ -240,11 +249,12 @@ export default function AIAgentPage() {
   const [typing, setTyping] = useState(false);
   const [typingLabel, setTypingLabel] = useState('thinking…');
   const [chatStarted, setChatStarted] = useState(false);
-  const [sidebarChats, setSidebarChats] = useState(SIDEBAR_INIT);
+  
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isListening, setIsListening] = useState(false);
   const [interimText, setInterimText] = useState('');
   const [micSupported, setMicSupported] = useState(false);
+  const [sidebarChats, setSidebarChats] = useState<SavedChat[]>([]);
 
   const messagesRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -264,7 +274,12 @@ export default function AIAgentPage() {
 
 useEffect(() => {
   const saved = localStorage.getItem('xploura-history');
-  if (saved) setSidebarChats(JSON.parse(saved));
+  if (!saved) return;
+  const chats: SavedChat[] = JSON.parse(saved);
+  const twoDaysAgo = Date.now() - 2 * 24 * 60 * 60 * 1000;
+  const filtered = chats.filter(c => c.savedAt > twoDaysAgo);
+  setSidebarChats(filtered);
+  localStorage.setItem('xploura-history', JSON.stringify(filtered));
 }, []);
 
   const scrollBottom = useCallback(() => {
@@ -676,18 +691,51 @@ if (cityMatch) {
     sendMessage(query);
   };
 
+  // Auto-save current chat on every new message
+useEffect(() => {
+  if (msgs.length === 0) return;
+  const firstMsg = msgs.find(m => m.type === 'user');
+  if (!firstMsg) return;
+  
+  const title = firstMsg.text.slice(0, 28) + (firstMsg.text.length > 28 ? '…' : '');
+  const currentId = 'current-chat';
+  
+  const entry = { id: currentId, title, sub: 'Just now', active: true };
+  
+  setSidebarChats(prev => {
+    const filtered = prev.filter((c: any) => c.id !== currentId);
+    const updated = [entry, ...filtered.map((c: any) => ({ ...c, active: false }))].slice(0, 6);
+    localStorage.setItem('xploura-history', JSON.stringify(updated));
+    return updated;
+  });
+}, [msgs]);
+
 const newChat = () => {
-  // Save current chat to history
   if (msgs.length > 0) {
     const firstMsg = msgs.find(m => m.type === 'user');
-    const title = firstMsg ? firstMsg.text.slice(0, 28) + (firstMsg.text.length > 28 ? '…' : '') : 'Chat';
-    const entry = { id: Date.now(), title, sub: 'Just now', active: false };
-    setSidebarChats((prev: { id: number; title: string; sub: string; active: boolean }[]) => {
-  const updated = [entry, ...prev.map((c: { id: number; title: string; sub: string; active: boolean }) => ({ ...c, active: false }))].slice(0, 6);
-  localStorage.setItem('xploura-history', JSON.stringify(updated));
-  return updated;
-});
+    const title = firstMsg
+      ? firstMsg.text.slice(0, 28) + (firstMsg.text.length > 28 ? '…' : '')
+      : 'Chat';
+
+    const entry: SavedChat = {
+      id: Date.now(),
+      title,
+      sub: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
+      active: false,
+      messages: msgs,           // ← actual messages save
+      savedAt: Date.now(),      // ← timestamp for 2 day check
+    };
+
+    setSidebarChats(prev => {
+      const updated = [
+        entry,
+        ...prev.map(c => ({ ...c, active: false }))
+      ].slice(0, 2); // ← sirf 2 chats
+      localStorage.setItem('xploura-history', JSON.stringify(updated));
+      return updated;
+    });
   }
+
   setMsgs([]);
   setChatStarted(false);
   conversationHistoryRef.current = [];
@@ -1238,18 +1286,23 @@ font-weight: 400; margin-bottom: 32px;
           .xa-welcome { padding: 24px 16px; }
         }
 
-        .xa-model-badge {
-  display: flex; align-items: center; gap: 4px;
-  padding: 3px 10px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  font-size: 11px; font-weight: 500;
-  color: rgba(255,255,255,0.35);
+   .xa-model-badge {
+  width: 33px;
+  height: 33px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.04em;
   white-space: nowrap;
-  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  font-family: 'DM Sans', sans-serif;
 }
-
 body {
   padding-top: 0 !important;
 }
@@ -1283,7 +1336,18 @@ body {
                 <div
                   key={c.id}
                   className={`xa-chat-row${c.active ? ' active' : ''}`}
-                  onClick={() => setSidebarChats(prev => prev.map(p => ({ ...p, active: p.id === c.id })))}
+                  onClick={() => {
+  const chat = sidebarChats.find(p => p.id === c.id) as SavedChat;
+  if (chat?.messages?.length > 0) {
+    setMsgs(chat.messages);
+    setChatStarted(true);
+    conversationHistoryRef.current = chat.messages.map(m => ({
+      role: m.type === 'ai' ? 'assistant' : 'user',
+      content: m.text,
+    }));
+  }
+  setSidebarChats(prev => prev.map(p => ({ ...p, active: p.id === c.id })));
+}}
                 >
                   <div className="xa-chat-title">{c.title}</div>
                   <div className="xa-chat-sub">{c.sub}</div>
@@ -1328,7 +1392,9 @@ Build something amazing — just start typing below.
                     <div className="xa-center-footer">
   <span className="xa-center-hint">enter to send · shift+enter new line</span>
   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-    <span className="xa-model-badge">X-1.1</span>
+    <button className="xa-mic" style={{ cursor: 'default', fontSize: '9px', fontWeight: 600, letterSpacing: '0.06em', color: 'rgba(255,255,255,0.4)' }}>
+  X-1.1
+</button>
     {micSupported && (
       <button
         className={`xa-mic${isListening ? ' on' : ''}`}
@@ -1446,8 +1512,13 @@ Build something amazing — just start typing below.
                         aria-label={isListening ? 'Stop' : 'Speak'}
                         title={isListening ? 'Stop listening' : 'Voice input'}
                       >
-                        🎙️
-                      </button>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+    <line x1="12" y1="19" x2="12" y2="22"/>
+    <line x1="8" y1="22" x2="16" y2="22"/>
+  </svg>
+</button>
                     )}
                     <button
                       className="xa-send"
