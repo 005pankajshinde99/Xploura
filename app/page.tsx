@@ -141,6 +141,8 @@ export default function Home() {
   const [slideIdx, setSlideIdx] = useState(0);
   const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [userStats, setUserStats] = useState({ trips: 0, reservations: 0, savedCafes: 0 });
+const [userProfile, setUserProfile] = useState<any>(null);
 
   const [guestSheetOpen, setGuestSheetOpen] = useState(false);
   const [chatTyping, setChatTyping] = useState(false);
@@ -203,6 +205,24 @@ useEffect(() => {
   });
   return () => listener.subscription.unsubscribe();
 }, []);
+
+useEffect(() => {
+  if (!user) { setUserStats({ trips: 0, reservations: 0, savedCafes: 0 }); return; }
+
+  async function loadStats() {
+    const [{ count: all }, { count: trips }, { count: saved }] = await Promise.all([
+      _supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+      _supabase.from('bookings').select('*', { count: 'exact', head: true }).eq('user_id', user.id).in('category', ['travel','trip','adventure']),
+      _supabase.from('saved_places').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+    ]);
+    setUserStats({ trips: trips ?? 0, reservations: (all ?? 0) - (trips ?? 0), savedCafes: saved ?? 0 });
+  }
+
+  _supabase.from('profiles').select('*').eq('id', user.id).single()
+    .then(({ data }) => { if (data) setUserProfile(data); });
+
+  loadStats().catch(() => {});
+}, [user]);
 
   // CURSOR
   useEffect(() => {
@@ -948,79 +968,194 @@ borderRadius:13, overflow:'hidden',
 <div id="mobile-profile-sheet" style={{
   display: 'none',
   position: 'fixed', bottom: 64, left: 0, right: 0,
-  background: '#1a1714',
-  border: '0.5px solid rgba(255,255,255,0.1)',
-  borderRadius: '16px 16px 0 0',
+  background: '#161412',
+  borderRadius: '20px 20px 0 0',
   zIndex: 998, flexDirection: 'column',
-  boxShadow: '0 -8px 40px rgba(0,0,0,0.6)',
-  fontFamily: "'DM Sans', sans-serif"
+  boxShadow: '0 -20px 60px rgba(0,0,0,0.85)',
+  fontFamily: "'DM Sans', sans-serif",
+  maxHeight: '88vh', overflowY: 'auto', overflowX: 'hidden',
 }}>
-  {/* Header */}
-  <div style={{padding:'16px 20px', borderBottom:'0.5px solid rgba(255,255,255,0.07)'}}>
-    <div style={{fontSize:9, color:'rgba(255,255,255,0.3)', letterSpacing:'0.1em', textTransform:'uppercase', marginBottom:4}}>Signed in as</div>
-    <div style={{fontSize:13, color:'#fff', fontWeight:500, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>
-      {user?.email}
+
+  {/* Orange top bar */}
+  <div style={{ height: 3, background: 'linear-gradient(90deg, #FF6B00, #FF9240)', flexShrink: 0 }} />
+
+  {/* User Header */}
+  <div style={{ padding: '22px 20px 18px', display: 'flex', alignItems: 'center', gap: 14 }}>
+    <div style={{ position: 'relative', flexShrink: 0 }}>
+      {(userProfile?.avatar_url || user?.user_metadata?.avatar_url) ? (
+        <img
+          src={userProfile?.avatar_url || user?.user_metadata?.avatar_url}
+          style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2.5px solid #FF6B00' }}
+        />
+      ) : (
+        <div style={{
+          width: 64, height: 64, borderRadius: '50%',
+          background: 'linear-gradient(135deg, rgba(255,107,0,0.25), rgba(255,107,0,0.08))',
+          border: '2.5px solid #FF6B00',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 26, fontWeight: 700, color: '#FF6B00',
+          fontFamily: "'Bebas Neue', sans-serif",
+        }}>
+          {(userProfile?.full_name || user?.user_metadata?.full_name || user?.email || 'U')[0].toUpperCase()}
+        </div>
+      )}
+      <div style={{
+        position: 'absolute', bottom: 2, right: 2,
+        width: 13, height: 13, borderRadius: '50%',
+        background: '#22c55e', border: '2.5px solid #161412',
+      }} />
+    </div>
+
+    <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ fontSize: 17, fontWeight: 700, color: '#fff', marginBottom: 2 }}>
+        {userProfile?.full_name || user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Explorer'}
+      </div>
+      <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', marginBottom: 8, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        {user?.email}
+      </div>
+      <div style={{
+        display: 'inline-flex', alignItems: 'center', gap: 5,
+        background: 'rgba(255,107,0,0.12)', border: '0.5px solid rgba(255,107,0,0.35)',
+        borderRadius: 20, padding: '4px 10px',
+      }}>
+        <svg width="9" height="9" viewBox="0 0 24 24" fill="#FF6B00">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+        <span style={{ fontSize: 9, color: '#FF6B00', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Explorer Member</span>
+      </div>
     </div>
   </div>
 
-  {/* Profile */}
-  <a href="/profile" style={{
-    display:'flex', alignItems:'center', gap:14,
-    padding:'16px 20px', fontSize:14, color:'rgba(255,255,255,0.7)',
-    textDecoration:'none', borderBottom:'0.5px solid rgba(255,255,255,0.05)'
-  }}>
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-      <circle cx="12" cy="7" r="4"/>
-    </svg>
-    Profile
-  </a>
+  {/* Stats Row — only renders when user has real bookings */}
+  {(userStats.trips > 0 || userStats.reservations > 0 || userStats.savedCafes > 0) && (
+    <div style={{
+      display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
+      margin: '0 16px 16px',
+      background: 'rgba(255,255,255,0.03)',
+      border: '0.5px solid rgba(255,255,255,0.07)',
+      borderRadius: 14, overflow: 'hidden',
+    }}>
+      {[
+        { n: userStats.trips, l: 'Trips',
+          icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20"/></svg> },
+        { n: userStats.reservations, l: 'Reservations',
+          icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2M8 7V5a2 2 0 014 0"/></svg> },
+        { n: userStats.savedCafes, l: 'Saved Cafes',
+          icon: <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg> },
+      ].map((s, i) => (
+        <div key={i} style={{
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          padding: '14px 8px',
+          borderRight: i < 2 ? '0.5px solid rgba(255,255,255,0.06)' : 'none',
+        }}>
+          {s.icon}
+          <div style={{ fontSize: 22, fontFamily: "'Bebas Neue', sans-serif", color: '#FF6B00', letterSpacing: '0.04em', margin: '5px 0 2px', lineHeight: 1 }}>{s.n}</div>
+          <div style={{ fontSize: 8.5, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>{s.l}</div>
+        </div>
+      ))}
+    </div>
+  )}
 
-  {/* About */}
-  <a href="/about" style={{
-    display:'flex', alignItems:'center', gap:14,
-    padding:'16px 20px', fontSize:14, color:'rgba(255,255,255,0.7)',
-    textDecoration:'none', borderBottom:'0.5px solid rgba(255,255,255,0.05)'
+  {/* Menu Items */}
+  <div style={{
+    margin: '0 16px 12px',
+    background: 'rgba(255,255,255,0.03)',
+    border: '0.5px solid rgba(255,255,255,0.07)',
+    borderRadius: 14, overflow: 'hidden',
   }}>
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <circle cx="12" cy="12" r="10"/>
-      <line x1="12" y1="8" x2="12" y2="12"/>
-      <line x1="12" y1="16" x2="12.01" y2="16"/>
-    </svg>
-    About
-  </a>
+    {[
+      {
+        href: '/userbooking',
+        icon: <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
+        title: 'My Bookings', sub: 'View and manage your bookings',
+      },
+      {
+        href: '/saved',
+        icon: <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>,
+        title: 'Saved Places', sub: 'Your favorite cafes & restaurants',
+      },
+      {
+        href: '/reservations',
+        icon: <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2M8 7V5a2 2 0 014 0"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>,
+        title: 'My Reservations', sub: 'Tickets, passes and reservations',
+      },
+      {
+        href: '/settings',
+        icon: <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>,
+        title: 'Settings', sub: 'Preferences and account settings',
+      },
+      {
+        href: '/profile',
+        icon: <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
+        title: 'Profile', sub: 'Personal information and details',
+      },
+    ].map((item, i, arr) => (
+      <a key={i} href={item.href}
+        onClick={() => { const s = document.getElementById('mobile-profile-sheet'); if (s) s.style.display = 'none'; }}
+        style={{
+          display: 'flex', alignItems: 'center', gap: 14,
+          padding: '14px 16px', textDecoration: 'none',
+          borderBottom: i < arr.length - 1 ? '0.5px solid rgba(255,255,255,0.05)' : 'none',
+        }}>
+        <div style={{
+          width: 36, height: 36, borderRadius: 9, flexShrink: 0,
+          background: 'rgba(255,107,0,0.1)', border: '0.5px solid rgba(255,107,0,0.2)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          {item.icon}
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>{item.title}</div>
+          <div style={{ fontSize: 10.5, color: 'rgba(255,255,255,0.3)', marginTop: 1.5 }}>{item.sub}</div>
+        </div>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="2.5">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </a>
+    ))}
+  </div>
 
   {/* Sign Out */}
-  <button onClick={async () => {
-    await _supabase.auth.signOut();
-    window.location.href = '/';
-  }} style={{
-    display:'flex', alignItems:'center', gap:14,
-    padding:'16px 20px', fontSize:14, color:'rgba(255,80,80,0.85)',
-    background:'transparent', border:'none', cursor:'pointer',
-    fontFamily:"'DM Sans',sans-serif", textAlign:'left',
-    borderBottom:'0.5px solid rgba(255,255,255,0.05)'
-  }}>
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
-      <polyline points="16 17 21 12 16 7"/>
-      <line x1="21" y1="12" x2="9" y2="12"/>
-    </svg>
-    Sign Out
-  </button>
+  <div style={{ margin: '0 16px 12px' }}>
+    <button onClick={async () => { await _supabase.auth.signOut(); window.location.href = '/'; }} style={{
+      width: '100%', display: 'flex', alignItems: 'center', gap: 14,
+      padding: '14px 16px', borderRadius: 14,
+      background: 'rgba(255,50,50,0.06)', border: '0.5px solid rgba(255,50,50,0.15)',
+      cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", textAlign: 'left',
+    }}>
+      <div style={{
+        width: 36, height: 36, borderRadius: 9, flexShrink: 0,
+        background: 'rgba(255,50,50,0.1)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,80,80,0.85)" strokeWidth="1.8">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </div>
+      <div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,80,80,0.9)' }}>Sign Out</div>
+        <div style={{ fontSize: 10.5, color: 'rgba(255,80,80,0.4)', marginTop: 1.5 }}>Log out from your account</div>
+      </div>
+    </button>
+  </div>
 
-  {/* Cancel */}
-  <button onClick={() => {
-    const sheet = document.getElementById('mobile-profile-sheet');
-    if (sheet) sheet.style.display = 'none';
-  }} style={{
-    padding:'16px 20px', fontSize:13,
-    color:'rgba(255,255,255,0.3)', background:'transparent',
-    border:'none', cursor:'pointer',
-    fontFamily:"'DM Sans',sans-serif", textAlign:'center'
+  {/* Footer bar */}
+  <div style={{
+    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    padding: '10px 20px 28px',
+    borderTop: '0.5px solid rgba(255,255,255,0.05)',
+    marginTop: 4,
   }}>
-    Cancel
-  </button>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth="2">
+        <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+      </svg>
+      <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.18)', letterSpacing: '0.04em' }}>Secure & Private</span>
+    </div>
+    <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.14)', letterSpacing: '0.04em' }}>v1.0.0</span>
+  </div>
 </div>
 
 {/* GUEST PROFILE SHEET — non-logged-in users */}
