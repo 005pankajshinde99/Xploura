@@ -1278,13 +1278,27 @@ font-weight: 400; margin-bottom: 32px;
           text-align: center; margin-top: 7px; letter-spacing: 0.04em;
         }
 
-        @media (max-width: 660px) {
-          .xa-sidebar { display: none !important; }
-          .xa-row, .xa-typing { padding: 4px 13px; }
-          .xa-input-area { padding: 10px 13px 14px; }
-          .xa-grid { grid-template-columns: 1fr; }
-          .xa-welcome { padding: 24px 16px; }
-        }
+      @media (max-width: 660px) {
+  .xa-sidebar {
+    position: fixed !important;
+    top: 52px !important;
+    left: 0 !important;
+    height: calc(100vh - 52px) !important;
+    z-index: 100 !important;
+    width: 240px !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateX(-100%);
+    transition: transform 0.28s ease !important;
+  }
+  .xa-sidebar:not(.closed) {
+    transform: translateX(0) !important;
+  }
+  .xa-sidebar.closed {
+    transform: translateX(-100%) !important;
+    width: 240px !important;
+    opacity: 1 !important;
+  }
 
    .xa-model-badge {
   width: 33px;
