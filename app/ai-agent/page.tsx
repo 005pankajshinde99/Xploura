@@ -219,7 +219,7 @@ export default function AIAgentPage() {
   const [typingLabel, setTypingLabel] = useState('thinking…');
   const [chatStarted, setChatStarted] = useState(false);
   
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [interimText, setInterimText] = useState('');
   const [micSupported, setMicSupported] = useState(false);
@@ -232,14 +232,17 @@ export default function AIAgentPage() {
   const conversationHistoryRef = useRef<ConvTurn[]>([]);
   const msgIdRef = useRef(0);
 
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
-
+ const [isMobile, setIsMobile] = useState(false);
+useEffect(() => {
+  const check = () => {
+    const mobile = window.innerWidth <= 768;
+    setIsMobile(mobile);
+    if (mobile) setSidebarOpen(false); // ← mobile pe sidebar band
+  };
+  check();
+  window.addEventListener('resize', check);
+  return () => window.removeEventListener('resize', check);
+}, []);
   useEffect(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     setMicSupported(!!SR);
