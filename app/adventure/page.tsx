@@ -246,29 +246,7 @@ export default function AdventurePage() {
         </main>
       </div>
 
-      {/* MOBILE NAV */}
-      <div id="mobile-nav">
-        <button className="mnav-btn" onClick={() => window.location.href='/'}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          <span>Home</span>
-        </button>
-        <button className="mnav-btn" style={{color:'#FF6B00'}}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 17l4-8 4 4 3-6 4 8"/></svg>
-          <span style={{color:'#FF6B00'}}>Adventure</span>
-        </button>
-        <button className="mnav-btn" style={{marginTop:-20}} onClick={() => window.location.href='/ai-agent'}>
-          <div className="mnav-ai-btn">X</div>
-          <span>AI</span>
-        </button>
-        <button className="mnav-btn" onClick={() => window.location.href='/trips'}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
-          <span>Trips</span>
-        </button>
-        <button className="mnav-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span>Profile</span>
-        </button>
-      </div>
+     
     </>
   );
 }

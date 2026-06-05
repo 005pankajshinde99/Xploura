@@ -328,28 +328,6 @@ export default function DatesPage() {
         </main>
       </div>
 
-      <div id="mobile-nav">
-        <button className="mnav-btn" onClick={() => window.location.href = '/'}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          <span>Home</span>
-        </button>
-        <button className="mnav-btn" style={{ color: '#FF6B00' }}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-          <span style={{ color: '#FF6B00' }}>Dates</span>
-        </button>
-        <button className="mnav-btn" style={{ marginTop: -20 }} onClick={() => window.location.href = '/ai-agent'}>
-          <div className="mnav-ai-btn">X</div>
-          <span>AI</span>
-        </button>
-        <button className="mnav-btn" onClick={() => window.location.href = '/restaurants'}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2"/><path d="M18.5 2A2.5 2.5 0 0121 4.5v0A2.5 2.5 0 0118.5 7h-1.5a2.5 2.5 0 01-2.5-2.5v0A2.5 2.5 0 0117 2h1.5z"/></svg>
-          <span>Food</span>
-        </button>
-        <button className="mnav-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span>Profile</span>
-        </button>
-      </div>
     </>
   );
 }

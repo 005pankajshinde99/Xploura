@@ -252,29 +252,7 @@ export default function CafesPage() {
         </main>
       </div>
 
-      {/* MOBILE NAV */}
-      <div id="mobile-nav">
-        <button className="mnav-btn" onClick={() => window.location.href='/'}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          <span>Home</span>
-        </button>
-        <button className="mnav-btn" style={{color:'#FF6B00'}}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
-          <span style={{color:'#FF6B00'}}>Cafes</span>
-        </button>
-        <button className="mnav-btn" style={{marginTop:-20}} onClick={() => window.location.href='/ai-agent'}>
-          <div className="mnav-ai-btn">X</div>
-          <span>AI</span>
-        </button>
-        <button className="mnav-btn" onClick={() => window.location.href='/restaurants'}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2"/></svg>
-          <span>Food</span>
-        </button>
-        <button className="mnav-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <span>Profile</span>
-        </button>
-      </div>
+     
     </>
   );
 }

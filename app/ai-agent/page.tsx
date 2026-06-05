@@ -1312,7 +1312,7 @@ font-weight: 400; margin-bottom: 32px;
 
       <div className="xa-page">
         {/* NAV */}
-        {!isMobile && <Navbar active="x ai agent" />}
+        <Navbar active="x ai agent" />
 
         <div className="xa-layout">
           {/* SIDEBAR */}
@@ -1529,6 +1529,8 @@ Build something amazing — just start typing below.
           </main>
         </div>
       </div>
+
+     
     </>
                   
   );
