@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Navbar from '../components/Navbar';
 
 const vibes = [
   {
@@ -171,6 +172,14 @@ export default function VibesPage() {
   const [hovered, setHovered] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [tickIdx, setTickIdx] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);  // ← ADD KARO
+
+useEffect(() => {
+  const check = () => setIsMobile(window.innerWidth <= 768);
+  check();
+  window.addEventListener('resize', check);
+  return () => window.removeEventListener('resize', check);
+}, []);
 
   const ticks = [
     '147 people exploring vibes right now',
@@ -198,6 +207,9 @@ export default function VibesPage() {
       fontFamily: "'DM Sans', sans-serif",
       overflowX: 'hidden',
     }}>
+
+      {!isMobile && <Navbar active="vibes" />}
+
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
         *{box-sizing:border-box;margin:0;padding:0;}
@@ -288,7 +300,7 @@ export default function VibesPage() {
       <div style={{ position:'relative', zIndex:1 }}>
 
         {/* ── HEADER ── */}
-        <div style={{ padding:'52px 24px 0', maxWidth:480, margin:'0 auto' }}>
+        <div style={{ padding: isMobile ? '24px 24px 0' : '28px 24px 0', maxWidth:480, margin:'0 auto' }}>
 
           {/* Ticker */}
           <div style={{

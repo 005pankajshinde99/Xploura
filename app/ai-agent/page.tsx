@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import Navbar from '../components/Navbar';
 
 // ─── Supabase client ──────────────────────────────────────────────────────────
 const _supabase = createClient(
@@ -230,6 +231,14 @@ export default function AIAgentPage() {
   const flowRef = useRef<Flow>({ step: null, city: null, category: null, budget: null, crowd: null, lastTopic: null });
   const conversationHistoryRef = useRef<ConvTurn[]>([]);
   const msgIdRef = useRef(0);
+
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   useEffect(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -718,21 +727,29 @@ const newChat = () => {
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         html, body {
-          height: 100%;
-          background: #070707;
-          color: #EDE8E1;
-          font-family: 'DM Sans', sans-serif;
-          -webkit-font-smoothing: antialiased;
-        }
+  height: 100%;
+  background: #070707;
+  color: #EDE8E1;
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  padding-top: 0 !important;  /* ← YE ADD KARO */
+}
 
         /* ── PAGE SHELL ── */
-        .xa-page {
-          display: flex;
-          flex-direction: column;
-          height: 100vh;
-          overflow: hidden;
-          background: #070707;
-        }
+       .xa-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: #070707;
+  padding-top: 0;
+}
+
+@media (min-width: 769px) {
+  .xa-page {
+    padding-top: 56px !important;
+  }
+}
 
         /* ── NAV ── */
         .xa-nav {
@@ -1246,6 +1263,8 @@ font-weight: 400; margin-bottom: 32px;
           text-align: center; margin-top: 7px; letter-spacing: 0.04em;
         }
 
+        
+
       @media (max-width: 660px) {
   .xa-sidebar {
     position: fixed !important;
@@ -1285,26 +1304,12 @@ font-weight: 400; margin-bottom: 32px;
   flex-shrink: 0;
   font-family: 'DM Sans', sans-serif;
 }
-body {
-  padding-top: 0 !important;
-}
+
       `}</style>
 
       <div className="xa-page">
         {/* NAV */}
-        <nav className="xa-nav">
-          <div className="xa-nav-left">
-            <button className="xa-toggle-btn" onClick={() => setSidebarOpen(o => !o)} aria-label="Toggle sidebar">
-              ☰
-            </button>
-            <a href="/" className="xa-logo">Xploura</a>
-            <div className="xa-status">
-              <div className="xa-status-dot" />
-              <span className="xa-status-text">AI · Pune Guide</span>
-            </div>
-          </div>
-          <a href="/" className="xa-back-btn">← Explore</a>
-        </nav>
+        {!isMobile && <Navbar active="x ai agent" />}
 
         <div className="xa-layout">
           {/* SIDEBAR */}
