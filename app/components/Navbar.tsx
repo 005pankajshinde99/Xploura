@@ -9,14 +9,14 @@ const _supabase = createClient(
 
 const links = [
   { l: 'Home',        h: '/' },
-  { l: 'Trips',       h: '/trips' },
   { l: 'Dates',       h: '/dates' },
   { l: 'Cafes',       h: '/cafes' },
   { l: 'Restaurants', h: '/restaurants' },
   { l: 'Adventure',   h: '/adventure' },
-  { l: 'Vibes',       h: '/vibes' }, 
+  { l: 'Vibes',       h: '/vibes' },
+  { l: 'Trips',       h: '/trips' },
+  { l: 'Gift/Date Box', h: '/giftbox' },
   { l: 'X AI Agent',  h: '/ai-agent' },
-  { l: 'About',       h: '/about' },
 ];
 
 export default function Navbar({ active }: { active?: string }) {
