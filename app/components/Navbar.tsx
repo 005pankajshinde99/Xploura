@@ -11,12 +11,15 @@ const links = [
   { l: 'Home',        h: '/' },
   { l: 'Dates',       h: '/dates' },
   { l: 'Cafes',       h: '/cafes' },
-  { l: 'Restaurants', h: '/restaurants' },
   { l: 'Adventure',   h: '/adventure' },
+  { l: 'Gift/Date Box',    h: '/giftbox' },
+  { l: 'X AI Agent',  h: '/ai-agent' },
+];
+
+const exploreLinks = [
+  { l: 'Restaurants', h: '/restaurants' },
   { l: 'Vibes',       h: '/vibes' },
   { l: 'Trips',       h: '/trips' },
-  { l: 'Gift/Date Box', h: '/giftbox' },
-  { l: 'X AI Agent',  h: '/ai-agent' },
 ];
 
 export default function Navbar({ active }: { active?: string }) {
@@ -27,6 +30,8 @@ export default function Navbar({ active }: { active?: string }) {
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
   const [isMobile, setIsMobile]   = useState(false);
   const ddRef = useRef<HTMLDivElement>(null);
+  const exploreRef = useRef<HTMLDivElement>(null);
+const exploreTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* ── mobile detection ── */
   useEffect(() => {
@@ -210,6 +215,43 @@ export default function Navbar({ active }: { active?: string }) {
         .xp-dd-item.danger:hover { background: rgba(255,50,50,0.07); color: rgba(255,100,100,1); }
         .xp-skel { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.05); }
 
+        .xp-explore-drop {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 13, 11, 0.98);
+  border: 0.5px solid rgba(255, 107, 0, 0.2);
+  border-radius: 14px;
+  min-width: 180px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,107,0,0.05);
+  overflow: hidden;
+  z-index: 999;
+  animation: ddIn 0.18s cubic-bezier(0.23,1,0.32,1);
+}
+.xp-explore-drop a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  border-bottom: 0.5px solid rgba(255,255,255,0.05);
+  transition: background 0.15s, color 0.15s, padding-left 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.xp-explore-drop a:last-child {
+  border-bottom: none;
+}
+.xp-explore-drop a:hover {
+  background: rgba(255,107,0,0.08);
+  color: #FF6B00;
+  padding-left: 22px;
+}
+
         /* ══════════════════════════════
            MOBILE — max-width: 768px
            Logo ✅  |  Nav tabs ❌  |  Auth (only if logged out) ✅
@@ -244,8 +286,11 @@ export default function Navbar({ active }: { active?: string }) {
     backdrop-filter: blur(20px) !important;
     -webkit-backdrop-filter: blur(20px) !important;
   }
+    
         }
-      `}</style>
+      `}
+      
+      </style>
 
       <nav className={`xp-nav ${scrolled ? 'scrolled' : 'at-top'}`}>
 
@@ -275,6 +320,70 @@ export default function Navbar({ active }: { active?: string }) {
               </a>
             );
           })}
+
+       <div
+  ref={exploreRef}
+  style={{ position: 'relative' }}
+  onMouseEnter={() => {
+    if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
+    setHoveredLink('explore');
+  }}
+  onMouseLeave={() => {
+    exploreTimerRef.current = setTimeout(() => {
+      setHoveredLink(null);
+    }, 150);
+  }}
+>
+  <div
+    className={`xp-link${hoveredLink === 'explore' ? ' hovered' : ''}`}
+    style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}
+  >
+    {hoveredLink === 'explore' && <span className="xp-link-pill" />}
+    <span style={{ position: 'relative', zIndex: 1 }}>Explore</span>
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+      style={{ position: 'relative', zIndex: 1, opacity: 0.5 }}>
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </div>
+
+  {hoveredLink === 'explore' && (
+    <div
+      className="xp-explore-drop"
+      onMouseEnter={() => {
+        if (exploreTimerRef.current) clearTimeout(exploreTimerRef.current);
+      }}
+      onMouseLeave={() => {
+        exploreTimerRef.current = setTimeout(() => {
+          setHoveredLink(null);
+        }, 150);
+      }}
+    >
+      {exploreLinks.map(({ l, h }) => (
+        <a key={h} href={h}>
+          {l === 'Restaurants' && (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8">
+              <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/>
+              <path d="M7 2v20"/>
+            </svg>
+          )}
+          {l === 'Vibes' && (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          )}
+          {l === 'Trips' && (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" strokeWidth="1.8">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 010 20"/>
+            </svg>
+          )}
+          {l}
+        </a>
+      ))}
+    </div>
+  )}
+</div>
         </div>
 
         {/* AUTH */}

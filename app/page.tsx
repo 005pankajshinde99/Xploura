@@ -130,7 +130,7 @@ export default function Home() {
   const [searchVal, setSearchVal] = useState('');
   const [chatInput, setChatInput] = useState('');
   const [chatMsgs, setChatMsgs] = useState([
-    { type: 'ai', text: "Hey! I'm X AI. Tell me where you want to go, what you want to watch, eat, or do — I'll plan and book it all for you." }
+    { type: 'ai', text: "Hey! Tell me your budget and who you're going with — I'll plan the perfect experience for you." }
   ]);
   const [tickerText, setTickerText] = useState('Riya just booked Pagdandi · 2 min ago');
   const [loadPct, setLoadPct] = useState(0);
@@ -160,7 +160,7 @@ const [featuredIdx, setFeaturedIdx] = useState(0);
     'Arjun planned Lonavala trip · 5 min ago',
     '1,240 people exploring Pune tonight',
     'Sneha found a date spot · just now',
-    'Dev booked IPL tickets · 3 min ago',
+    
   ];
 
   const catMap: any = { travel: 'travel', shows: 'date', sports: 'adventure', cafes: 'cafe', restaurants: 'restaurant' };
@@ -178,11 +178,18 @@ const [featuredIdx, setFeaturedIdx] = useState(0);
 
   // FEATURED FETCH
 useEffect(() => {
-  _supabase
-    .from('cafes')
-    .select('*')
-    .eq('featured', true)
-    .then(({ data }) => setFeaturedPlaces(data || []));
+  const categories = ['date', 'cafe', 'adventure'];
+  Promise.all(
+    categories.map(cat =>
+      _supabase.from('cafes')
+        .select('*')
+        .eq('featured', true)
+        .eq('category', cat)
+        .limit(1)
+        .single()
+        .then(({ data }) => data)
+    )
+  ).then(results => setFeaturedPlaces(results.filter(Boolean)));
 }, []);
 
 // FEATURED AUTO SLIDE
@@ -364,11 +371,11 @@ async function sendChat(overrideText?: string) {
   const filteredCards = cards.filter(d => !searchVal || d.name?.toLowerCase().includes(searchVal.toLowerCase()) || d.tag?.toLowerCase().includes(searchVal.toLowerCase()));
 
   const slides = [
-    { label: 'LIVE NOW', title: 'IPL 2026 — Tickets Selling Fast', sub: 'MI vs CSK · Wankhede · From ₹1,200', btn: 'Book Now →', bg: 'url(https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=1200&q=80)' },
-    { label: 'TRENDING', title: 'Lonavala Weekend — Slots Almost Full', sub: 'Waterfalls + Cafes · 65km · From ₹2,500', btn: 'Explore →', bg: 'url(https://images.unsplash.com/photo-1670258896861-b77a8cf6075c?w=1200&q=80)' },
-    { label: 'HOT DEAL', title: 'Pawna Lake Camping — Book Tonight', sub: 'Stargazing + Bonfire · 80km · From ₹1,800', btn: 'Camp Now →', bg: 'url(https://images.unsplash.com/photo-1595084305818-84c2daca7482?w=1200&q=80)' },
-    { label: 'POPULAR', title: 'Paasha Rooftop — Date Night Special', sub: 'JW Marriott · KP · ₹2,500/head · 4.9★', btn: 'Reserve →', bg: 'url(https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&q=80)' },
-  ];
+  { label: 'TRENDING', title: 'Paasha Rooftop — Date Night Special', sub: 'Koregaon Park · ₹2,500/head · 4.9★', btn: 'Reserve Now →', bg: 'url(https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&q=80)' },
+  { label: 'POPULAR', title: 'Pagdandi Books — Cozy Cafe Vibes', sub: 'Baner · ₹300/head · Perfect for work & dates', btn: 'Explore →', bg: 'url(https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1200&q=80)' },
+  { label: 'HOT NOW', title: 'Go Karting Pune — Thrilling Experience', sub: 'Adventure · Pune · From ₹800/person', btn: 'Book Now →', bg: 'url(https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80)' },
+  { label: 'NEW', title: 'Plan Your Perfect Night with X AI', sub: 'Tell us your budget — we plan everything', btn: 'Try X AI →', bg: 'url(https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80)' },
+];
 
   return (
     <>
@@ -392,12 +399,12 @@ async function sendChat(overrideText?: string) {
         <div className="hbg-overlay-tb" />
         <div className="hero-inner">
           <div className="hero-left">
-            <div className="hero-badge"><div className="hbdot" />AI-Powered Booking Platform</div>
+            <div className="hero-badge"><div className="hbdot" />Pune's Date & Experience Planner</div>
             <h1 className="hero-h1" style={isMobile ? {display:'flex', alignItems:'center', justifyContent:'space-between', gap:12} : {}}>
   <div>
-    <span className="hs1">Explore</span>
-    <span className="hs2">Every</span>
-    <span className="hs3">World</span>
+     <span className="hs1">Plan</span>
+    <span className="hs2">Your</span>
+    <span className="hs3">Story</span>
   </div>
 
   {/* Featured Card — Mobile Only */}
@@ -517,11 +524,54 @@ borderRadius:13, overflow:'hidden',
   </div>
 )}
 </h1>
-            <p className="hero-sub">Dates · Cafes · Adventure · Restaurants · Trips<br />Step into your next experience</p>
+            <p className="hero-sub">Tell us your vibe, we'll plan the rest.<br />Dates · Team Outings · Cafes · Adventure</p>
             <div className="hero-cta-row">
               <button className="hbtn-primary" onClick={() => document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' })}>Plan My Night →</button>
               <button className="hbtn-ghost" onClick={() => document.getElementById('ai-section')?.scrollIntoView({ behavior: 'smooth' })}>Meet X AI</button>
             </div>
+
+            {!isMobile && (
+  <div style={{ 
+  display: 'flex', gap: 8, 
+  flexWrap: 'wrap', 
+  marginTop: 16, marginBottom: 8, 
+  maxWidth: '100%',
+  overflowX: 'auto',
+  scrollbarWidth: 'none' as const,
+}}>
+    {[
+      { label: 'Romantic', href: '/dates', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="#FF6B00" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg> },
+      { label: 'Adventure', href: '/adventure', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polygon points="3 17 12 3 21 17"/><line x1="3" y1="17" x2="21" y2="17"/></svg> },
+      { label: 'Chill Cafe', href: '/cafes', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> },
+      { label: 'Friends', href: '/restaurants', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> },
+    ].map(({ label, icon, href }) => (
+      <a key={label} href={href} style={{
+  flexShrink: 0,
+  display: 'flex', alignItems: 'center', gap: 6,
+  padding: '7px 14px', borderRadius: 999,
+        border: '0.5px solid rgba(255,255,255,0.15)',
+        background: 'rgba(255,255,255,0.05)',
+        color: 'rgba(255,255,255,0.65)',
+        fontSize: 11, letterSpacing: '0.08em',
+        textTransform: 'uppercase', textDecoration: 'none',
+        fontFamily: "'DM Sans', sans-serif",
+      }}
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLAnchorElement).style.borderColor = '#FF6B00';
+        (e.currentTarget as HTMLAnchorElement).style.color = '#FF6B00';
+        (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,107,0,0.08)';
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(255,255,255,0.15)';
+        (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,0.65)';
+        (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.05)';
+      }}
+      >
+        {icon}{label}
+      </a>
+    ))}
+  </div>
+)}
             <div className="hero-ticker">
               <div className="htick-dot" />
               <div className="htick-text">{tickerText}</div>
@@ -555,6 +605,36 @@ borderRadius:13, overflow:'hidden',
       </svg>
       Dates, cafes, adventure...
     </div>
+
+    {/* Mood selector — mobile */}
+<div style={{
+  display: 'flex', gap: 8,
+  overflowX: 'auto', scrollbarWidth: 'none' as const,
+  paddingBottom: 4, marginBottom: 16,
+}}>
+  {[
+    { label: 'Romantic', href: '/dates', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="#FF6B00" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg> },
+    { label: 'Adventure', href: '/adventure', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polygon points="3 17 12 3 21 17"/><line x1="3" y1="17" x2="21" y2="17"/></svg> },
+    { label: 'Chill Cafe', href: '/cafes', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> },
+    { label: 'Friends', href: '/restaurants', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> },
+  ].map(({ label, icon, href }) => (
+    <a key={label} href={href} style={{
+      flexShrink: 0,
+      display: 'flex', alignItems: 'center', gap: 6,
+      padding: '7px 14px', borderRadius: 999,
+      border: '0.5px solid rgba(255,255,255,0.15)',
+      background: 'rgba(255,255,255,0.05)',
+      color: 'rgba(255,255,255,0.65)',
+      fontSize: 11, letterSpacing: '0.08em',
+      textTransform: 'uppercase' as const,
+      textDecoration: 'none',
+      fontFamily: "'DM Sans', sans-serif",
+      whiteSpace: 'nowrap' as const,
+    }}>
+      {icon}{label}
+    </a>
+  ))}
+</div>
 
     {/* Category blocks — 2 rows x 3 cols grid */}
     <div style={{
@@ -691,23 +771,34 @@ borderRadius:13, overflow:'hidden',
               <div className="stage-dot" style={{ width: 5, height: 5, top: '78%', left: '44%', opacity: 0.3 }} />
               {/* Featured */}
               <div className="hcard hcard-featured" onClick={() => document.getElementById('explore')?.scrollIntoView({ behavior: 'smooth' })}>
-                <div className="hcard-img" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80')" }} />
-                <div className="featured-label">⭐ Featured</div>
-                <div className="hcard-badge">🔥 Trending</div>
-                <div className="hcard-body"><div className="hcard-tag">Adventure · 65km</div><div className="hcard-name">Lonavala</div><div className="hcard-price">From ₹2,500 · 4.9★</div></div>
-              </div>
+               <div className="hcard-img" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80')" }} />
+  <div className="hcard-badge">💑 Hot</div>
+  <div className="hcard-body">
+    <div className="hcard-tag">Date Night · KP</div>
+    <div className="hcard-name">Paasha Rooftop</div>
+    <div className="hcard-price">₹2,500/head · 4.9★</div>
+  </div>
+</div>
               {/* T1 */}
               <div className="hcard hcard-t1">
-                <div className="hcard-img" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1533105079780-92b9be482077?w=600&q=80')" }} />
-                <div className="hcard-badge">💑 Hot</div>
-                <div className="hcard-body"><div className="hcard-tag">Date Night · KP</div><div className="hcard-name">Paasha Rooftop</div><div className="hcard-price">₹2,500/head</div></div>
-              </div>
+  <div className="hcard-img" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=600&q=80')" }} />
+  <div className="hcard-badge">☕ Cozy</div>
+  <div className="hcard-body">
+    <div className="hcard-tag">Cafe · Baner</div>
+    <div className="hcard-name">Pagdandi Books</div>
+    <div className="hcard-price">₹300/head</div>
+  </div>
+</div>
               {/* T2 */}
-              <div className="hcard hcard-t2">
-                <div className="hcard-img" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1595084305818-84c2daca7482?w=600&q=80')" }} />
-                <div className="hcard-badge">⛺ New</div>
-                <div className="hcard-body"><div className="hcard-tag">Camping · 80km</div><div className="hcard-name">Pawna Lake</div><div className="hcard-price">From ₹1,800</div></div>
-              </div>
+             <div className="hcard hcard-t2">
+  <div className="hcard-img" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80')" }} />
+  <div className="hcard-badge">🏎️ Thrilling</div>
+  <div className="hcard-body">
+    <div className="hcard-tag">Adventure · Pune</div>
+    <div className="hcard-name">Go Karting</div>
+    <div className="hcard-price">From ₹800</div>
+  </div>
+</div>
             </div>
           </div>
         </div>
@@ -738,7 +829,10 @@ borderRadius:13, overflow:'hidden',
         </div>
         {/* NUMBERS */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', borderLeft: '0.5px solid rgba(255,255,255,0.06)' }}>
-          {[{n:'240',s:'+',l:'Destinations worldwide'},{n:'18',s:'K',l:'Events listed'},{n:'4.9',s:'',l:'Average rating'},{n:'92',s:'K',l:'Happy explorers'}].map((s,i) => (
+          {[ {n:'50',s:'+',l:'Curated spots in Pune'},
+  {n:'4',s:'',l:'Experience categories'},
+  {n:'AI',s:'',l:'Powered planning'},
+  {n:'Free',s:'',l:'To get started'}].map((s,i) => (
             <div key={i} className="stat"><div className="stn"><span>{s.n}</span>{s.s}</div><div className="stl">{s.l}</div></div>
           ))}
         </div>
@@ -747,7 +841,7 @@ borderRadius:13, overflow:'hidden',
       {/* MARQUEE */}
       <div className="mq-wrap">
         <div className="mq-track">
-          {['Travel','Adventure','Concerts','Sports','Fine Dining','Cafes','Weekend Trips','Live Events','Travel','Adventure','Concerts','Sports','Fine Dining','Cafes','Weekend Trips','Live Events'].map((t,i) => (
+          {['Date Night','Cafes','Adventure','Restaurants','Gift Box','Date Box','Rooftop Dining','Go Karting','Trekking','Cozy Cafes','Fine Dining','Weekend Plans','Date Night','Cafes','Adventure','Restaurants','Gift Box','Date Box','Rooftop Dining','Go Karting','Trekking','Cozy Cafes','Fine Dining','Weekend Plans'].map((t,i) => (
             <span key={i} className="mq-item">{t}<div className="mqdot" /></span>
           ))}
         </div>
@@ -777,9 +871,9 @@ borderRadius:13, overflow:'hidden',
         <div className="stitle-d">Your personal<br /><span className="dim">exploration guide</span></div>
         <div className="ai-grid" style={{ width: '100%', boxSizing: 'border-box' }}>
           <div className="ai-info">
-            <p>Xploura AI plans your entire experience — from flights to dinner reservations. Just tell it what you want, voice or text, Hindi or English.</p>
+            <p>Xploura AI plans your perfect night out — from cafe bookings to date night planning. Just tell it your budget and vibe, we handle the rest.</p>
             <div>
-              {[{n:'01',t:'Natural language booking',d:'Say "Plan a Goa trip this weekend for 2" — it books flights, hotel, and activities.'},{n:'02',t:'Voice + text input',d:'Speak in Hindi or English. The AI understands and responds instantly.'},{n:'03',t:'Smart recommendations',d:'Based on your location, budget, and past trips — suggests the best options.'},{n:'04',t:'One-tap checkout',d:'Review the plan, confirm, pay — all within the conversation.'}].map((f,i) => (
+              {[{n:'01',t:'Natural language booking',d:'Say "Plan a Goa trip this weekend for 2" — it books flights, hotel, and activities.'},{n:'02',t:'Mood based discovery',d:'Tell it your vibe — Romantic, Adventure, Chill — and it finds the right spot instantly.'},{n:'03',t:'Smart recommendations',d:'Based on your location, budget, and past trips — suggests the best options.'},{n:'04',t:'One-tap checkout',d:'Review the plan, confirm, pay — all within the conversation.'}].map((f,i) => (
                 <div key={i} className="ai-feat"><div className="afn">{f.n}</div><div><div className="aft">{f.t}</div><div className="afd">{f.d}</div></div></div>
               ))}
             </div>
@@ -806,7 +900,7 @@ borderRadius:13, overflow:'hidden',
               )}
             </div>
             <div className="chat-sugs">
-              {['Plan Mumbai trip 3 days','IPL match tickets','Best cafes in Pune','Goa weekend'].map(s => (
+              {['Plan a date night', 'Friends outing in Pune', 'Best cafes near me', 'Adventure this weekend'].map(s => (
                 <button key={s} className="sug" onClick={() => sendChat(s)}>{s}</button>
               ))}
             </div>
