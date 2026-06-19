@@ -547,11 +547,11 @@ borderRadius:13, overflow:'hidden',
       <a key={label} href={href} style={{
   flexShrink: 0,
   display: 'flex', alignItems: 'center', gap: 6,
-  padding: '7px 14px', borderRadius: 999,
+  padding: '6px 11px', borderRadius: 999,
         border: '0.5px solid rgba(255,255,255,0.15)',
         background: 'rgba(255,255,255,0.05)',
         color: 'rgba(255,255,255,0.65)',
-        fontSize: 11, letterSpacing: '0.08em',
+        fontSize: 10, letterSpacing: '0.06em',
         textTransform: 'uppercase', textDecoration: 'none',
         fontFamily: "'DM Sans', sans-serif",
       }}
@@ -607,7 +607,7 @@ borderRadius:13, overflow:'hidden',
 
     {/* Mood selector — mobile */}
 <div style={{
-  display: 'flex', gap: 8,
+  display: 'flex', gap: 6,
   overflowX: 'auto', scrollbarWidth: 'none' as const,
   paddingBottom: 4, marginBottom: 16,
 }}>
