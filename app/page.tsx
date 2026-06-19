@@ -530,20 +530,19 @@ borderRadius:13, overflow:'hidden',
               <button className="hbtn-ghost" onClick={() => document.getElementById('ai-section')?.scrollIntoView({ behavior: 'smooth' })}>Meet X AI</button>
             </div>
 
-            {!isMobile && (
+          {!isMobile && (
   <div style={{ 
   display: 'flex', gap: 8, 
   flexWrap: 'wrap', 
   marginTop: 16, marginBottom: 8, 
   maxWidth: '100%',
-  overflowX: 'auto',
-  scrollbarWidth: 'none' as const,
 }}>
     {[
       { label: 'Romantic', href: '/dates', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="#FF6B00" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg> },
       { label: 'Adventure', href: '/adventure', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polygon points="3 17 12 3 21 17"/><line x1="3" y1="17" x2="21" y2="17"/></svg> },
       { label: 'Chill Cafe', href: '/cafes', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> },
       { label: 'Friends', href: '/restaurants', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> },
+      { label: 'Team Outing', href: '/restaurants', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2M8 7V5a2 2 0 014 0"/></svg> },
     ].map(({ label, icon, href }) => (
       <a key={label} href={href} style={{
   flexShrink: 0,
@@ -616,7 +615,8 @@ borderRadius:13, overflow:'hidden',
     { label: 'Romantic', href: '/dates', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="#FF6B00" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg> },
     { label: 'Adventure', href: '/adventure', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polygon points="3 17 12 3 21 17"/><line x1="3" y1="17" x2="21" y2="17"/></svg> },
     { label: 'Chill Cafe', href: '/cafes', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> },
-    { label: 'Friends', href: '/restaurants', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> },
+   { label: 'Friends', href: '/restaurants', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg> },
+    { label: 'Team Outing', href: '/restaurants', icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2M8 7V5a2 2 0 014 0"/></svg> },
   ].map(({ label, icon, href }) => (
     <a key={label} href={href} style={{
       flexShrink: 0,
