@@ -12,6 +12,7 @@ interface BoxItem {
   deliveryNote: string;
   items: string[];
   surprise: string;
+  image?: string;
   badge?: string;
   limited?: boolean;
   festival?: string;
@@ -108,6 +109,19 @@ const GIFT_CATEGORIES: GiftCategory[] = [
       mk({ id: 'w2', name: 'Vivah', tagline: 'A gift as beautiful as the occasion', price: 2999, items: ['Luxury candle set', 'Belgian chocolate box', 'Premium wedding card', 'Couple photo frame', 'Preserved flowers', 'Handmade soap set', 'Premium tea hamper'], surprise: 'Crystal couple figurine' }),
       mk({ id: 'w3', name: 'Bliss', tagline: 'Everything the newlyweds need', price: 5499, badge: 'Premium', items: ['3 luxury candles', 'Lindt chocolate box', 'Custom photo book', 'Couple activity cards', 'Preserved rose dome', 'Premium skincare duo', 'Gourmet coffee + mugs', 'Silk bedside pouch'], surprise: 'Silver blessing coin' }),
       mk({ id: 'w4', name: 'Grandeur', tagline: 'A wedding gift to be remembered forever', price: 9999, items: ['Designer candle set', 'Godiva luxury hamper', 'Leather wedding album', 'Experience cards', 'Preserved flower arrangement', 'Luxury spa hamper', 'Nespresso machine pods', 'Personalised nameplaque'], surprise: 'Sterling silver couple keepsake' }),
+    ],
+  },
+  {
+    id: 'couple',
+    label: 'Couple Gifts',
+    sublabel: 'For the two of you, anytime',
+    icon: 'Camera',
+    isNew: true,
+    boxes: [
+      mk({ id: 'cp1', name: 'Twosome', tagline: 'Little things, shared together', price: 999, deliveryNote: '₹100 delivery', badge: 'New', items: ['Matching mug pair', 'Assorted chocolates', 'Couple greeting card', 'Mini photo clip stand', 'Scented candle', 'Ribbon bow'], surprise: 'Couple keychain set' }),
+      mk({ id: 'cp2', name: 'Sync', tagline: 'For two people, one wavelength', price: 1899, items: ['His & hers tote bags', 'Ferrero Rocher box', 'Matching socks pair', 'Polaroid photo clip set', 'Dried flower bunch', 'Mini perfume duo'], surprise: 'Matching phone charms' }),
+      mk({ id: 'cp3', name: 'Duo', tagline: 'Everyday gifting, made special', price: 3499, badge: 'Best Seller', items: ['Couple watch set', 'Belgian chocolates', 'Personalised photo frame', 'Matching bathrobe set', 'Premium tea hamper', 'Scented candle duo'], surprise: 'Engraved keychain pair' }),
+      mk({ id: 'cp4', name: 'Forever Two', tagline: 'A gift as solid as your bond', price: 5999, items: ['Premium couple watch set', 'Godiva chocolates', 'Custom photo book', 'Matching leather wallets', 'Luxury candle duo', 'Premium coffee hamper'], surprise: 'Sterling silver couple bracelet set' }),
     ],
   },
   {
@@ -223,6 +237,88 @@ const GIFT_CATEGORIES: GiftCategory[] = [
   },
 ];
 
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MORE GIFTS WITHIN SAME CATEGORY (individual items, FNP-style)
+// ─────────────────────────────────────────────────────────────────────────────
+interface RelatedGift {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+}
+
+const rg = (id: string, name: string, price: number): RelatedGift => ({
+  id, name, price, image: `https://picsum.photos/seed/${id}/300/300`,
+});
+
+const RELATED_GIFTS: Record<string, RelatedGift[]> = {
+  birthday: [
+    rg('rgbd1', 'Photo Cake', 599), rg('rgbd2', 'Balloon Bouquet', 399),
+    rg('rgbd3', 'Chocolate Box', 449), rg('rgbd4', 'Greeting Card', 149),
+    rg('rgbd5', 'Scented Candle', 299), rg('rgbd6', 'Birthday Mug', 349),
+  ],
+  anniversary: [
+    rg('rgan1', 'Heart Chocolate Box', 599), rg('rgan2', 'Rose Bouquet', 699),
+    rg('rgan3', 'Couple Photo Frame', 499), rg('rgan4', 'Anniversary Card', 199),
+    rg('rgan5', 'Scented Candle Duo', 399), rg('rgan6', 'Anniversary Mug Set', 449),
+  ],
+  wedding: [
+    rg('rgwd1', 'Dry Fruit Box', 799), rg('rgwd2', 'Wedding Card', 199),
+    rg('rgwd3', 'Silver Coin', 999), rg('rgwd4', 'Mithai Box', 599),
+    rg('rgwd5', 'Brass Diya Set', 449), rg('rgwd6', 'Home Decor Piece', 699),
+  ],
+  personalised: [
+    rg('rgps1', 'Custom Keychain', 249), rg('rgps2', 'Personalised Mug', 399),
+    rg('rgps3', 'Photo Frame', 449), rg('rgps4', 'Custom Cushion', 599),
+    rg('rgps5', 'Engraved Pen', 349), rg('rgps6', 'Name Necklace', 699),
+  ],
+  plants: [
+    rg('rgpl1', 'Succulent Pot', 299), rg('rgpl2', 'Money Plant', 399),
+    rg('rgpl3', 'Bonsai Plant', 599), rg('rgpl4', 'Areca Palm', 699),
+    rg('rgpl5', 'Terracotta Planter', 249), rg('rgpl6', 'Indoor Fern', 349),
+  ],
+  hamper: [
+    rg('rgha1', 'Tea & Cookies', 449), rg('rgha2', 'Dry Fruit Hamper', 599),
+    rg('rgha3', 'Spa Kit', 699), rg('rgha4', 'Coffee Hamper', 549),
+    rg('rgha5', 'Snack Box', 399), rg('rgha6', 'Bath Essentials', 649),
+  ],
+  premium: [
+    rg('rgpr1', 'Leather Wallet', 1499), rg('rgpr2', 'Premium Pen Set', 1199),
+    rg('rgpr3', 'Whisky Glass Set', 1799), rg('rgpr4', 'Cufflinks', 999),
+    rg('rgpr5', 'Premium Cardholder', 1299), rg('rgpr6', 'Fragrance Rollerball', 899),
+  ],
+  jewellery: [
+    rg('rgjw1', 'Stud Earrings', 599), rg('rgjw2', 'Silver Bracelet', 799),
+    rg('rgjw3', 'Charm Pendant', 699), rg('rgjw4', 'Layered Necklace', 899),
+    rg('rgjw5', 'Ring', 549), rg('rgjw6', 'Anklet Pair', 449),
+  ],
+  relative: [
+    rg('rgrl1', 'Mithai Box', 449), rg('rgrl2', 'Dry Fruit Tray', 599),
+    rg('rgrl3', 'Diya Set', 349), rg('rgrl4', 'Agarbatti Box', 249),
+    rg('rgrl5', 'Family Photo Frame', 499), rg('rgrl6', 'Greeting Card', 149),
+  ],
+  parents: [
+    rg('rgpt1', 'Tea Hamper', 499), rg('rgpt2', 'Shawl', 899),
+    rg('rgpt3', 'Ayurvedic Kit', 699), rg('rgpt4', 'Health Mix Box', 449),
+    rg('rgpt5', 'Photo Frame', 399), rg('rgpt6', 'Prayer Diya Set', 349),
+  ],
+  kids: [
+    rg('rgkd1', 'Soft Toy', 399), rg('rgkd2', 'Coloring Book Set', 249),
+    rg('rgkd3', 'Puzzle Game', 349), rg('rgkd4', 'Chocolate Pack', 199),
+    rg('rgkd5', 'Story Book', 299), rg('rgkd6', 'Mini Lego Set', 599),
+  ],
+  festive: [
+    rg('rgfs1', 'Diya Set', 299), rg('rgfs2', 'Rangoli Kit', 249),
+    rg('rgfs3', 'Mithai Box', 449), rg('rgfs4', 'Sparklers Pack', 199),
+    rg('rgfs5', 'Festive Greeting Card', 149), rg('rgfs6', 'Pooja Thali', 599),
+  ],
+  couple: [
+    rg('rgcp1', 'Couple Mug Set', 449), rg('rgcp2', 'Matching Keychains', 299),
+    rg('rgcp3', 'Couple T-shirt Set', 799), rg('rgcp4', 'Photo Collage Frame', 599),
+    rg('rgcp5', 'Couple Bracelet', 549), rg('rgcp6', 'Scented Candle Duo', 399),
+  ],
+};
 // ─────────────────────────────────────────────────────────────────────────────
 // DATE BOX DATA
 // ─────────────────────────────────────────────────────────────────────────────
@@ -233,12 +329,12 @@ const DATE_CATEGORIES: DateCategory[] = [
     sublabel: 'The essential romantic setup',
     icon: 'Heart',
     boxes: [
-      mk({ id: 'dc1', name: 'Spark', tagline: 'Light the first spark tonight', price: 999, deliveryNote: '₹100 delivery', badge: 'Most Ordered', items: ['Tea light candles', 'Ferrero Rocher', 'Handwritten love note', 'Scratch off love card', 'Dried flowers', 'LED fairy lights', 'Spotify QR'], surprise: 'Couple bracelet set' }),
-      mk({ id: 'dc2', name: 'Bloom', tagline: 'A night worth remembering', price: 1499, items: ['2 scented candles', 'Ferrero Rocher large', 'Open when letters set', 'Couple game + dice', 'Dried bouquet', 'Rose LED light', 'Premium tea set', 'Spotify QR'], surprise: 'Mini face mask kit' }),
-      mk({ id: 'dc3', name: 'Enchant', tagline: 'Set the scene, own the night', price: 2999, badge: 'Best Value', items: ['3 premium candles', 'Ferrero + truffles', 'Wax seal love letter', '"52 reasons" cards', 'Premium dried bouquet', 'Moon lamp mini', 'Mini perfume', 'Coffee set', 'Spotify QR'], surprise: 'Preserved rose' }),
-      mk({ id: 'dc4', name: 'Luxe', tagline: 'Five-star date at home', price: 4999, items: ['Luxury candle set', 'Belgian chocolates', 'Hardcover love journal', 'Premium couple game', 'Preserved flowers', 'Projector night light', 'Bath & body kit', 'Custom photo card', 'Spotify QR'], surprise: 'Spa discount voucher' }),
-      mk({ id: 'dc5', name: 'Royal', tagline: 'Make tonight legendary', price: 6999, items: ['Luxury candle + holder', 'Imported chocolates', 'Leather journal + pen', 'Luxury couple game', 'Preserved rose dome', 'Premium skincare', 'Coffee hamper', 'Open when luxury set', 'Spotify QR'], surprise: 'Sterling silver bracelet' }),
-      mk({ id: 'dc6', name: 'Éternité', tagline: 'The date night of a lifetime', price: 9999, badge: 'Premium', items: ['Designer candle set', 'Lindt/Godiva', 'Custom photo book', 'Experience cards', 'Preserved arrangement', 'Premium spa hamper', 'Neon "Love" sign', 'Nespresso + mug', 'Spotify QR'], surprise: 'Silver jewelry set' }),
+      mk({ id: 'dc1', image: 'https://picsum.photos/seed/dc1/420/280', name: 'Spark', tagline: 'Light the first spark tonight', price: 999, deliveryNote: '₹100 delivery', badge: 'Most Ordered', items: ['Tea light candles', 'Ferrero Rocher', 'Handwritten love note', 'Scratch off love card', 'Dried flowers', 'LED fairy lights', 'Spotify QR'], surprise: 'Couple bracelet set' }),
+      mk({ id: 'dc2', image: 'https://picsum.photos/seed/dc2/420/280', name: 'Bloom', tagline: 'A night worth remembering', price: 1499, items: ['2 scented candles', 'Ferrero Rocher large', 'Open when letters set', 'Couple game + dice', 'Dried bouquet', 'Rose LED light', 'Premium tea set', 'Spotify QR'], surprise: 'Mini face mask kit' }),
+      mk({ id: 'dc3', image: 'https://picsum.photos/seed/dc3/420/280', name: 'Enchant', tagline: 'Set the scene, own the night', price: 2999, badge: 'Best Value', items: ['3 premium candles', 'Ferrero + truffles', 'Wax seal love letter', '"52 reasons" cards', 'Premium dried bouquet', 'Moon lamp mini', 'Mini perfume', 'Coffee set', 'Spotify QR'], surprise: 'Preserved rose' }),
+      mk({ id: 'dc4', image: 'https://picsum.photos/seed/dc4/420/280', name: 'Luxe', tagline: 'Five-star date at home', price: 4999, items: ['Luxury candle set', 'Belgian chocolates', 'Hardcover love journal', 'Premium couple game', 'Preserved flowers', 'Projector night light', 'Bath & body kit', 'Custom photo card', 'Spotify QR'], surprise: 'Spa discount voucher' }),
+      mk({ id: 'dc5', image: 'https://picsum.photos/seed/dc5/420/280', name: 'Royal', tagline: 'Make tonight legendary', price: 6999, items: ['Luxury candle + holder', 'Imported chocolates', 'Leather journal + pen', 'Luxury couple game', 'Preserved rose dome', 'Premium skincare', 'Coffee hamper', 'Open when luxury set', 'Spotify QR'], surprise: 'Sterling silver bracelet' }),
+      mk({ id: 'dc6', image: 'https://picsum.photos/seed/dc6/420/280', name: 'Éternité', tagline: 'The date night of a lifetime', price: 9999, badge: 'Premium', items: ['Designer candle set', 'Lindt/Godiva', 'Custom photo book', 'Experience cards', 'Preserved arrangement', 'Premium spa hamper', 'Neon "Love" sign', 'Nespresso + mug', 'Spotify QR'], surprise: 'Silver jewelry set' }),
     ],
   },
   {
@@ -247,9 +343,9 @@ const DATE_CATEGORIES: DateCategory[] = [
     sublabel: 'Mark the day you fell in love',
     icon: 'Ring',
     boxes: [
-      mk({ id: 'ad1', name: 'Reminisce', tagline: 'Relive every beautiful memory', price: 1799, badge: 'Popular', items: ['Memory scrapbook kit', 'Couple candle set', 'Ferrero Rocher', 'Custom photo strip printing', '"Then & Now" question cards', 'Dried rose bouquet', 'Spotify anniversary QR'], surprise: 'Personalised couple frame' }),
-      mk({ id: 'ad2', name: 'Chapter Two', tagline: 'A new evening to remember', price: 3499, items: ['3 luxury candles', 'Belgian chocolates', 'Wax seal anniversary letter', 'Custom love timeline print', 'Preserved rose dome', 'Mini spa duo', 'Projector mood light', 'Spotify playlist QR'], surprise: 'Silver photo locket' }),
-      mk({ id: 'ad3', name: 'Milestone', tagline: 'Some evenings deserve grandeur', price: 6999, badge: 'Premium', items: ['Designer candle set', 'Godiva chocolates', 'Custom hardcover photo book', 'Experience voucher set', 'Preserved flower arrangement', 'Premium skincare duo', 'Nespresso + mug', 'Neon "Us" sign mini', 'Spotify memory QR'], surprise: 'Sterling silver couple keepsake' }),
+      mk({ id: 'ad1', image: 'https://picsum.photos/seed/ad1/420/280', name: 'Reminisce', tagline: 'Relive every beautiful memory', price: 1799, badge: 'Popular', items: ['Memory scrapbook kit', 'Couple candle set', 'Ferrero Rocher', 'Custom photo strip printing', '"Then & Now" question cards', 'Dried rose bouquet', 'Spotify anniversary QR'], surprise: 'Personalised couple frame' }),
+      mk({ id: 'ad2', image: 'https://picsum.photos/seed/ad2/420/280', name: 'Chapter Two', tagline: 'A new evening to remember', price: 3499, items: ['3 luxury candles', 'Belgian chocolates', 'Wax seal anniversary letter', 'Custom love timeline print', 'Preserved rose dome', 'Mini spa duo', 'Projector mood light', 'Spotify playlist QR'], surprise: 'Silver photo locket' }),
+      mk({ id: 'ad3', image: 'https://picsum.photos/seed/ad3/420/280', name: 'Milestone', tagline: 'Some evenings deserve grandeur', price: 6999, badge: 'Premium', items: ['Designer candle set', 'Godiva chocolates', 'Custom hardcover photo book', 'Experience voucher set', 'Preserved flower arrangement', 'Premium skincare duo', 'Nespresso + mug', 'Neon "Us" sign mini', 'Spotify memory QR'], surprise: 'Sterling silver couple keepsake' }),
     ],
   },
   {
@@ -258,9 +354,9 @@ const DATE_CATEGORIES: DateCategory[] = [
     sublabel: 'Unexpected. Unplanned. Unforgettable.',
     icon: 'Sparkle',
     boxes: [
-      mk({ id: 'sd1', name: 'Caught Off Guard', tagline: 'The best surprises need no reason', price: 1299, deliveryNote: '₹100 delivery', badge: 'Fan Favourite', items: ['Scented candle', 'Ferrero Rocher box', 'Scratch-off "Date Night" card', 'Secret love note pad', 'Polaroid-style photo print kit', 'LED string lights', 'Spotify surprise QR'], surprise: 'Mystery gift inside' }),
-      mk({ id: 'sd2', name: 'Plot Twist', tagline: 'You planned something special', price: 2799, items: ['2 luxury candles', 'Belgian chocolates', 'Sealed "open together" envelope', 'Couple game deck', 'Dried flower bouquet', 'Photo booth strip kit', 'Mood LED light', 'Spotify curated QR'], surprise: 'Personalised surprise letter' }),
-      mk({ id: 'sd3', name: 'Grand Reveal', tagline: 'The one they\'ll never see coming', price: 4999, badge: 'Best Value', items: ['3 premium candles', 'Godiva chocolates', 'Custom love letter + wax seal', '"50 questions" card game', 'Preserved rose dome', 'Mini spa kit', 'Projector night light', 'Neon heart sign mini', 'Spotify love QR'], surprise: 'Couple experience voucher' }),
+      mk({ id: 'sd1', image: 'https://picsum.photos/seed/sd1/420/280', name: 'Caught Off Guard', tagline: 'The best surprises need no reason', price: 1299, deliveryNote: '₹100 delivery', badge: 'Fan Favourite', items: ['Scented candle', 'Ferrero Rocher box', 'Scratch-off "Date Night" card', 'Secret love note pad', 'Polaroid-style photo print kit', 'LED string lights', 'Spotify surprise QR'], surprise: 'Mystery gift inside' }),
+      mk({ id: 'sd2', image: 'https://picsum.photos/seed/sd2/420/280', name: 'Plot Twist', tagline: 'You planned something special', price: 2799, items: ['2 luxury candles', 'Belgian chocolates', 'Sealed "open together" envelope', 'Couple game deck', 'Dried flower bouquet', 'Photo booth strip kit', 'Mood LED light', 'Spotify curated QR'], surprise: 'Personalised surprise letter' }),
+      mk({ id: 'sd3', image: 'https://picsum.photos/seed/sd3/420/280', name: 'Grand Reveal', tagline: 'The one they\'ll never see coming', price: 4999, badge: 'Best Value', items: ['3 premium candles', 'Godiva chocolates', 'Custom love letter + wax seal', '"50 questions" card game', 'Preserved rose dome', 'Mini spa kit', 'Projector night light', 'Neon heart sign mini', 'Spotify love QR'], surprise: 'Couple experience voucher' }),
     ],
   },
   {
@@ -269,8 +365,8 @@ const DATE_CATEGORIES: DateCategory[] = [
     sublabel: 'Make the first one count',
     icon: 'Zap',
     boxes: [
-      mk({ id: 'fd1', name: 'Hello', tagline: 'A gentle, perfect first impression', price: 899, deliveryNote: '₹100 delivery', badge: 'Sweet & Simple', items: ['Single scented candle', 'Ferrero Rocher 4pc', 'First date conversation cards', 'Mini wildflower bunch', 'Soft music playlist QR', 'Greeting card'], surprise: 'Personalised note' }),
-      mk({ id: 'fd2', name: 'First Chapter', tagline: 'The start of something beautiful', price: 2199, badge: 'Most Loved', items: ['2 scented candles', 'Belgian chocolates', 'Icebreaker question card game', '"Would you rather" date edition', 'Dried flower bouquet', 'Mood LED light', 'Curated playlist QR', 'Mini photo frame'], surprise: 'Dainty charm bracelet' }),
+      mk({ id: 'fd1', image: 'https://picsum.photos/seed/fd1/420/280', name: 'Hello', tagline: 'A gentle, perfect first impression', price: 899, deliveryNote: '₹100 delivery', badge: 'Sweet & Simple', items: ['Single scented candle', 'Ferrero Rocher 4pc', 'First date conversation cards', 'Mini wildflower bunch', 'Soft music playlist QR', 'Greeting card'], surprise: 'Personalised note' }),
+      mk({ id: 'fd2', image: 'https://picsum.photos/seed/fd2/420/280', name: 'First Chapter', tagline: 'The start of something beautiful', price: 2199, badge: 'Most Loved', items: ['2 scented candles', 'Belgian chocolates', 'Icebreaker question card game', '"Would you rather" date edition', 'Dried flower bouquet', 'Mood LED light', 'Curated playlist QR', 'Mini photo frame'], surprise: 'Dainty charm bracelet' }),
     ],
   },
   {
@@ -279,9 +375,9 @@ const DATE_CATEGORIES: DateCategory[] = [
     sublabel: 'Stay home. Stay warm. Stay close.',
     icon: 'Moon',
     boxes: [
-      mk({ id: 'cn1', name: 'Cosy', tagline: 'Just the two of you and a quiet night', price: 1299, deliveryNote: '₹100 delivery', badge: 'Bestseller', items: ['Scented soy candle', 'Hot chocolate mix', 'Movie night snack box', 'Couple "Would You Rather" cards', 'Cosy blanket socks pair', 'Fairy lights'], surprise: 'Personalised pillow tag' }),
-      mk({ id: 'cn2', name: 'Blanket Fort', tagline: 'Build your world together', price: 2499, items: ['3 scented candles', 'Premium popcorn set', 'Board game for two', 'Gourmet hot cocoa', 'Couple journal', 'LED lights', 'Cosy socks pair', 'Spotify chill QR'], surprise: 'Mini Polaroid photo kit' }),
-      mk({ id: 'cn3', name: 'Nest', tagline: 'The ultimate stay-in experience', price: 4299, badge: 'Best Value', items: ['Luxury candle set', 'Gourmet movie snack hamper', 'Premium streaming night box', 'Couple massage oil duo', 'Sherpa blanket set', 'Premium hot chocolate kit', 'Face mask duo', 'Projector night light'], surprise: 'Weighted eye mask duo' }),
+      mk({ id: 'cn1', image: 'https://picsum.photos/seed/cn1/420/280', name: 'Cosy', tagline: 'Just the two of you and a quiet night', price: 1299, deliveryNote: '₹100 delivery', badge: 'Bestseller', items: ['Scented soy candle', 'Hot chocolate mix', 'Movie night snack box', 'Couple "Would You Rather" cards', 'Cosy blanket socks pair', 'Fairy lights'], surprise: 'Personalised pillow tag' }),
+      mk({ id: 'cn2', image: 'https://picsum.photos/seed/cn2/420/280', name: 'Blanket Fort', tagline: 'Build your world together', price: 2499, items: ['3 scented candles', 'Premium popcorn set', 'Board game for two', 'Gourmet hot cocoa', 'Couple journal', 'LED lights', 'Cosy socks pair', 'Spotify chill QR'], surprise: 'Mini Polaroid photo kit' }),
+      mk({ id: 'cn3', image: 'https://picsum.photos/seed/cn3/420/280', name: 'Nest', tagline: 'The ultimate stay-in experience', price: 4299, badge: 'Best Value', items: ['Luxury candle set', 'Gourmet movie snack hamper', 'Premium streaming night box', 'Couple massage oil duo', 'Sherpa blanket set', 'Premium hot chocolate kit', 'Face mask duo', 'Projector night light'], surprise: 'Weighted eye mask duo' }),
     ],
   },
 ];
@@ -326,7 +422,14 @@ function BoxCard({ box, accent = '#FF6B00' }: { box: BoxItem; accent?: string })
         el.style.transform = 'translateY(0)';
         el.style.boxShadow = 'none';
       }}
-    >
+   >
+      {/* Product image */}
+      {box.image && (
+        <div style={{ width: '100%', height: 140, overflow: 'hidden' }}>
+          <img src={box.image} alt={box.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+        </div>
+      )}
+
       {/* Festival tag */}
       {box.limited && box.festival && (
         <div style={{ background: `${accent}18`, borderBottom: `0.5px solid ${accent}28`, padding: '4px 13px', display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -400,6 +503,58 @@ function BoxCard({ box, accent = '#FF6B00' }: { box: BoxItem; accent?: string })
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// MINI TEASER CARD (lightweight, for cross-link preview sections)
+// ─────────────────────────────────────────────────────────────────────────────
+function MiniBoxTeaser({ box, accent = '#FF6B00' }: { box: BoxItem; accent?: string }) {
+  return (
+    <div style={{
+      background: 'rgba(255,255,255,0.02)',
+      border: '0.5px solid rgba(255,255,255,0.06)',
+      borderRadius: 9,
+      padding: '14px 14px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 6,
+      transition: 'border-color 0.2s',
+      cursor: 'default',
+    }}
+    onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = `${accent}40`; }}
+    onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(255,255,255,0.06)'; }}
+    >
+      {box.badge && (
+        <div style={{ fontSize: 7, letterSpacing: '0.12em', textTransform: 'uppercase', color: accent, fontWeight: 700, fontFamily: "'Syne', sans-serif" }}>{box.badge}</div>
+      )}
+      <div style={{ fontFamily: "'Clash Display', 'Syne', sans-serif", fontSize: 15, fontWeight: 600, color: '#fff' }}>{box.name}</div>
+      <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.28)', lineHeight: 1.4 }}>{box.tagline}</div>
+      <div style={{ fontFamily: "'Clash Display', 'Syne', sans-serif", fontSize: 16, fontWeight: 700, color: accent, marginTop: 2 }}>₹{box.price.toLocaleString('en-IN')}</div>
+    </div>
+  );
+}
+
+
+function RelatedGiftCard({ item, accent = '#FF6B00' }: { item: RelatedGift; accent?: string }) {
+  const handleOrder = () => {
+    const msg = encodeURIComponent(`Hi! I'd like to order *${item.name}* (₹${item.price.toLocaleString('en-IN')}). Please share payment and delivery details.`);
+    window.open(`https://wa.me/+91XXXXXXXXXX?text=${msg}`, '_blank');
+  };
+  return (
+    <div
+      onClick={handleOrder}
+      style={{ background: 'rgba(255,255,255,0.025)', border: '0.5px solid rgba(255,255,255,0.07)', borderRadius: 10, overflow: 'hidden', cursor: 'pointer', transition: 'border-color 0.2s, transform 0.2s' }}
+      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = `${accent}55`; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-2px)'; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(255,255,255,0.07)'; (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; }}
+    >
+      <div style={{ width: '100%', aspectRatio: '1', overflow: 'hidden' }}>
+        <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+      </div>
+      <div style={{ padding: '10px 11px' }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: '#fff', marginBottom: 3, lineHeight: 1.3, fontFamily: "'Syne', sans-serif" }}>{item.name}</div>
+        <div style={{ fontSize: 13, fontWeight: 700, color: accent, fontFamily: "'Syne', sans-serif" }}>₹{item.price.toLocaleString('en-IN')}</div>
+      </div>
+    </div>
+  );
+}
+// ─────────────────────────────────────────────────────────────────────────────
 // SIDEBAR NAV ITEM
 // ─────────────────────────────────────────────────────────────────────────────
 function SideNavItem({
@@ -469,7 +624,7 @@ export default function GiftBoxPage() {
         .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 10% 70%, rgba(255,107,0,0.09) 0%, transparent 50%); pointer-events: none; }
         .eyebrow { font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase; color: #FF6B00; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
         .eyebrow::before { content: ''; width: 20px; height: 0.5px; background: #FF6B00; display: block; }
-        .hero-title { font-size: clamp(40px, 5vw, 68px); font-weight: 800; letter-spacing: -0.03em; line-height: 0.92; margin-bottom: 12px; }
+        .hero-title { font-size: clamp(30px, 3.8vw, 48px); font-weight: 700; letter-spacing: -0.02em; line-height: 0.95; margin-bottom: 10px; }
         .hero-sub { font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.8; max-width: 400px; }
 
         /* ── INFO STRIP ── */
@@ -501,7 +656,7 @@ export default function GiftBoxPage() {
         .section-title { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: #fff; margin-bottom: 4px; }
         .section-sub { font-size: 11px; color: rgba(255,255,255,0.28); margin-bottom: 20px; }
 
-        .grid { display: grid; gap: 14px; }
+        .grid { display: grid; gap: 18px; }
         .g2 { grid-template-columns: repeat(2, 1fr); }
         .g3 { grid-template-columns: repeat(3, 1fr); }
         .g4 { grid-template-columns: repeat(4, 1fr); }
@@ -635,6 +790,25 @@ export default function GiftBoxPage() {
                   ))}
                 </div>
 
+
+                {/* More gifts within this category */}
+                {RELATED_GIFTS[currentGiftCat.id] && (
+                  <div style={{ marginTop: 36 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.7)', marginBottom: 3, fontFamily: "'Syne', sans-serif" }}>
+                      More {currentGiftCat.label}
+                    </div>
+                    <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', marginBottom: 14, fontFamily: "'Syne', sans-serif" }}>
+                      More ways to gift for this occasion
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 12 }}>
+                      {RELATED_GIFTS[currentGiftCat.id].map(item => (
+                        <RelatedGiftCard key={item.id} item={item} accent={accent} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+
                 {/* Date box preview */}
                 <div className="date-preview">
                   <div className="dp-header">
@@ -648,7 +822,7 @@ export default function GiftBoxPage() {
                   </div>
                   <div className="grid g3">
                     {DATE_CATEGORIES[0].boxes.slice(0, 3).map(box => (
-                      <BoxCard key={box.id} box={box} accent={accent} />
+                      <MiniBoxTeaser key={box.id} box={box} accent={accent} />
                     ))}
                   </div>
                 </div>
@@ -677,9 +851,9 @@ export default function GiftBoxPage() {
                       View Gift Boxes {Ic.Arrow(10)}
                     </button>
                   </div>
-                  <div className="grid g4">
+                 <div className="grid g4">
                     {GIFT_CATEGORIES[0].boxes.slice(0, 4).map(box => (
-                      <BoxCard key={box.id} box={box} accent={accent} />
+                      <MiniBoxTeaser key={box.id} box={box} accent={accent} />
                     ))}
                   </div>
                 </div>
