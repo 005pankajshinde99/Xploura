@@ -550,11 +550,11 @@ borderRadius:13, overflow:'hidden',
       <a key={label} href={href} style={{
   flexShrink: 0,
   display: 'flex', alignItems: 'center', gap: 6,
-  padding: '5px 10px', borderRadius: 999,
+  padding: '4px 8px', borderRadius: 999,
         border: '0.5px solid rgba(255,255,255,0.15)',
         background: 'rgba(255,255,255,0.05)',
         color: 'rgba(255,255,255,0.65)',
-        fontSize: 9.5, letterSpacing: '0.05em',
+        fontSize: 9.5, letterSpacing: '0.04em',
         textTransform: 'uppercase', textDecoration: 'none',
         fontFamily: "'DM Sans', sans-serif",
       }}
